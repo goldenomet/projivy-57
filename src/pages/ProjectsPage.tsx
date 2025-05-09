@@ -25,10 +25,29 @@ export default function ProjectsPage() {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    // Simulate data loading
-    setTimeout(() => {
+    // Load projects from localStorage first, fall back to mock data if none exist
+    const storedProjects = localStorage.getItem("projects");
+    if (storedProjects) {
+      try {
+        const parsedProjects = JSON.parse(storedProjects).map((project: any) => ({
+          ...project,
+          startDate: new Date(project.startDate),
+          endDate: new Date(project.endDate),
+          tasks: project.tasks.map((task: any) => ({
+            ...task,
+            startDate: new Date(task.startDate),
+            dueDate: new Date(task.dueDate),
+          })),
+        }));
+        setProjects([...parsedProjects, ...mockProjects]);
+      } catch (error) {
+        console.error("Error loading projects from localStorage:", error);
+        setProjects(mockProjects);
+      }
+    } else {
+      // Fallback to mock data
       setProjects(mockProjects);
-    }, 300);
+    }
   }, []);
 
   const filteredProjects = projects.filter(
@@ -120,8 +139,14 @@ export default function ProjectsPage() {
             <p className="text-sm text-muted-foreground">
               {projects.length > 0
                 ? "Try changing your filters"
-                : "Loading projects..."}
+                : "Create your first project!"}
             </p>
+            <Link to="/projects/new" className="mt-4">
+              <Button>
+                <PlusCircle className="mr-2 h-4 w-4" />
+                New Project
+              </Button>
+            </Link>
           </div>
         )}
       </div>
