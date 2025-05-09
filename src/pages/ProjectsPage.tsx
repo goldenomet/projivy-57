@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { mockProjects } from "@/data/mockData";
@@ -121,14 +122,6 @@ export default function ProjectsPage() {
                 ? "Try changing your filters"
                 : "Loading projects..."}
             </p>
-            {projects.length === 0 && (
-              <Link to="/projects/new" className="mt-4">
-                <Button>
-                  <PlusCircle className="mr-2 h-4 w-4" />
-                  Create Your First Project
-                </Button>
-              </Link>
-            )}
           </div>
         )}
       </div>
