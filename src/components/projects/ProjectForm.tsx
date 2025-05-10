@@ -18,7 +18,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogFooter,
   DialogClose
 } from "@/components/ui/dialog";
@@ -30,7 +29,11 @@ const initialUsers = [
   { id: "user3", name: "Bob Johnson", email: "bob@example.com" },
 ];
 
-export default function ProjectForm() {
+interface ProjectFormProps {
+  onFormSubmitting?: (isSubmitting: boolean) => void;
+}
+
+export default function ProjectForm({ onFormSubmitting }: ProjectFormProps) {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -55,8 +58,6 @@ export default function ProjectForm() {
   const [users, setUsers] = useState(initialUsers);
   const [newUserName, setNewUserName] = useState("");
   const [newUserEmail, setNewUserEmail] = useState("");
-
-  // Dialog open state
   const [newUserDialogOpen, setNewUserDialogOpen] = useState(false);
 
   const addNewUser = () => {
@@ -78,26 +79,7 @@ export default function ProjectForm() {
     toast.success(`Added new user: ${newUserName}`);
   };
 
-  console.info("Project data:", {
-    name, 
-    description, 
-    startDate, 
-    endDate, 
-    status,
-    taskName,
-    taskDescription,
-    assignedTo,
-    responsibleParty,
-    contacts,
-    taskStartDate,
-    dueDate,
-    duration,
-    dependencies,
-    taskStatus,
-    remarks
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!name || !description || !startDate || !endDate) {
@@ -120,43 +102,65 @@ export default function ProjectForm() {
       return;
     }
 
-    // Create a new project with the task
-    const projectId = uuidv4();
-    const newProject = {
-      id: projectId,
-      name,
-      description,
-      startDate: startDate || new Date(),
-      endDate: endDate || new Date(),
-      status,
-      progress: 0, // Default progress
-      tasks: [
-        {
-          id: uuidv4(),
-          projectId,
-          name: taskName,
-          description: taskDescription,
-          assignedTo: assignedTo.split(',').map(item => item.trim()),
-          responsibleParty,
-          contacts: contacts.split(',').map(item => item.trim()),
-          startDate: taskStartDate || new Date(),
-          dueDate: dueDate || new Date(),
-          duration: parseInt(duration, 10) || 1,
-          dependencies: dependencies.split(',').map(item => item.trim()),
-          status: taskStatus,
-          remarks
-        }
-      ]
-    };
+    try {
+      if (onFormSubmitting) {
+        onFormSubmitting(true);
+      }
+      
+      // Create a new project with the task
+      const projectId = uuidv4();
+      const newProject = {
+        id: projectId,
+        name,
+        description,
+        startDate: startDate || new Date(),
+        endDate: endDate || new Date(),
+        status,
+        progress: 0, // Default progress
+        tasks: [
+          {
+            id: uuidv4(),
+            projectId,
+            name: taskName,
+            description: taskDescription,
+            assignedTo: assignedTo.split(',').map(item => item.trim()).filter(Boolean),
+            responsibleParty,
+            contacts: contacts.split(',').map(item => item.trim()).filter(Boolean),
+            startDate: taskStartDate || new Date(),
+            dueDate: dueDate || new Date(),
+            duration: parseInt(duration, 10) || 1,
+            dependencies: dependencies.split(',').map(item => item.trim()).filter(Boolean),
+            status: taskStatus,
+            remarks
+          }
+        ]
+      };
 
-    // In a real app, we would save the project to the database
-    // For now, let's add it to the mock data stored in localStorage
-    const existingProjects = JSON.parse(localStorage.getItem('projects') || '[]');
-    const updatedProjects = [...existingProjects, newProject];
-    localStorage.setItem('projects', JSON.stringify(updatedProjects));
-    
-    toast.success("Project created successfully!");
-    navigate("/projects");
+      // Simulate network delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Save to localStorage
+      const existingProjects = JSON.parse(localStorage.getItem('projects') || '[]');
+      const updatedProjects = [...existingProjects, newProject];
+      localStorage.setItem('projects', JSON.stringify(updatedProjects));
+      
+      toast.success("Project created successfully!");
+      
+      // Simulate a bit more delay before navigation
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      if (onFormSubmitting) {
+        onFormSubmitting(false);
+      }
+      
+      navigate("/projects");
+    } catch (error) {
+      console.error("Error creating project:", error);
+      toast.error("Failed to create project");
+      if (onFormSubmitting) {
+        onFormSubmitting(false);
+      }
+    }
   };
 
   // Create a separate Dialog for adding new users
@@ -212,6 +216,7 @@ export default function ProjectForm() {
               onChange={(e) => setName(e.target.value)}
               placeholder="Enter project name"
               required
+              className="bg-gradient-to-br from-card to-background focus:ring-2 focus:ring-primary/30 transition-all"
             />
           </div>
 
@@ -226,6 +231,7 @@ export default function ProjectForm() {
               placeholder="Enter project description"
               rows={4}
               required
+              className="bg-gradient-to-br from-card to-background focus:ring-2 focus:ring-primary/30 transition-all"
             />
           </div>
 
@@ -239,7 +245,7 @@ export default function ProjectForm() {
                   <Button
                     variant="outline"
                     className={cn(
-                      "w-full justify-start text-left font-normal",
+                      "w-full justify-start text-left font-normal bg-gradient-to-br from-card to-background hover:bg-gradient-to-br hover:from-background hover:to-card/80 transition-all",
                       !startDate && "text-muted-foreground"
                     )}
                   >
@@ -268,7 +274,7 @@ export default function ProjectForm() {
                   <Button
                     variant="outline"
                     className={cn(
-                      "w-full justify-start text-left font-normal",
+                      "w-full justify-start text-left font-normal bg-gradient-to-br from-card to-background hover:bg-gradient-to-br hover:from-background hover:to-card/80 transition-all",
                       !endDate && "text-muted-foreground"
                     )}
                   >
@@ -295,10 +301,10 @@ export default function ProjectForm() {
               Status
             </label>
             <Select value={status} onValueChange={(value) => setStatus(value as ProjectStatus)}>
-              <SelectTrigger className="w-full">
+              <SelectTrigger className="w-full bg-gradient-to-br from-card to-background focus:ring-2 focus:ring-primary/30 transition-all">
                 <SelectValue placeholder="Select status" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-gradient-to-br from-popover to-popover/95 backdrop-blur-sm">
                 <SelectItem value="active">Active</SelectItem>
                 <SelectItem value="on-hold">On Hold</SelectItem>
                 <SelectItem value="completed">Completed</SelectItem>
@@ -320,6 +326,7 @@ export default function ProjectForm() {
               onChange={(e) => setTaskName(e.target.value)}
               placeholder="Enter task name"
               required
+              className="bg-gradient-to-br from-card to-background focus:ring-2 focus:ring-primary/30 transition-all"
             />
           </div>
 
@@ -333,6 +340,7 @@ export default function ProjectForm() {
               onChange={(e) => setTaskDescription(e.target.value)}
               placeholder="Enter task description"
               rows={3}
+              className="bg-gradient-to-br from-card to-background focus:ring-2 focus:ring-primary/30 transition-all"
             />
           </div>
 
@@ -347,13 +355,13 @@ export default function ProjectForm() {
                   value={assignedTo}
                   onChange={(e) => setAssignedTo(e.target.value)}
                   placeholder="Enter user IDs, separated by commas"
-                  className="flex-1"
+                  className="flex-1 bg-gradient-to-br from-card to-background focus:ring-2 focus:ring-primary/30 transition-all"
                 />
                 <Button 
                   variant="outline" 
                   type="button" 
                   size="sm" 
-                  className="ml-2"
+                  className="ml-2 hover:bg-gradient-to-r hover:from-accent/50 hover:to-accent/30 transition-all"
                   onClick={() => setNewUserDialogOpen(true)}
                 >
                   <Plus className="h-4 w-4" />
@@ -363,7 +371,7 @@ export default function ProjectForm() {
                 {users.map(user => (
                   <div 
                     key={user.id}
-                    className="border rounded-md p-2 text-sm flex items-center cursor-pointer hover:bg-muted"
+                    className="border rounded-md p-2 text-sm flex items-center cursor-pointer hover:bg-muted transition-colors"
                     onClick={() => {
                       const ids = assignedTo ? assignedTo.split(',').map(id => id.trim()) : [];
                       if (!ids.includes(user.id)) {
@@ -383,16 +391,16 @@ export default function ProjectForm() {
                 <span className="flex items-center gap-1"><User className="h-4 w-4" /> Responsible Party</span>
               </label>
               <Select value={responsibleParty} onValueChange={(value) => setResponsibleParty(value)}>
-                <SelectTrigger className="w-full">
+                <SelectTrigger className="w-full bg-gradient-to-br from-card to-background focus:ring-2 focus:ring-primary/30 transition-all">
                   <SelectValue placeholder="Select responsible person" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-gradient-to-br from-popover to-popover/95 backdrop-blur-sm">
                   {users.map(user => (
                     <SelectItem key={user.id} value={user.id}>{user.name}</SelectItem>
                   ))}
                   <Button 
                     variant="ghost" 
-                    className="w-full justify-start px-2 py-1.5 h-auto font-normal text-sm"
+                    className="w-full justify-start px-2 py-1.5 h-auto font-normal text-sm hover:bg-accent/50 transition-colors"
                     onClick={() => setNewUserDialogOpen(true)}
                     type="button"
                   >
@@ -413,13 +421,13 @@ export default function ProjectForm() {
                 value={contacts}
                 onChange={(e) => setContacts(e.target.value)}
                 placeholder="Enter contacts, separated by commas"
-                className="flex-1"
+                className="flex-1 bg-gradient-to-br from-card to-background focus:ring-2 focus:ring-primary/30 transition-all"
               />
               <Button 
                 variant="outline" 
                 type="button" 
                 size="sm" 
-                className="ml-2" 
+                className="ml-2 hover:bg-gradient-to-r hover:from-accent/50 hover:to-accent/30 transition-all"
                 onClick={() => setNewUserDialogOpen(true)}
               >
                 <Plus className="h-4 w-4" />
@@ -429,7 +437,7 @@ export default function ProjectForm() {
               {users.map(user => (
                 <div 
                   key={user.id}
-                  className="border rounded-md p-2 text-sm flex items-center cursor-pointer hover:bg-muted"
+                  className="border rounded-md p-2 text-sm flex items-center cursor-pointer hover:bg-muted transition-colors"
                   onClick={() => {
                     const ids = contacts ? contacts.split(',').map(id => id.trim()) : [];
                     if (!ids.includes(user.id)) {
@@ -456,6 +464,7 @@ export default function ProjectForm() {
                 value={duration}
                 onChange={(e) => setDuration(e.target.value)}
                 placeholder="Enter duration in days"
+                className="bg-gradient-to-br from-card to-background focus:ring-2 focus:ring-primary/30 transition-all"
               />
             </div>
 
@@ -468,6 +477,7 @@ export default function ProjectForm() {
                 value={dependencies}
                 onChange={(e) => setDependencies(e.target.value)}
                 placeholder="Enter dependencies, separated by commas"
+                className="bg-gradient-to-br from-card to-background focus:ring-2 focus:ring-primary/30 transition-all"
               />
             </div>
           </div>
@@ -478,10 +488,10 @@ export default function ProjectForm() {
                 Status
               </label>
               <Select value={taskStatus} onValueChange={(value) => setTaskStatus(value as TaskStatus)}>
-                <SelectTrigger className="w-full">
+                <SelectTrigger className="w-full bg-gradient-to-br from-card to-background focus:ring-2 focus:ring-primary/30 transition-all">
                   <SelectValue placeholder="Select status" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-gradient-to-br from-popover to-popover/95 backdrop-blur-sm">
                   <SelectItem value="not-started">Not Started</SelectItem>
                   <SelectItem value="in-progress">In Progress</SelectItem>
                   <SelectItem value="completed">Completed</SelectItem>
@@ -501,6 +511,7 @@ export default function ProjectForm() {
                 value={remarks}
                 onChange={(e) => setRemarks(e.target.value)}
                 placeholder="Enter any remarks"
+                className="bg-gradient-to-br from-card to-background focus:ring-2 focus:ring-primary/30 transition-all"
               />
             </div>
           </div>
@@ -508,10 +519,20 @@ export default function ProjectForm() {
       </div>
 
       <div className="flex justify-end gap-3">
-        <Button variant="outline" type="button" onClick={() => navigate("/projects")}>
+        <Button 
+          variant="outline" 
+          type="button" 
+          onClick={() => navigate("/projects")}
+          className="hover:bg-gradient-to-r hover:from-accent/50 hover:to-accent/30 transition-all"
+        >
           Cancel
         </Button>
-        <Button type="submit">Create Project</Button>
+        <Button 
+          type="submit"
+          className="bg-gradient-to-r from-primary to-purple-500 hover:opacity-90 shadow-md hover:shadow-lg transition-all"
+        >
+          Create Project
+        </Button>
       </div>
     </form>
   );

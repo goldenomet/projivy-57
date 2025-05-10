@@ -23,9 +23,11 @@ export default function ProjectsPage() {
     "cancelled",
   ]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Load projects from localStorage first
+    setIsLoading(true);
     const storedProjects = localStorage.getItem("projects");
     let localProjects: Project[] = [];
     
@@ -55,6 +57,7 @@ export default function ProjectsPage() {
     
     // Set combined projects
     setProjects([...localProjects, ...filteredMockProjects]);
+    setIsLoading(false);
   }, []);
 
   const filteredProjects = projects.filter(
@@ -144,28 +147,34 @@ export default function ProjectsPage() {
         </div>
 
         <div className="animate-slide-in" style={{ animationDelay: "0.2s" }}>
-          {filteredProjects.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredProjects.map((project, index) => (
-                <div key={project.id} className="hover:scale-[1.02] transition-transform animate-fade-in" style={{ animationDelay: `${index * 0.1 + 0.3}s` }}>
-                  <ProjectCard key={project.id} project={project} />
-                </div>
-              ))}
-            </div>
+          {!isLoading ? (
+            filteredProjects.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredProjects.map((project, index) => (
+                  <div key={project.id} className="hover:scale-[1.02] transition-transform animate-fade-in" style={{ animationDelay: `${index * 0.1 + 0.3}s` }}>
+                    <ProjectCard key={project.id} project={project} />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="py-16 flex flex-col items-center justify-center border rounded-lg bg-gradient-to-br from-muted/40 to-muted/20 animate-pulse">
+                <p className="text-muted-foreground mb-2">No projects found</p>
+                <p className="text-sm text-muted-foreground">
+                  {projects.length > 0
+                    ? "Try changing your filters"
+                    : "Create your first project!"}
+                </p>
+                <Link to="/projects/new" className="mt-4">
+                  <Button className="bg-gradient-to-r from-primary to-purple-500 hover:opacity-90 hover:scale-105 transition-all">
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    New Project
+                  </Button>
+                </Link>
+              </div>
+            )
           ) : (
             <div className="py-16 flex flex-col items-center justify-center border rounded-lg bg-gradient-to-br from-muted/40 to-muted/20 animate-pulse">
-              <p className="text-muted-foreground mb-2">No projects found</p>
-              <p className="text-sm text-muted-foreground">
-                {projects.length > 0
-                  ? "Try changing your filters"
-                  : "Create your first project!"}
-              </p>
-              <Link to="/projects/new" className="mt-4">
-                <Button className="bg-gradient-to-r from-primary to-purple-500 hover:opacity-90 hover:scale-105 transition-all">
-                  <PlusCircle className="mr-2 h-4 w-4" />
-                  New Project
-                </Button>
-              </Link>
+              <p className="text-muted-foreground">Loading projects...</p>
             </div>
           )}
         </div>

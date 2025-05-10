@@ -1,4 +1,5 @@
 
+import { useState } from "react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import ProjectForm from "@/components/projects/ProjectForm";
 import { Button } from "@/components/ui/button";
@@ -6,6 +7,12 @@ import { ChevronLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function NewProject() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleFormSubmit = (isSubmitting: boolean) => {
+    setIsSubmitting(isSubmitting);
+  };
+
   return (
     <AppLayout>
       <div className="space-y-6 animate-fade-in">
@@ -20,7 +27,15 @@ export default function NewProject() {
         </div>
         
         <div className="bg-gradient-to-br from-card to-card/90 rounded-lg p-6 border shadow-md animate-slide-in">
-          <ProjectForm />
+          <ProjectForm onFormSubmitting={handleFormSubmit} />
+          {isSubmitting && (
+            <div className="fixed inset-0 bg-background/50 backdrop-blur-sm flex items-center justify-center z-50">
+              <div className="bg-card p-6 rounded-lg shadow-lg flex flex-col items-center space-y-4">
+                <div className="w-12 h-12 rounded-full border-4 border-primary border-t-transparent animate-spin"></div>
+                <p className="text-lg font-medium">Creating your project...</p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </AppLayout>

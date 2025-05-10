@@ -26,6 +26,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { toast } from "sonner";
 
 export default function ProjectDetail() {
   const { id } = useParams<{ id: string }>();
@@ -35,9 +36,12 @@ export default function ProjectDetail() {
   const [isNewTaskDialogOpen, setIsNewTaskDialogOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [activeTab, setActiveTab] = useState("all");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (!id) return;
+    
+    setIsLoading(true);
     
     // Try to load project from localStorage first
     const storedProjects = localStorage.getItem("projects");
@@ -47,20 +51,21 @@ export default function ProjectDetail() {
         const localProject = parsedProjects.find((p: any) => p.id === id);
         
         if (localProject) {
-          // Convert date strings to Date objects
-          const project = {
+          // Parse date strings to Date objects
+          const formattedProject = {
             ...localProject,
             startDate: new Date(localProject.startDate),
             endDate: new Date(localProject.endDate),
-            tasks: localProject.tasks?.map((task: any) => ({
+            tasks: Array.isArray(localProject.tasks) ? localProject.tasks.map((task: any) => ({
               ...task,
-              startDate: new Date(task.startDate),
-              dueDate: new Date(task.dueDate),
-            })) || []
+              startDate: task.startDate ? new Date(task.startDate) : new Date(),
+              dueDate: task.dueDate ? new Date(task.dueDate) : new Date(),
+            })) : []
           };
           
-          setProject(project);
-          setTasks(project.tasks || []);
+          setProject(formattedProject);
+          setTasks(formattedProject.tasks || []);
+          setIsLoading(false);
           return;
         }
       } catch (error) {
@@ -73,7 +78,9 @@ export default function ProjectDetail() {
     if (foundProject) {
       setProject(foundProject);
       setTasks(mockTasks.filter((task) => task.projectId === id));
+      setIsLoading(false);
     } else {
+      toast.error("Project not found");
       navigate("/projects");
     }
   }, [id, navigate]);
@@ -113,35 +120,42 @@ export default function ProjectDetail() {
   };
 
   const handleTaskSubmit = (taskData: any) => {
-    if (selectedTask) {
-      // Update existing task
-      const updatedTasks = tasks.map((task) =>
-        task.id === selectedTask.id
-          ? { ...task, ...taskData }
-          : task
-      );
-      setTasks(updatedTasks);
-      
-      // Update project in state and localStorage
-      if (project) {
-        updateProjectTasks(project.id, updatedTasks);
+    try {
+      if (selectedTask) {
+        // Update existing task
+        const updatedTasks = tasks.map((task) =>
+          task.id === selectedTask.id
+            ? { ...task, ...taskData }
+            : task
+        );
+        setTasks(updatedTasks);
+        
+        // Update project in state and localStorage
+        if (project) {
+          updateProjectTasks(project.id, updatedTasks);
+          toast.success("Task updated successfully");
+        }
+      } else {
+        // Create new task
+        const newTask: Task = {
+          id: `task${Date.now()}`, // More unique ID
+          projectId: project?.id || "",
+          ...taskData,
+        };
+        const updatedTasks = [...tasks, newTask];
+        setTasks(updatedTasks);
+        
+        // Update project in state and localStorage
+        if (project) {
+          updateProjectTasks(project.id, updatedTasks);
+          toast.success("New task created successfully");
+        }
       }
-    } else {
-      // Create new task
-      const newTask: Task = {
-        id: `task${tasks.length + 1}`,
-        projectId: project?.id || "",
-        ...taskData,
-      };
-      const updatedTasks = [...tasks, newTask];
-      setTasks(updatedTasks);
-      
-      // Update project in state and localStorage
-      if (project) {
-        updateProjectTasks(project.id, updatedTasks);
-      }
+      setIsNewTaskDialogOpen(false);
+    } catch (error) {
+      console.error("Error handling task submission:", error);
+      toast.error("Failed to save task");
     }
-    setIsNewTaskDialogOpen(false);
   };
   
   // Helper function to update project tasks in state and localStorage
@@ -160,6 +174,7 @@ export default function ProjectDetail() {
         localStorage.setItem("projects", JSON.stringify(updatedProjects));
       } catch (error) {
         console.error("Error updating project tasks in localStorage:", error);
+        toast.error("Failed to save changes");
       }
     }
     
@@ -169,11 +184,28 @@ export default function ProjectDetail() {
     }
   };
 
+  if (isLoading) {
+    return (
+      <AppLayout>
+        <div className="flex items-center justify-center h-full">
+          <div className="space-y-4 text-center animate-pulse">
+            <div className="mx-auto w-12 h-12 rounded-full border-4 border-primary border-t-transparent animate-spin"></div>
+            <p className="text-muted-foreground">Loading project...</p>
+          </div>
+        </div>
+      </AppLayout>
+    );
+  }
+
   if (!project) {
     return (
       <AppLayout>
-        <div className="flex items-center justify-center h-full animate-pulse">
-          <p>Loading project...</p>
+        <div className="flex flex-col items-center justify-center h-full space-y-4">
+          <p className="text-xl text-muted-foreground">Project not found</p>
+          <Button onClick={() => navigate("/projects")}>
+            <ChevronLeft className="mr-2 h-4 w-4" />
+            Back to Projects
+          </Button>
         </div>
       </AppLayout>
     );

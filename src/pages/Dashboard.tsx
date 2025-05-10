@@ -8,23 +8,81 @@ import { TaskCard } from "@/components/tasks/TaskCard";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { PlusCircle, ChevronLeft } from "lucide-react";
+import { toast } from "sonner";
 
 export default function Dashboard() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [recentTasks, setRecentTasks] = useState<Task[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate data loading
-    setTimeout(() => {
-      setProjects(mockProjects);
+    const loadProjects = () => {
+      setIsLoading(true);
       
-      // Show recent tasks sorted by due date (upcoming first)
-      const sortedTasks = [...mockTasks].sort(
-        (a, b) => a.dueDate.getTime() - b.dueDate.getTime()
-      ).slice(0, 4);
-      
-      setRecentTasks(sortedTasks);
-    }, 300);
+      // Try to load projects from localStorage
+      try {
+        const storedProjects = localStorage.getItem("projects");
+        let localProjects: Project[] = [];
+        
+        if (storedProjects) {
+          const parsedProjects = JSON.parse(storedProjects);
+          localProjects = Array.isArray(parsedProjects) ? parsedProjects.map((project: any) => ({
+            ...project,
+            startDate: new Date(project.startDate),
+            endDate: new Date(project.endDate),
+            tasks: Array.isArray(project.tasks) ? project.tasks.map((task: any) => ({
+              ...task,
+              startDate: task.startDate ? new Date(task.startDate) : new Date(),
+              dueDate: task.dueDate ? new Date(task.dueDate) : new Date(),
+            })) : [],
+          })) : [];
+        }
+        
+        // Combine with mock data (preventing duplicates)
+        const existingIds = new Set(localProjects.map(p => p.id));
+        const filteredMockProjects = mockProjects.filter(p => !existingIds.has(p.id));
+        const allProjects = [...localProjects, ...filteredMockProjects];
+        
+        // Get active projects only
+        const activeProjects = allProjects.filter(p => p.status === 'active');
+        
+        setProjects(activeProjects);
+        
+        // Gather all tasks from all projects
+        const allTasks: Task[] = [];
+        allProjects.forEach(project => {
+          if (Array.isArray(project.tasks)) {
+            allTasks.push(...project.tasks.map(task => ({
+              ...task,
+              projectId: project.id
+            })));
+          }
+        });
+        
+        // Add mock tasks
+        mockTasks.forEach(task => {
+          if (!allTasks.some(t => t.id === task.id)) {
+            allTasks.push(task);
+          }
+        });
+        
+        // Show recent tasks sorted by due date (upcoming first)
+        const sortedTasks = allTasks
+          .sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime())
+          .filter(task => task.status !== 'completed')
+          .slice(0, 4);
+        
+        setRecentTasks(sortedTasks);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error loading projects:", error);
+        toast.error("Failed to load projects");
+        setIsLoading(false);
+      }
+    };
+    
+    // Load projects after a brief delay to allow for animations
+    setTimeout(loadProjects, 300);
   }, []);
 
   return (
@@ -50,14 +108,26 @@ export default function Dashboard() {
 
         <div className="animate-slide-in">
           <h2 className="text-xl font-semibold mb-4 text-transparent bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">Active Projects</h2>
-          {projects.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {projects.map((project, index) => (
-                <div key={project.id} className="animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
-                  <ProjectCard project={project} />
-                </div>
-              ))}
-            </div>
+          {!isLoading ? (
+            projects.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {projects.map((project, index) => (
+                  <div key={project.id} className="animate-fade-in hover:scale-[1.02] transition-transform" style={{ animationDelay: `${index * 0.1}s` }}>
+                    <ProjectCard project={project} />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="py-12 flex flex-col items-center justify-center border rounded-lg bg-gradient-to-br from-muted/50 to-muted/30">
+                <p className="text-muted-foreground mb-4">No active projects found</p>
+                <Link to="/projects/new">
+                  <Button className="bg-gradient-to-r from-primary to-purple-500 hover:opacity-90 transition-opacity hover:scale-105 transition-all">
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Create New Project
+                  </Button>
+                </Link>
+              </div>
+            )
           ) : (
             <div className="py-12 flex items-center justify-center border rounded-lg bg-gradient-to-br from-muted/50 to-muted/30 animate-pulse">
               <p className="text-muted-foreground">Loading projects...</p>
@@ -72,16 +142,22 @@ export default function Dashboard() {
               View all tasks
             </Link>
           </div>
-          {recentTasks.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {recentTasks.map((task, index) => (
-                <div key={task.id} className="animate-fade-in hover:scale-[1.02] transition-transform" style={{ animationDelay: `${(index * 0.1) + 0.4}s` }}>
-                  <Link to={`/projects/${task.projectId}`}>
-                    <TaskCard task={task} />
-                  </Link>
-                </div>
-              ))}
-            </div>
+          {!isLoading ? (
+            recentTasks.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {recentTasks.map((task, index) => (
+                  <div key={task.id} className="animate-fade-in hover:scale-[1.02] transition-transform" style={{ animationDelay: `${(index * 0.1) + 0.4}s` }}>
+                    <Link to={`/projects/${task.projectId}`}>
+                      <TaskCard task={task} />
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="py-12 flex items-center justify-center border rounded-lg bg-gradient-to-br from-muted/50 to-muted/30">
+                <p className="text-muted-foreground">No upcoming tasks found</p>
+              </div>
+            )
           ) : (
             <div className="py-12 flex items-center justify-center border rounded-lg bg-gradient-to-br from-muted/50 to-muted/30 animate-pulse">
               <p className="text-muted-foreground">Loading tasks...</p>
