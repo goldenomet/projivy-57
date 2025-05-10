@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -9,10 +8,26 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { format } from "date-fns";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ProjectStatus, TaskStatus } from "@/types/project";
-import { CalendarIcon, User, Users, Mail, Clock, Link, FileText } from "lucide-react";
+import { CalendarIcon, User, Users, Mail, Clock, Link as LinkIcon, FileText, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
+import { 
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+  DialogClose
+} from "@/components/ui/dialog";
+
+// List of initial users (this would come from a database in a real app)
+const initialUsers = [
+  { id: "user1", name: "John Doe", email: "john@example.com" },
+  { id: "user2", name: "Jane Smith", email: "jane@example.com" },
+  { id: "user3", name: "Bob Johnson", email: "bob@example.com" },
+];
 
 export default function ProjectForm() {
   const navigate = useNavigate();
@@ -35,6 +50,33 @@ export default function ProjectForm() {
   const [taskStatus, setTaskStatus] = useState<TaskStatus>("not-started");
   const [remarks, setRemarks] = useState("");
   
+  // State for user management
+  const [users, setUsers] = useState(initialUsers);
+  const [newUserName, setNewUserName] = useState("");
+  const [newUserEmail, setNewUserEmail] = useState("");
+
+  // Dialog open state
+  const [newUserDialogOpen, setNewUserDialogOpen] = useState(false);
+
+  const addNewUser = () => {
+    if (!newUserName.trim() || !newUserEmail.trim()) {
+      toast.error("Please provide both name and email for the new user");
+      return;
+    }
+    
+    const newUser = {
+      id: uuidv4(),
+      name: newUserName,
+      email: newUserEmail,
+    };
+    
+    setUsers([...users, newUser]);
+    setNewUserName("");
+    setNewUserEmail("");
+    setNewUserDialogOpen(false);
+    toast.success(`Added new user: ${newUserName}`);
+  };
+
   console.info("Project data:", {
     name, 
     description, 
@@ -260,24 +302,91 @@ export default function ProjectForm() {
               <label htmlFor="assignedTo" className="block text-sm font-medium mb-1">
                 <span className="flex items-center gap-1"><Users className="h-4 w-4" /> Assigned To</span>
               </label>
-              <Input
-                id="assignedTo"
-                value={assignedTo}
-                onChange={(e) => setAssignedTo(e.target.value)}
-                placeholder="Enter user IDs, separated by commas"
-              />
+              <div className="flex">
+                <Input
+                  id="assignedTo"
+                  value={assignedTo}
+                  onChange={(e) => setAssignedTo(e.target.value)}
+                  placeholder="Enter user IDs, separated by commas"
+                  className="flex-1"
+                />
+                <Dialog open={newUserDialogOpen} onOpenChange={setNewUserDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" type="button" size="sm" className="ml-2">
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Add New User</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                      <div>
+                        <label htmlFor="newUserName" className="block text-sm font-medium mb-1">Name</label>
+                        <Input
+                          id="newUserName"
+                          value={newUserName}
+                          onChange={(e) => setNewUserName(e.target.value)}
+                          placeholder="Enter user name"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="newUserEmail" className="block text-sm font-medium mb-1">Email</label>
+                        <Input
+                          id="newUserEmail"
+                          value={newUserEmail}
+                          onChange={(e) => setNewUserEmail(e.target.value)}
+                          placeholder="Enter user email"
+                        />
+                      </div>
+                    </div>
+                    <DialogFooter>
+                      <DialogClose asChild>
+                        <Button variant="outline" type="button">Cancel</Button>
+                      </DialogClose>
+                      <Button type="button" onClick={addNewUser}>Add User</Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </div>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {users.map(user => (
+                  <div 
+                    key={user.id}
+                    className="border rounded-md p-2 text-sm flex items-center cursor-pointer hover:bg-muted"
+                    onClick={() => {
+                      const ids = assignedTo ? assignedTo.split(',').map(id => id.trim()) : [];
+                      if (!ids.includes(user.id)) {
+                        const newAssignees = [...ids, user.id].join(', ');
+                        setAssignedTo(newAssignees);
+                      }
+                    }}
+                  >
+                    {user.name}
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div>
               <label htmlFor="responsibleParty" className="block text-sm font-medium mb-1">
                 <span className="flex items-center gap-1"><User className="h-4 w-4" /> Responsible Party</span>
               </label>
-              <Input
-                id="responsibleParty"
-                value={responsibleParty}
-                onChange={(e) => setResponsibleParty(e.target.value)}
-                placeholder="Enter responsible person"
-              />
+              <Select value={responsibleParty} onValueChange={(value) => setResponsibleParty(value)}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select responsible person" />
+                </SelectTrigger>
+                <SelectContent>
+                  {users.map(user => (
+                    <SelectItem key={user.id} value={user.id}>{user.name}</SelectItem>
+                  ))}
+                  <DialogTrigger asChild>
+                    <Button variant="ghost" className="w-full justify-start px-2 py-1.5 h-auto font-normal text-sm" onClick={() => setNewUserDialogOpen(true)}>
+                      <Plus className="h-4 w-4 mr-2" /> Add new user
+                    </Button>
+                  </DialogTrigger>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
@@ -285,75 +394,34 @@ export default function ProjectForm() {
             <label htmlFor="contacts" className="block text-sm font-medium mb-1">
               <span className="flex items-center gap-1"><Mail className="h-4 w-4" /> Contacts</span>
             </label>
-            <Input
-              id="contacts"
-              value={contacts}
-              onChange={(e) => setContacts(e.target.value)}
-              placeholder="Enter contacts, separated by commas"
-            />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                <span className="flex items-center gap-1"><CalendarIcon className="h-4 w-4" /> Start Date</span>
-              </label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      "w-full justify-start text-left font-normal",
-                      !taskStartDate && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {taskStartDate ? format(taskStartDate, "PPP") : <span>Pick a date</span>}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={taskStartDate}
-                    onSelect={setTaskStartDate}
-                    fromDate={startDate}
-                    toDate={endDate}
-                    initialFocus
-                    className="pointer-events-auto"
-                  />
-                </PopoverContent>
-              </Popover>
+            <div className="flex">
+              <Input
+                id="contacts"
+                value={contacts}
+                onChange={(e) => setContacts(e.target.value)}
+                placeholder="Enter contacts, separated by commas"
+                className="flex-1"
+              />
+              <Button variant="outline" type="button" size="sm" className="ml-2" onClick={() => setNewUserDialogOpen(true)}>
+                <Plus className="h-4 w-4" />
+              </Button>
             </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                <span className="flex items-center gap-1"><CalendarIcon className="h-4 w-4" /> Due Date</span>
-              </label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      "w-full justify-start text-left font-normal",
-                      !dueDate && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {dueDate ? format(dueDate, "PPP") : <span>Pick a date</span>}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={dueDate}
-                    onSelect={setDueDate}
-                    fromDate={taskStartDate}
-                    toDate={endDate}
-                    initialFocus
-                    className="pointer-events-auto"
-                  />
-                </PopoverContent>
-              </Popover>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {users.map(user => (
+                <div 
+                  key={user.id}
+                  className="border rounded-md p-2 text-sm flex items-center cursor-pointer hover:bg-muted"
+                  onClick={() => {
+                    const ids = contacts ? contacts.split(',').map(id => id.trim()) : [];
+                    if (!ids.includes(user.id)) {
+                      const newContacts = [...ids, user.id].join(', ');
+                      setContacts(newContacts);
+                    }
+                  }}
+                >
+                  {user.name}
+                </div>
+              ))}
             </div>
           </div>
 
@@ -374,7 +442,7 @@ export default function ProjectForm() {
 
             <div>
               <label htmlFor="dependencies" className="block text-sm font-medium mb-1">
-                <span className="flex items-center gap-1"><Link className="h-4 w-4" /> Dependencies</span>
+                <span className="flex items-center gap-1"><LinkIcon className="h-4 w-4" /> Dependencies</span>
               </label>
               <Input
                 id="dependencies"

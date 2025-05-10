@@ -1,10 +1,9 @@
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Plus } from "lucide-react";
 import { Task, User } from "@/types/project";
 import { Button } from "@/components/ui/button";
 import {
@@ -34,6 +33,15 @@ import {
 import { cn } from "@/lib/utils";
 import { users } from "@/data/mockData";
 import { toast } from "@/hooks/use-toast";
+import { 
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogClose
+} from "@/components/ui/dialog";
+import { v4 as uuidv4 } from "uuid";
 
 const taskSchema = z.object({
   name: z.string().min(1, { message: "Task name is required" }),
@@ -63,6 +71,13 @@ export function TaskForm({ task, projectId, existingTasks = [], onSubmit, onCanc
   const [selectedAssignees, setSelectedAssignees] = useState<string[]>(task?.assignedTo || []);
   const [selectedContacts, setSelectedContacts] = useState<string[]>(task?.contacts || []);
   const [selectedDependencies, setSelectedDependencies] = useState<string[]>(task?.dependencies || []);
+  
+  // State for managing users
+  const [availableUsers, setAvailableUsers] = useState<User[]>(users);
+  const [newUserDialogOpen, setNewUserDialogOpen] = useState(false);
+  const [newUserName, setNewUserName] = useState("");
+  const [newUserEmail, setNewUserEmail] = useState("");
+  const [newUserRole, setNewUserRole] = useState("team-member");
 
   const form = useForm<TaskFormValues>({
     resolver: zodResolver(taskSchema),
@@ -123,6 +138,36 @@ export function TaskForm({ task, projectId, existingTasks = [], onSubmit, onCanc
         ? prev.filter(id => id !== taskId)
         : [...prev, taskId]
     );
+  };
+
+  const addNewUser = () => {
+    if (!newUserName.trim() || !newUserEmail.trim()) {
+      toast({
+        title: "Error",
+        description: "Please provide both name and email for the new user",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    const newUser = {
+      id: uuidv4(),
+      name: newUserName,
+      email: newUserEmail,
+      role: newUserRole,
+      avatarUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=${uuidv4()}`,
+    };
+    
+    setAvailableUsers([...availableUsers, newUser]);
+    setNewUserName("");
+    setNewUserEmail("");
+    setNewUserRole("team-member");
+    setNewUserDialogOpen(false);
+    
+    toast({
+      title: "Success",
+      description: `Added new user: ${newUserName}`,
+    });
   };
 
   return (
@@ -189,8 +234,18 @@ export function TaskForm({ task, projectId, existingTasks = [], onSubmit, onCanc
 
           <div className="col-span-1 md:col-span-2">
             <FormLabel className="block mb-2">Assigned To</FormLabel>
+            <div className="flex items-center gap-2 mb-2">
+              <Button 
+                type="button" 
+                variant="outline" 
+                size="sm" 
+                onClick={() => setNewUserDialogOpen(true)}
+              >
+                <Plus className="h-4 w-4 mr-2" /> Add New User
+              </Button>
+            </div>
             <div className="flex flex-wrap gap-2">
-              {users.map((user) => (
+              {availableUsers.map((user) => (
                 <div
                   key={user.id}
                   onClick={() => handleAssigneeChange(user.id)}
@@ -227,11 +282,18 @@ export function TaskForm({ task, projectId, existingTasks = [], onSubmit, onCanc
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {users.map((user) => (
+                    {availableUsers.map((user) => (
                       <SelectItem key={user.id} value={user.id}>
                         {user.name}
                       </SelectItem>
                     ))}
+                    <Button 
+                      variant="ghost"
+                      className="w-full justify-start px-2 py-1.5 h-auto font-normal text-sm"
+                      onClick={() => setNewUserDialogOpen(true)}
+                    >
+                      <Plus className="h-4 w-4 mr-2" /> Add new user
+                    </Button>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -241,8 +303,18 @@ export function TaskForm({ task, projectId, existingTasks = [], onSubmit, onCanc
 
           <div className="col-span-1 md:col-span-2">
             <FormLabel className="block mb-2">Contacts</FormLabel>
+            <div className="flex items-center gap-2 mb-2">
+              <Button 
+                type="button" 
+                variant="outline" 
+                size="sm" 
+                onClick={() => setNewUserDialogOpen(true)}
+              >
+                <Plus className="h-4 w-4 mr-2" /> Add New Contact
+              </Button>
+            </div>
             <div className="flex flex-wrap gap-2">
-              {users.map((user) => (
+              {availableUsers.map((user) => (
                 <div
                   key={user.id}
                   onClick={() => handleContactChange(user.id)}
@@ -390,6 +462,55 @@ export function TaskForm({ task, projectId, existingTasks = [], onSubmit, onCanc
             )}
           />
         </div>
+
+        <Dialog open={newUserDialogOpen} onOpenChange={setNewUserDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add New User</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div>
+                <label htmlFor="newUserName" className="block text-sm font-medium mb-1">Name</label>
+                <Input
+                  id="newUserName"
+                  value={newUserName}
+                  onChange={(e) => setNewUserName(e.target.value)}
+                  placeholder="Enter user name"
+                />
+              </div>
+              <div>
+                <label htmlFor="newUserEmail" className="block text-sm font-medium mb-1">Email</label>
+                <Input
+                  id="newUserEmail"
+                  value={newUserEmail}
+                  onChange={(e) => setNewUserEmail(e.target.value)}
+                  placeholder="Enter user email"
+                />
+              </div>
+              <div>
+                <label htmlFor="newUserRole" className="block text-sm font-medium mb-1">Role</label>
+                <Select value={newUserRole} onValueChange={setNewUserRole}>
+                  <SelectTrigger id="newUserRole">
+                    <SelectValue placeholder="Select a role" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="project-manager">Project Manager</SelectItem>
+                    <SelectItem value="team-lead">Team Lead</SelectItem>
+                    <SelectItem value="team-member">Team Member</SelectItem>
+                    <SelectItem value="client">Client</SelectItem>
+                    <SelectItem value="stakeholder">Stakeholder</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant="outline" type="button">Cancel</Button>
+              </DialogClose>
+              <Button type="button" onClick={addNewUser}>Add User</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
         <div className="flex justify-end space-x-2">
           <Button type="button" variant="outline" onClick={onCancel}>

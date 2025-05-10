@@ -25,11 +25,13 @@ export default function ProjectsPage() {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    // Load projects from localStorage first, fall back to mock data if none exist
+    // Load projects from localStorage first
     const storedProjects = localStorage.getItem("projects");
+    let localProjects: Project[] = [];
+    
     if (storedProjects) {
       try {
-        const parsedProjects = JSON.parse(storedProjects).map((project: any) => ({
+        localProjects = JSON.parse(storedProjects).map((project: any) => ({
           ...project,
           startDate: new Date(project.startDate),
           endDate: new Date(project.endDate),
@@ -39,15 +41,17 @@ export default function ProjectsPage() {
             dueDate: new Date(task.dueDate),
           })),
         }));
-        setProjects([...parsedProjects, ...mockProjects]);
       } catch (error) {
         console.error("Error loading projects from localStorage:", error);
-        setProjects(mockProjects);
       }
-    } else {
-      // Fallback to mock data
-      setProjects(mockProjects);
     }
+
+    // Combine local projects with mock data, preventing duplicates by ID
+    const existingIds = new Set(localProjects.map(p => p.id));
+    const filteredMockProjects = mockProjects.filter(p => !existingIds.has(p.id));
+    
+    // Set combined projects
+    setProjects([...localProjects, ...filteredMockProjects]);
   }, []);
 
   const filteredProjects = projects.filter(
