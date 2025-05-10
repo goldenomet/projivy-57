@@ -127,4 +127,43 @@
   .status-cancelled {
     @apply bg-red-100 text-red-700;
   }
+  
+  /* Gradient Card */
+  .card-gradient {
+    @apply bg-gradient-to-br from-card to-card/90 backdrop-blur-sm shadow-md hover:shadow-lg transition-all;
+  }
+  
+  /* Button Gradient */
+  .btn-gradient {
+    @apply bg-gradient-to-r from-primary to-purple-500 hover:opacity-90 shadow-md hover:shadow-lg transition-all;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+  
+  .animate-slide-in {
+    animation: slideIn 0.5s ease-out forwards;
+  }
+  
+  .animate-scale-in {
+    animation: scaleIn 0.4s ease-out forwards;
+  }
 }

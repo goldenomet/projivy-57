@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { AppLayout } from "@/components/layout/AppLayout";
@@ -171,7 +172,7 @@ export default function ProjectDetail() {
   if (!project) {
     return (
       <AppLayout>
-        <div className="flex items-center justify-center h-full">
+        <div className="flex items-center justify-center h-full animate-pulse">
           <p>Loading project...</p>
         </div>
       </AppLayout>
@@ -180,17 +181,17 @@ export default function ProjectDetail() {
 
   return (
     <AppLayout>
-      <div className="space-y-8">
+      <div className="space-y-8 animate-fade-in">
         <div>
           <div className="flex items-start justify-between">
             <div className="space-y-2">
               <Link to="/projects">
-                <Button variant="ghost" size="sm" className="mb-2 -ml-2">
+                <Button variant="ghost" size="sm" className="mb-2 -ml-2 hover:scale-105 transition-transform">
                   <ChevronLeft className="h-4 w-4 mr-1" />
                   Back to Projects
                 </Button>
               </Link>
-              <h1 className="text-3xl font-bold tracking-tight">
+              <h1 className="text-3xl font-bold tracking-tight text-transparent bg-gradient-to-r from-primary to-purple-500 bg-clip-text">
                 {project.name}
               </h1>
               <p className="text-muted-foreground">
@@ -198,19 +199,22 @@ export default function ProjectDetail() {
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <Badge className="flex gap-1 items-center px-3 py-1">
+              <Badge className="flex gap-1 items-center px-3 py-1 bg-gradient-to-r from-secondary/80 to-secondary/60 hover:from-secondary hover:to-secondary/80 transition-all">
                 {getStatusIcon(project.status)}
                 <span>{getStatusLabel(project.status)}</span>
               </Badge>
-              <Button onClick={handleNewTask}>
+              <Button 
+                onClick={handleNewTask}
+                className="bg-gradient-to-r from-primary to-purple-500 hover:opacity-90 shadow-md hover:shadow-lg hover:scale-105 transition-all"
+              >
                 <PlusCircle className="mr-2 h-4 w-4" />
                 New Task
               </Button>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-            <div className="flex flex-col gap-2">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 animate-slide-in" style={{ animationDelay: "0.1s" }}>
+            <div className="flex flex-col gap-2 bg-gradient-to-br from-card to-card/80 p-4 rounded-lg border shadow-sm">
               <h3 className="text-sm font-medium">Project Timeline</h3>
               <div className="flex items-center gap-2 text-sm">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
@@ -221,20 +225,20 @@ export default function ProjectDetail() {
               </div>
             </div>
 
-            <div className="flex flex-col gap-2 md:col-span-2">
+            <div className="flex flex-col gap-2 md:col-span-2 bg-gradient-to-br from-card to-card/80 p-4 rounded-lg border shadow-sm">
               <div className="flex justify-between items-center">
                 <h3 className="text-sm font-medium">Project Progress</h3>
                 <span className="text-sm font-medium">{project.progress}%</span>
               </div>
               <Progress
                 value={project.progress}
-                className="h-3"
+                className="h-3 bg-gradient-to-r from-secondary/30 to-secondary/10"
               />
             </div>
           </div>
         </div>
 
-        <div>
+        <div className="animate-slide-in" style={{ animationDelay: "0.2s" }}>
           <Tabs
             defaultValue="all"
             value={activeTab}
@@ -242,29 +246,30 @@ export default function ProjectDetail() {
             className="w-full"
           >
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold">Tasks</h2>
-              <TabsList>
-                <TabsTrigger value="all">All</TabsTrigger>
-                <TabsTrigger value="not-started">Not Started</TabsTrigger>
-                <TabsTrigger value="in-progress">In Progress</TabsTrigger>
-                <TabsTrigger value="completed">Completed</TabsTrigger>
-                <TabsTrigger value="delayed">Delayed</TabsTrigger>
+              <h2 className="text-xl font-semibold text-transparent bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">Tasks</h2>
+              <TabsList className="bg-gradient-to-r from-muted to-muted/80">
+                <TabsTrigger value="all" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/50 data-[state=active]:to-purple-500/50 data-[state=active]:text-primary-foreground transition-all">All</TabsTrigger>
+                <TabsTrigger value="not-started" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/50 data-[state=active]:to-purple-500/50 data-[state=active]:text-primary-foreground transition-all">Not Started</TabsTrigger>
+                <TabsTrigger value="in-progress" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/50 data-[state=active]:to-purple-500/50 data-[state=active]:text-primary-foreground transition-all">In Progress</TabsTrigger>
+                <TabsTrigger value="completed" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/50 data-[state=active]:to-purple-500/50 data-[state=active]:text-primary-foreground transition-all">Completed</TabsTrigger>
+                <TabsTrigger value="delayed" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/50 data-[state=active]:to-purple-500/50 data-[state=active]:text-primary-foreground transition-all">Delayed</TabsTrigger>
               </TabsList>
             </div>
 
             <TabsContent value={activeTab} className="mt-0">
               {filteredTasks.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {filteredTasks.map((task) => (
-                    <TaskCard
-                      key={task.id}
-                      task={task}
-                      onClick={() => handleTaskClick(task)}
-                    />
+                  {filteredTasks.map((task, index) => (
+                    <div key={task.id} className="hover:scale-[1.02] transition-transform animate-fade-in" style={{ animationDelay: `${index * 0.1 + 0.3}s` }}>
+                      <TaskCard
+                        task={task}
+                        onClick={() => handleTaskClick(task)}
+                      />
+                    </div>
                   ))}
                 </div>
               ) : (
-                <div className="py-16 flex items-center justify-center border rounded-lg bg-muted/30">
+                <div className="py-16 flex items-center justify-center border rounded-lg bg-gradient-to-br from-muted/40 to-muted/20 animate-pulse">
                   <p className="text-muted-foreground">
                     {activeTab === "all"
                       ? "No tasks in this project yet"
@@ -280,9 +285,9 @@ export default function ProjectDetail() {
           open={isNewTaskDialogOpen}
           onOpenChange={setIsNewTaskDialogOpen}
         >
-          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto bg-gradient-to-br from-card to-card/95 animate-fade-in">
             <DialogHeader>
-              <DialogTitle>
+              <DialogTitle className="text-transparent bg-gradient-to-r from-primary to-purple-500 bg-clip-text">
                 {selectedTask ? "Edit Task" : "Create New Task"}
               </DialogTitle>
             </DialogHeader>
