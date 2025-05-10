@@ -31,16 +31,19 @@ export default function ProjectsPage() {
     
     if (storedProjects) {
       try {
-        localProjects = JSON.parse(storedProjects).map((project: any) => ({
+        const parsedProjects = JSON.parse(storedProjects);
+        localProjects = Array.isArray(parsedProjects) ? parsedProjects.map((project: any) => ({
           ...project,
           startDate: new Date(project.startDate),
           endDate: new Date(project.endDate),
-          tasks: project.tasks.map((task: any) => ({
+          tasks: Array.isArray(project.tasks) ? project.tasks.map((task: any) => ({
             ...task,
-            startDate: new Date(task.startDate),
-            dueDate: new Date(task.dueDate),
-          })),
-        }));
+            startDate: task.startDate ? new Date(task.startDate) : new Date(),
+            dueDate: task.dueDate ? new Date(task.dueDate) : new Date(),
+          })) : [],
+        })) : [];
+        
+        console.log("Loaded projects from localStorage:", localProjects);
       } catch (error) {
         console.error("Error loading projects from localStorage:", error);
       }

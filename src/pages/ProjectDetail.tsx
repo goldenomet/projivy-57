@@ -1,6 +1,5 @@
-
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { mockProjects, mockTasks } from "@/data/mockData";
 import { Project, Task } from "@/types/project";
@@ -17,6 +16,7 @@ import {
   XCircle,
   PauseCircle,
   PlayCircle,
+  ChevronLeft
 } from "lucide-react";
 import {
   Dialog,
@@ -36,16 +36,45 @@ export default function ProjectDetail() {
   const [activeTab, setActiveTab] = useState("all");
 
   useEffect(() => {
-    // Simulate data loading
-    setTimeout(() => {
-      const foundProject = mockProjects.find((p) => p.id === id);
-      if (foundProject) {
-        setProject(foundProject);
-        setTasks(mockTasks.filter((task) => task.projectId === id));
-      } else {
-        navigate("/projects");
+    if (!id) return;
+    
+    // Try to load project from localStorage first
+    const storedProjects = localStorage.getItem("projects");
+    if (storedProjects) {
+      try {
+        const parsedProjects = JSON.parse(storedProjects);
+        const localProject = parsedProjects.find((p: any) => p.id === id);
+        
+        if (localProject) {
+          // Convert date strings to Date objects
+          const project = {
+            ...localProject,
+            startDate: new Date(localProject.startDate),
+            endDate: new Date(localProject.endDate),
+            tasks: localProject.tasks?.map((task: any) => ({
+              ...task,
+              startDate: new Date(task.startDate),
+              dueDate: new Date(task.dueDate),
+            })) || []
+          };
+          
+          setProject(project);
+          setTasks(project.tasks || []);
+          return;
+        }
+      } catch (error) {
+        console.error("Error loading project from localStorage:", error);
       }
-    }, 300);
+    }
+    
+    // If not found in localStorage, try mock data
+    const foundProject = mockProjects.find((p) => p.id === id);
+    if (foundProject) {
+      setProject(foundProject);
+      setTasks(mockTasks.filter((task) => task.projectId === id));
+    } else {
+      navigate("/projects");
+    }
   }, [id, navigate]);
 
   const getStatusIcon = (status: string) => {
@@ -91,6 +120,11 @@ export default function ProjectDetail() {
           : task
       );
       setTasks(updatedTasks);
+      
+      // Update project in state and localStorage
+      if (project) {
+        updateProjectTasks(project.id, updatedTasks);
+      }
     } else {
       // Create new task
       const newTask: Task = {
@@ -98,9 +132,40 @@ export default function ProjectDetail() {
         projectId: project?.id || "",
         ...taskData,
       };
-      setTasks([...tasks, newTask]);
+      const updatedTasks = [...tasks, newTask];
+      setTasks(updatedTasks);
+      
+      // Update project in state and localStorage
+      if (project) {
+        updateProjectTasks(project.id, updatedTasks);
+      }
     }
     setIsNewTaskDialogOpen(false);
+  };
+  
+  // Helper function to update project tasks in state and localStorage
+  const updateProjectTasks = (projectId: string, updatedTasks: Task[]) => {
+    // Update localStorage
+    const storedProjects = localStorage.getItem("projects");
+    if (storedProjects) {
+      try {
+        const parsedProjects = JSON.parse(storedProjects);
+        const updatedProjects = parsedProjects.map((p: any) => {
+          if (p.id === projectId) {
+            return { ...p, tasks: updatedTasks };
+          }
+          return p;
+        });
+        localStorage.setItem("projects", JSON.stringify(updatedProjects));
+      } catch (error) {
+        console.error("Error updating project tasks in localStorage:", error);
+      }
+    }
+    
+    // Update project state
+    if (project) {
+      setProject({ ...project, tasks: updatedTasks });
+    }
   };
 
   if (!project) {
@@ -118,11 +183,17 @@ export default function ProjectDetail() {
       <div className="space-y-8">
         <div>
           <div className="flex items-start justify-between">
-            <div>
+            <div className="space-y-2">
+              <Link to="/projects">
+                <Button variant="ghost" size="sm" className="mb-2 -ml-2">
+                  <ChevronLeft className="h-4 w-4 mr-1" />
+                  Back to Projects
+                </Button>
+              </Link>
               <h1 className="text-3xl font-bold tracking-tight">
                 {project.name}
               </h1>
-              <p className="text-muted-foreground mt-1">
+              <p className="text-muted-foreground">
                 {project.description}
               </p>
             </div>
@@ -209,7 +280,7 @@ export default function ProjectDetail() {
           open={isNewTaskDialogOpen}
           onOpenChange={setIsNewTaskDialogOpen}
         >
-          <DialogContent className="max-w-3xl">
+          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>
                 {selectedTask ? "Edit Task" : "Create New Task"}
