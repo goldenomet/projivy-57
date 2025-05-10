@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -158,8 +159,46 @@ export default function ProjectForm() {
     navigate("/projects");
   };
 
+  // Create a separate Dialog for adding new users
+  const addUserDialog = (
+    <Dialog open={newUserDialogOpen} onOpenChange={setNewUserDialogOpen}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Add New User</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4 py-4">
+          <div>
+            <label htmlFor="newUserName" className="block text-sm font-medium mb-1">Name</label>
+            <Input
+              id="newUserName"
+              value={newUserName}
+              onChange={(e) => setNewUserName(e.target.value)}
+              placeholder="Enter user name"
+            />
+          </div>
+          <div>
+            <label htmlFor="newUserEmail" className="block text-sm font-medium mb-1">Email</label>
+            <Input
+              id="newUserEmail"
+              value={newUserEmail}
+              onChange={(e) => setNewUserEmail(e.target.value)}
+              placeholder="Enter user email"
+            />
+          </div>
+        </div>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button variant="outline" type="button">Cancel</Button>
+          </DialogClose>
+          <Button type="button" onClick={addNewUser}>Add User</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
+      {addUserDialog}
       <div className="space-y-6">
         <h2 className="text-xl font-semibold border-b pb-2">Project Information</h2>
         <div className="space-y-4">
@@ -310,44 +349,15 @@ export default function ProjectForm() {
                   placeholder="Enter user IDs, separated by commas"
                   className="flex-1"
                 />
-                <Dialog open={newUserDialogOpen} onOpenChange={setNewUserDialogOpen}>
-                  <DialogTrigger asChild>
-                    <Button variant="outline" type="button" size="sm" className="ml-2">
-                      <Plus className="h-4 w-4" />
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Add New User</DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-4 py-4">
-                      <div>
-                        <label htmlFor="newUserName" className="block text-sm font-medium mb-1">Name</label>
-                        <Input
-                          id="newUserName"
-                          value={newUserName}
-                          onChange={(e) => setNewUserName(e.target.value)}
-                          placeholder="Enter user name"
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="newUserEmail" className="block text-sm font-medium mb-1">Email</label>
-                        <Input
-                          id="newUserEmail"
-                          value={newUserEmail}
-                          onChange={(e) => setNewUserEmail(e.target.value)}
-                          placeholder="Enter user email"
-                        />
-                      </div>
-                    </div>
-                    <DialogFooter>
-                      <DialogClose asChild>
-                        <Button variant="outline" type="button">Cancel</Button>
-                      </DialogClose>
-                      <Button type="button" onClick={addNewUser}>Add User</Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
+                <Button 
+                  variant="outline" 
+                  type="button" 
+                  size="sm" 
+                  className="ml-2"
+                  onClick={() => setNewUserDialogOpen(true)}
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
               </div>
               <div className="mt-2 flex flex-wrap gap-2">
                 {users.map(user => (
@@ -380,11 +390,14 @@ export default function ProjectForm() {
                   {users.map(user => (
                     <SelectItem key={user.id} value={user.id}>{user.name}</SelectItem>
                   ))}
-                  <DialogTrigger asChild>
-                    <Button variant="ghost" className="w-full justify-start px-2 py-1.5 h-auto font-normal text-sm" onClick={() => setNewUserDialogOpen(true)}>
-                      <Plus className="h-4 w-4 mr-2" /> Add new user
-                    </Button>
-                  </DialogTrigger>
+                  <Button 
+                    variant="ghost" 
+                    className="w-full justify-start px-2 py-1.5 h-auto font-normal text-sm"
+                    onClick={() => setNewUserDialogOpen(true)}
+                    type="button"
+                  >
+                    <Plus className="h-4 w-4 mr-2" /> Add new user
+                  </Button>
                 </SelectContent>
               </Select>
             </div>
@@ -402,7 +415,13 @@ export default function ProjectForm() {
                 placeholder="Enter contacts, separated by commas"
                 className="flex-1"
               />
-              <Button variant="outline" type="button" size="sm" className="ml-2" onClick={() => setNewUserDialogOpen(true)}>
+              <Button 
+                variant="outline" 
+                type="button" 
+                size="sm" 
+                className="ml-2" 
+                onClick={() => setNewUserDialogOpen(true)}
+              >
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
