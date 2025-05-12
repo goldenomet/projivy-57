@@ -2,6 +2,7 @@
 import { useRef, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, useGLTF, Float, Text, Environment } from "@react-three/drei";
+import { Vector3, Euler } from "three";
 
 function TaskBin({ position = [0, 0, 0], color = "#9b87f5" }) {
   const meshRef = useRef(null);
@@ -13,7 +14,7 @@ function TaskBin({ position = [0, 0, 0], color = "#9b87f5" }) {
   });
 
   return (
-    <group position={position}>
+    <group position={position as [number, number, number]}>
       <mesh ref={meshRef} castShadow receiveShadow>
         <boxGeometry args={[1, 1, 1]} />
         <meshStandardMaterial color={color} roughness={0.2} metalness={0.6} />
@@ -22,7 +23,12 @@ function TaskBin({ position = [0, 0, 0], color = "#9b87f5" }) {
   );
 }
 
-function TaskCard({ position = [0, 0, 0], rotation = [0, 0, 0], color = "#33C3F0", text = "Task" }) {
+function TaskCard({ 
+  position = [0, 0, 0], 
+  rotation = [0, 0, 0], 
+  color = "#33C3F0", 
+  text = "Task" 
+}) {
   const meshRef = useRef(null);
   
   useFrame((state) => {
@@ -33,7 +39,7 @@ function TaskCard({ position = [0, 0, 0], rotation = [0, 0, 0], color = "#33C3F0
   });
 
   return (
-    <group position={position} rotation={rotation}>
+    <group position={position as [number, number, number]} rotation={rotation as [number, number, number]}>
       <mesh ref={meshRef} castShadow receiveShadow>
         <boxGeometry args={[0.8, 0.1, 1.2]} />
         <meshStandardMaterial color={color} roughness={0.3} metalness={0.2} />
