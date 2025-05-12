@@ -1,6 +1,7 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, CheckCircle, Layers, Users } from "lucide-react";
+import { ArrowRight, CheckCircle, Layers, Users, Zap } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -32,7 +33,7 @@ export default function LandingPage() {
               Team
             </Button>
           </Link>
-          <Link to="/">
+          <Link to="/dashboard">
             <Button className="bg-gradient-to-r from-primary to-purple-500 hover:opacity-90 transition-all">
               Get Started <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
@@ -45,6 +46,8 @@ export default function LandingPage() {
         <div className="absolute inset-0 -z-10">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(155,135,245,0.15),transparent_50%)]"></div>
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(155,135,245,0.15),transparent_50%)]"></div>
+          <div className="absolute top-1/4 left-1/4 h-64 w-64 rounded-full bg-primary/5 blur-3xl"></div>
+          <div className="absolute bottom-1/4 right-1/4 h-64 w-64 rounded-full bg-purple-500/5 blur-3xl"></div>
         </div>
         
         <div className="max-w-4xl mx-auto text-center space-y-6">
@@ -58,7 +61,7 @@ export default function LandingPage() {
             Streamline your workflow, enhance team collaboration, and deliver projects on time with our intuitive platform.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mt-10">
-            <Link to="/">
+            <Link to="/dashboard">
               <Button size="lg" className="bg-gradient-to-r from-primary to-purple-500 hover:opacity-90 shadow-md hover:shadow-lg transition-all w-full sm:w-auto">
                 Get Started <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
@@ -72,12 +75,12 @@ export default function LandingPage() {
         </div>
 
         <div className="mt-16 w-full max-w-5xl">
-          <div className="relative w-full aspect-video rounded-lg overflow-hidden shadow-2xl border border-primary/20">
+          <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow-2xl border border-primary/20 transition-transform hover:scale-[1.01] duration-300">
             <div className="absolute inset-0 bg-gradient-to-br from-background/95 to-background/80 flex items-center justify-center">
               <div className="w-16 h-16 rounded-full border-4 border-primary border-t-transparent animate-spin"></div>
             </div>
             <img 
-              src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
+              src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" 
               alt="Project Dashboard Preview" 
               className="w-full h-full object-cover opacity-90"
               onLoad={(e) => e.currentTarget.previousSibling?.remove()}
@@ -141,7 +144,7 @@ export default function LandingPage() {
             <Card className="bg-gradient-to-br from-card to-card/90 backdrop-blur-sm border border-border/50 shadow-md hover:shadow-lg transition-all hover:translate-y-[-5px] duration-300">
               <CardHeader>
                 <div className="size-12 rounded-lg bg-gradient-to-br from-green-400/20 to-green-600/20 flex items-center justify-center mb-4">
-                  <Layers className="h-6 w-6 text-green-500" />
+                  <Zap className="h-6 w-6 text-green-500" />
                 </div>
                 <CardTitle>Analytics & Insights</CardTitle>
                 <CardDescription>
@@ -171,7 +174,7 @@ export default function LandingPage() {
             <div className="relative z-10">
               <h2 className="text-3xl font-bold mb-4 text-transparent bg-gradient-to-r from-primary to-purple-500 bg-clip-text">Ready to Transform Your Workflow?</h2>
               <p className="text-lg mb-8 text-foreground/80">Join thousands of teams already using Projivy to streamline their project management</p>
-              <Link to="/">
+              <Link to="/dashboard">
                 <Button size="lg" className="bg-gradient-to-r from-primary to-purple-500 hover:opacity-90 shadow-md hover:shadow-lg transition-all">
                   Get Started Today <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
