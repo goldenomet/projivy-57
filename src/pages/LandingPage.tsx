@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle, Layers, Users } from "lucide-react";
@@ -9,20 +8,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Logo } from "@/components/ui/logo";
 
 export default function LandingPage() {
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-background to-background/90">
       {/* Header */}
       <header className="w-full py-4 px-6 md:px-10 flex items-center justify-between bg-gradient-to-r from-background/80 to-background backdrop-blur-sm border-b border-border/30 sticky top-0 z-10">
-        <div className="flex items-center gap-2">
-          <div className="size-8 rounded-md bg-gradient-to-br from-primary to-purple-500 flex items-center justify-center text-white font-bold">
-            E
-          </div>
-          <h1 className="font-bold text-xl bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
-            Evolve IQ
-          </h1>
-        </div>
+        <Logo size="md" />
         <div className="flex items-center gap-4">
           <Link to="/dashboard">
             <Button variant="ghost" className="hidden md:flex">
@@ -55,6 +48,9 @@ export default function LandingPage() {
         </div>
         
         <div className="max-w-4xl mx-auto text-center space-y-6">
+          <div className="flex justify-center mb-8">
+            <Logo size="lg" />
+          </div>
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-transparent bg-gradient-to-r from-primary to-purple-500 bg-clip-text animate-slide-in">
             Evolve Your Project Management
           </h1>
@@ -174,7 +170,7 @@ export default function LandingPage() {
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(155,135,245,0.4),transparent_60%)]"></div>
             <div className="relative z-10">
               <h2 className="text-3xl font-bold mb-4 text-transparent bg-gradient-to-r from-primary to-purple-500 bg-clip-text">Ready to Transform Your Workflow?</h2>
-              <p className="text-lg mb-8 text-foreground/80">Join thousands of teams already using Evolve IQ to streamline their project management</p>
+              <p className="text-lg mb-8 text-foreground/80">Join thousands of teams already using Projivy to streamline their project management</p>
               <Link to="/">
                 <Button size="lg" className="bg-gradient-to-r from-primary to-purple-500 hover:opacity-90 shadow-md hover:shadow-lg transition-all">
                   Get Started Today <ArrowRight className="ml-2 h-4 w-4" />
@@ -188,14 +184,7 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="mt-auto py-10 px-6 md:px-10 bg-gradient-to-t from-card/50 to-background border-t border-border/30">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center">
-          <div className="flex items-center gap-2 mb-6 md:mb-0">
-            <div className="size-8 rounded-md bg-gradient-to-br from-primary to-purple-500 flex items-center justify-center text-white font-bold">
-              E
-            </div>
-            <h1 className="font-bold text-xl bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
-              Evolve IQ
-            </h1>
-          </div>
+          <Logo size="md" />
           <div className="flex flex-col md:flex-row gap-8">
             <div className="flex gap-6">
               <Link to="/dashboard" className="text-muted-foreground hover:text-foreground transition-colors">
@@ -210,7 +199,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="mt-6 md:mt-0 text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} Evolve IQ. All rights reserved.
+            &copy; {new Date().getFullYear()} Projivy. All rights reserved.
           </div>
         </div>
       </footer>

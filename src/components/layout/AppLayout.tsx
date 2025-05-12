@@ -43,7 +43,7 @@ export function AppLayout({ children, className }: AppLayoutProps) {
       greeting = "Good evening";
     }
     
-    toast(`${greeting}! Welcome to Evolve IQ.`, {
+    toast(`${greeting}! Welcome to Projivy.`, {
       description: `Today is ${formatDate(currentTime)}`,
       duration: 5000,
     });

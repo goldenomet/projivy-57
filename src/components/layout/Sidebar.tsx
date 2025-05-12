@@ -12,18 +12,15 @@ import {
   SidebarGroupLabel
 } from "@/components/ui/sidebar";
 import { Link } from "react-router-dom";
-import { Home, Briefcase, Calendar, Users, Settings, LayoutDashboard } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Home, Briefcase, Calendar, Users, Settings } from "lucide-react";
+import { Logo } from "@/components/ui/logo";
 
 export function Sidebar() {
   return (
     <SidebarContainer>
       <SidebarHeader className="py-6">
         <div className="flex items-center px-2">
-          <div className="h-8 w-8 rounded-lg bg-primary/20 flex items-center justify-center mr-2 animate-pulse">
-            <LayoutDashboard className="h-5 w-5 text-primary" />
-          </div>
-          <h2 className="text-xl font-semibold text-transparent bg-gradient-to-r from-primary to-purple-500 bg-clip-text animate-fade-in">Evolve IQ</h2>
+          <Logo />
         </div>
       </SidebarHeader>
       
