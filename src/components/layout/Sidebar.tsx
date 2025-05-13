@@ -12,7 +12,7 @@ import {
   SidebarGroupLabel
 } from "@/components/ui/sidebar";
 import { Link } from "react-router-dom";
-import { Home, Briefcase, Calendar, Users, Settings, User } from "lucide-react";
+import { Home, Briefcase, Calendar, Users, Settings, User, Shield } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
 import { useAuth } from "@/hooks/use-auth";
 import { useState, useEffect } from "react";
@@ -23,6 +23,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 export function Sidebar() {
   const { user } = useAuth();
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   
   useEffect(() => {
     const fetchProfile = async () => {
@@ -42,6 +43,11 @@ export function Sidebar() {
         
         if (data) {
           setProfile(data as Profile);
+          
+          // For demo purposes - check if the email includes "admin"
+          if (user.email?.includes("admin")) {
+            setIsAdmin(true);
+          }
         }
       } catch (error) {
         console.error('Error fetching profile:', error);
@@ -77,7 +83,7 @@ export function Sidebar() {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link to="/" className="flex items-center hover:scale-105 transition-transform">
+                  <Link to="/dashboard" className="flex items-center hover:scale-105 transition-transform">
                     <Home className="mr-2 h-4 w-4" />
                     <span>Dashboard</span>
                   </Link>
@@ -110,6 +116,17 @@ export function Sidebar() {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+
+              {isAdmin && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link to="/admin" className="flex items-center hover:scale-105 transition-transform bg-primary/10 rounded-md">
+                      <Shield className="mr-2 h-4 w-4 text-primary" />
+                      <span className="font-medium">Admin</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
