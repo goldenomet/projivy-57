@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import { AuthProvider } from "@/hooks/use-auth";
 import Dashboard from "./pages/Dashboard";
 import ProjectsPage from "./pages/ProjectsPage";
 import ProjectDetail from "./pages/ProjectDetail";
@@ -14,6 +15,8 @@ import NewProject from "./pages/NewProject";
 import SettingsPage from "./pages/SettingsPage";
 import NotFound from "./pages/NotFound";
 import LandingPage from "./pages/LandingPage";
+import AuthPage from "./pages/AuthPage";
+import Index from "./pages/Index";
 
 const queryClient = new QueryClient();
 
@@ -24,17 +27,20 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/projects" element={<ProjectsPage />} />
-            <Route path="/projects/new" element={<NewProject />} />
-            <Route path="/projects/:id" element={<ProjectDetail />} />
-            <Route path="/calendar" element={<CalendarPage />} />
-            <Route path="/team" element={<TeamPage />} />
-            <Route path="/settings" element={<SettingsPage />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <AuthProvider>
+            <Routes>
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/auth" element={<AuthPage />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/projects" element={<ProjectsPage />} />
+              <Route path="/projects/new" element={<NewProject />} />
+              <Route path="/projects/:id" element={<ProjectDetail />} />
+              <Route path="/calendar" element={<CalendarPage />} />
+              <Route path="/team" element={<TeamPage />} />
+              <Route path="/settings" element={<SettingsPage />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </AuthProvider>
         </BrowserRouter>
       </TooltipProvider>
     </ThemeProvider>
