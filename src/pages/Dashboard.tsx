@@ -2,18 +2,50 @@
 import { useEffect, useState } from "react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { mockProjects, mockTasks } from "@/data/mockData";
-import { Project, Task } from "@/types/project";
+import { Project, Task, Profile } from "@/types/project";
 import { ProjectCard } from "@/components/projects/ProjectCard";
 import { TaskCard } from "@/components/tasks/TaskCard";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { PlusCircle, ChevronLeft } from "lucide-react";
 import { toast } from "sonner";
+import { useAuth } from "@/hooks/use-auth";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function Dashboard() {
+  const { user } = useAuth();
   const [projects, setProjects] = useState<Project[]>([]);
   const [recentTasks, setRecentTasks] = useState<Task[]>([]);
+  const [userProfile, setUserProfile] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch user profile from Supabase
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!user) return;
+      
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+        
+        if (error) {
+          throw error;
+        }
+        
+        if (data) {
+          setUserProfile(data as Profile);
+        }
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+        toast.error('Failed to load user profile');
+      }
+    };
+    
+    fetchProfile();
+  }, [user]);
 
   useEffect(() => {
     const loadProjects = () => {
@@ -96,7 +128,9 @@ export default function Dashboard() {
                 Home
               </Button>
             </Link>
-            <h1 className="text-3xl font-bold tracking-tight text-transparent bg-gradient-to-r from-primary to-purple-500 bg-clip-text">Dashboard</h1>
+            <h1 className="text-3xl font-bold tracking-tight text-transparent bg-gradient-to-r from-primary to-purple-500 bg-clip-text">
+              {userProfile ? `Welcome, ${userProfile.full_name || 'User'}` : 'Dashboard'}
+            </h1>
           </div>
           <Link to="/projects/new">
             <Button className="bg-gradient-to-r from-primary to-purple-500 hover:opacity-90 transition-opacity shadow-md hover:shadow-lg hover:scale-105 transition-all">
