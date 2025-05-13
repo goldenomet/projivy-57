@@ -12,10 +12,56 @@ import {
   SidebarGroupLabel
 } from "@/components/ui/sidebar";
 import { Link } from "react-router-dom";
-import { Home, Briefcase, Calendar, Users, Settings } from "lucide-react";
+import { Home, Briefcase, Calendar, Users, Settings, User } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
+import { useAuth } from "@/hooks/use-auth";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { Profile } from "@/types/project";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 export function Sidebar() {
+  const { user } = useAuth();
+  const [profile, setProfile] = useState<Profile | null>(null);
+  
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!user) return;
+      
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+        
+        if (error) {
+          console.error('Error fetching profile:', error);
+          return;
+        }
+        
+        if (data) {
+          setProfile(data as Profile);
+        }
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+      }
+    };
+    
+    fetchProfile();
+  }, [user]);
+
+  // Generate initials from full name for avatar fallback
+  const getInitials = (name: string | null) => {
+    if (!name) return "U";
+    return name
+      .split(" ")
+      .map(part => part[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
   return (
     <SidebarContainer>
       <SidebarHeader className="py-6">
@@ -80,25 +126,48 @@ export function Sidebar() {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to="/profile" className="flex items-center hover:scale-105 transition-transform">
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Profile</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
       
       <SidebarFooter className="border-t p-4 bg-gradient-to-r from-sidebar-accent/50 to-sidebar-accent/20">
-        <div className="flex items-center gap-2">
-          <div className="h-8 w-8 rounded-full bg-gradient-to-r from-primary to-purple-400">
-            <img 
-              src="https://api.dicebear.com/7.x/avataaars/svg?seed=Admin" 
-              alt="User" 
-              className="h-full w-full rounded-full hover:scale-110 transition-transform"
-            />
+        <Link to="/profile" className="block">
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-8 rounded-full overflow-hidden bg-gradient-to-r from-primary to-purple-400">
+              {profile?.avatar_url ? (
+                <Avatar className="h-full w-full">
+                  <AvatarImage 
+                    src={profile.avatar_url} 
+                    alt={profile.full_name || "User"} 
+                    className="hover:scale-110 transition-transform"
+                  />
+                  <AvatarFallback className="bg-primary/20">
+                    {getInitials(profile.full_name)}
+                  </AvatarFallback>
+                </Avatar>
+              ) : (
+                <Avatar className="h-full w-full">
+                  <AvatarFallback className="bg-primary/20">
+                    {user?.email ? user.email.charAt(0).toUpperCase() : "U"}
+                  </AvatarFallback>
+                </Avatar>
+              )}
+            </div>
+            <div>
+              <p className="text-sm font-medium">{profile?.full_name || user?.email?.split('@')[0] || "User"}</p>
+              <p className="text-xs text-muted-foreground">{user?.email || "Not logged in"}</p>
+            </div>
           </div>
-          <div>
-            <p className="text-sm font-medium">Admin User</p>
-            <p className="text-xs text-muted-foreground">admin@example.com</p>
-          </div>
-        </div>
+        </Link>
       </SidebarFooter>
     </SidebarContainer>
   );
