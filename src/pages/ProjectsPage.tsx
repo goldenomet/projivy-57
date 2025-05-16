@@ -5,7 +5,7 @@ import { mockProjects } from "@/data/mockData";
 import { Project, ProjectStatus } from "@/types/project";
 import { ProjectCard } from "@/components/projects/ProjectCard";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Filter, ChevronLeft } from "lucide-react";
+import { PlusCircle, Filter, ChevronLeft, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
   DropdownMenu,
@@ -13,6 +13,8 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { toast } from "sonner";
+import { DeleteConfirmDialog } from "@/components/projects/DeleteConfirmDialog";
 
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -24,6 +26,8 @@ export default function ProjectsPage() {
   ]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   useEffect(() => {
     // Load projects from localStorage first
@@ -72,6 +76,43 @@ export default function ProjectsPage() {
         ? prev.filter((s) => s !== status)
         : [...prev, status]
     );
+  };
+
+  // New function to handle project deletion
+  const handleDeleteProject = (project: Project, event: React.MouseEvent) => {
+    event.preventDefault(); // Prevent navigating to the project detail page
+    event.stopPropagation(); // Prevent any parent handlers from firing
+    setProjectToDelete(project);
+    setIsDeleteDialogOpen(true);
+  };
+
+  // New function to confirm project deletion
+  const confirmDeleteProject = () => {
+    if (!projectToDelete) return;
+    
+    try {
+      // Filter out the project to delete
+      const updatedProjects = projects.filter((p) => p.id !== projectToDelete.id);
+      
+      // Update state
+      setProjects(updatedProjects);
+      
+      // Update localStorage
+      const localProjects = updatedProjects.filter(p => {
+        // Only save projects that were originally from localStorage
+        // This prevents saving mock projects to localStorage
+        const mockProject = mockProjects.find(mp => mp.id === p.id);
+        return !mockProject;
+      });
+      localStorage.setItem("projects", JSON.stringify(localProjects));
+      
+      toast.success("Project deleted successfully");
+      setIsDeleteDialogOpen(false);
+      setProjectToDelete(null);
+    } catch (error) {
+      console.error("Error deleting project:", error);
+      toast.error("Failed to delete project");
+    }
   };
 
   return (
@@ -151,8 +192,18 @@ export default function ProjectsPage() {
             filteredProjects.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredProjects.map((project, index) => (
-                  <div key={project.id} className="hover:scale-[1.02] transition-transform animate-fade-in" style={{ animationDelay: `${index * 0.1 + 0.3}s` }}>
-                    <ProjectCard key={project.id} project={project} />
+                  <div key={project.id} className="hover:scale-[1.02] transition-transform animate-fade-in relative" style={{ animationDelay: `${index * 0.1 + 0.3}s` }}>
+                    <div className="absolute top-2 right-2 z-10">
+                      <Button 
+                        variant="destructive" 
+                        size="icon" 
+                        className="h-7 w-7 bg-destructive/80 hover:bg-destructive shadow-sm"
+                        onClick={(e) => handleDeleteProject(project, e)}
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
+                    <ProjectCard project={project} />
                   </div>
                 ))}
               </div>
@@ -178,6 +229,18 @@ export default function ProjectsPage() {
             </div>
           )}
         </div>
+
+        {/* Delete Confirmation Dialog */}
+        <DeleteConfirmDialog
+          isOpen={isDeleteDialogOpen}
+          onClose={() => {
+            setIsDeleteDialogOpen(false);
+            setProjectToDelete(null);
+          }}
+          onConfirm={confirmDeleteProject}
+          title="Delete Project"
+          description="Are you sure you want to delete this project? This will delete all tasks and cannot be undone."
+        />
       </div>
     </AppLayout>
   );

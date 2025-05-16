@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { AppLayout } from "@/components/layout/AppLayout";
@@ -17,7 +16,8 @@ import {
   XCircle,
   PauseCircle,
   PlayCircle,
-  ChevronLeft
+  ChevronLeft,
+  Trash2
 } from "lucide-react";
 import {
   Dialog,
@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
+import { DeleteConfirmDialog } from "@/components/projects/DeleteConfirmDialog";
 
 export default function ProjectDetail() {
   const { id } = useParams<{ id: string }>();
@@ -37,6 +38,9 @@ export default function ProjectDetail() {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [activeTab, setActiveTab] = useState("all");
   const [isLoading, setIsLoading] = useState(true);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
+  const [isProjectDeleteDialogOpen, setIsProjectDeleteDialogOpen] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -184,6 +188,66 @@ export default function ProjectDetail() {
     }
   };
 
+  // New function to handle task deletion
+  const handleDeleteTask = (task: Task, event: React.MouseEvent) => {
+    event.stopPropagation(); // Prevent clicking through to the task card
+    setTaskToDelete(task);
+    setIsDeleteDialogOpen(true);
+  };
+
+  // New function to confirm task deletion
+  const confirmDeleteTask = () => {
+    if (!taskToDelete || !project) return;
+    
+    try {
+      const updatedTasks = tasks.filter((t) => t.id !== taskToDelete.id);
+      setTasks(updatedTasks);
+      
+      // Update project in state and localStorage
+      updateProjectTasks(project.id, updatedTasks);
+      toast.success("Task deleted successfully");
+      
+      // Close the dialog
+      setIsDeleteDialogOpen(false);
+      setTaskToDelete(null);
+    } catch (error) {
+      console.error("Error deleting task:", error);
+      toast.error("Failed to delete task");
+    }
+  };
+
+  // New function to delete the entire project
+  const handleDeleteProject = () => {
+    setIsProjectDeleteDialogOpen(true);
+  };
+
+  // New function to confirm project deletion
+  const confirmDeleteProject = () => {
+    if (!project) return;
+    
+    try {
+      // Get existing projects from localStorage
+      const storedProjects = localStorage.getItem("projects");
+      if (storedProjects) {
+        const parsedProjects = JSON.parse(storedProjects);
+        const updatedProjects = parsedProjects.filter((p: any) => p.id !== project.id);
+        
+        // Update localStorage
+        localStorage.setItem("projects", JSON.stringify(updatedProjects));
+        
+        // Show success message and navigate back to projects page
+        toast.success("Project deleted successfully");
+        navigate("/projects");
+      } else {
+        // Just navigate away as the project might be from mock data
+        navigate("/projects");
+      }
+    } catch (error) {
+      console.error("Error deleting project:", error);
+      toast.error("Failed to delete project");
+    }
+  };
+
   if (isLoading) {
     return (
       <AppLayout>
@@ -242,6 +306,14 @@ export default function ProjectDetail() {
                 <PlusCircle className="mr-2 h-4 w-4" />
                 New Task
               </Button>
+              <Button
+                onClick={handleDeleteProject}
+                variant="destructive"
+                size="icon"
+                className="hover:bg-destructive/90 hover:scale-105 transition-all"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
             </div>
           </div>
 
@@ -292,11 +364,20 @@ export default function ProjectDetail() {
               {filteredTasks.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filteredTasks.map((task, index) => (
-                    <div key={task.id} className="hover:scale-[1.02] transition-transform animate-fade-in" style={{ animationDelay: `${index * 0.1 + 0.3}s` }}>
-                      <TaskCard
-                        task={task}
-                        onClick={() => handleTaskClick(task)}
-                      />
+                    <div key={task.id} className="hover:scale-[1.02] transition-transform animate-fade-in relative" style={{ animationDelay: `${index * 0.1 + 0.3}s` }}>
+                      <div className="absolute top-2 right-2 z-10">
+                        <Button 
+                          variant="destructive" 
+                          size="icon" 
+                          className="h-7 w-7 bg-destructive/80 hover:bg-destructive"
+                          onClick={(e) => handleDeleteTask(task, e)}
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                      <div onClick={() => handleTaskClick(task)}>
+                        <TaskCard task={task} />
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -334,6 +415,27 @@ export default function ProjectDetail() {
             />
           </DialogContent>
         </Dialog>
+
+        {/* Task Delete Confirmation Dialog */}
+        <DeleteConfirmDialog
+          isOpen={isDeleteDialogOpen}
+          onClose={() => {
+            setIsDeleteDialogOpen(false);
+            setTaskToDelete(null);
+          }}
+          onConfirm={confirmDeleteTask}
+          title="Delete Task"
+          description="Are you sure you want to delete this task? This action cannot be undone."
+        />
+
+        {/* Project Delete Confirmation Dialog */}
+        <DeleteConfirmDialog
+          isOpen={isProjectDeleteDialogOpen}
+          onClose={() => setIsProjectDeleteDialogOpen(false)}
+          onConfirm={confirmDeleteProject}
+          title="Delete Project"
+          description="Are you sure you want to delete this entire project? This will delete all tasks and cannot be undone."
+        />
       </div>
     </AppLayout>
   );
