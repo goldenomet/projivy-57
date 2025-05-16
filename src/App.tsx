@@ -2,9 +2,9 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
-import { AuthProvider, useAuth } from "@/hooks/use-auth";
+import { AuthProvider } from "@/hooks/use-auth";
 import Dashboard from "./pages/Dashboard";
 import ProjectsPage from "./pages/ProjectsPage";
 import ProjectDetail from "./pages/ProjectDetail";
@@ -17,60 +17,7 @@ import LandingPage from "./pages/LandingPage";
 import AuthPage from "./pages/AuthPage";
 import ProfilePage from "./pages/ProfilePage";
 import AdminPage from "./pages/AdminPage";
-import AuthCallback from "./components/auth/AuthCallback";
-
-// Create an AuthRoute component to handle route protection and redirects
-const AuthRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user, loading } = useAuth();
-  
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="animate-pulse text-lg">Loading...</div>
-      </div>
-    );
-  }
-  
-  return user ? <>{children}</> : <Navigate to="/auth" replace />;
-};
-
-// Create a separate IndexRoute component
-const IndexRoute = () => {
-  const { user, loading } = useAuth();
-  
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="animate-pulse text-lg">Loading...</div>
-      </div>
-    );
-  }
-  
-  return user ? <Navigate to="/dashboard" replace /> : <Navigate to="/auth" replace />;
-};
-
-// Root component
-const Root = () => {
-  // Only use useAuth inside the AuthProvider
-  return (
-    <Routes>
-      <Route path="/" element={<IndexRoute />} />
-      <Route path="/landing" element={<LandingPage />} />
-      <Route path="/auth" element={<AuthPage />} />
-      <Route path="/auth/callback" element={<AuthCallback />} />
-      <Route path="/dashboard" element={<AuthRoute><Dashboard /></AuthRoute>} />
-      <Route path="/projects" element={<AuthRoute><ProjectsPage /></AuthRoute>} />
-      <Route path="/projects/new" element={<AuthRoute><NewProject /></AuthRoute>} />
-      <Route path="/projects/:id" element={<AuthRoute><ProjectDetail /></AuthRoute>} />
-      <Route path="/calendar" element={<AuthRoute><CalendarPage /></AuthRoute>} />
-      <Route path="/team" element={<AuthRoute><TeamPage /></AuthRoute>} />
-      <Route path="/profile" element={<AuthRoute><ProfilePage /></AuthRoute>} />
-      <Route path="/settings" element={<AuthRoute><SettingsPage /></AuthRoute>} />
-      <Route path="/admin" element={<AuthRoute><AdminPage /></AuthRoute>} />
-      <Route path="*" element={<NotFound />} />
-    </Routes>
-  );
-};
+import Index from "./pages/Index";
 
 const App = () => (
   <ThemeProvider defaultTheme="system" storageKey="app-theme">
@@ -79,7 +26,20 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
-          <Root />
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/auth" element={<AuthPage />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/projects" element={<ProjectsPage />} />
+            <Route path="/projects/new" element={<NewProject />} />
+            <Route path="/projects/:id" element={<ProjectDetail />} />
+            <Route path="/calendar" element={<CalendarPage />} />
+            <Route path="/team" element={<TeamPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/admin" element={<AdminPage />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
