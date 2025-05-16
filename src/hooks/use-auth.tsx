@@ -28,15 +28,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setSession(session);
       setUser(session?.user ?? null);
 
+      // Use setTimeout to avoid potential recursive rendering
       if (event === 'SIGNED_IN') {
         setTimeout(() => {
           toast.success('Signed in successfully');
-          navigate('/dashboard');
         }, 0);
       } else if (event === 'SIGNED_OUT') {
         setTimeout(() => {
           toast.info('Signed out successfully');
-          navigate('/auth');
         }, 0);
       }
     });
@@ -51,12 +50,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [navigate]);
+  }, []);
 
   const signIn = async (email: string, password: string) => {
     try {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
+      
+      // Use navigate here instead of in the onAuthStateChange
+      navigate('/dashboard');
     } catch (error: any) {
       toast.error(error.message);
       throw error;
@@ -86,6 +88,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
+      
+      // Use navigate here instead of in the onAuthStateChange
+      navigate('/auth');
     } catch (error: any) {
       toast.error(error.message);
       throw error;
