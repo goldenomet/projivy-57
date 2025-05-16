@@ -4,7 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
-import { AuthProvider } from "@/hooks/use-auth";
+import { AuthProvider, useAuth } from "@/hooks/use-auth";
 import Dashboard from "./pages/Dashboard";
 import ProjectsPage from "./pages/ProjectsPage";
 import ProjectDetail from "./pages/ProjectDetail";
@@ -18,12 +18,58 @@ import AuthPage from "./pages/AuthPage";
 import ProfilePage from "./pages/ProfilePage";
 import AdminPage from "./pages/AdminPage";
 import AuthCallback from "./components/auth/AuthCallback";
-import { useAuth } from "@/hooks/use-auth";
 
-// Create a proper index route component that checks auth status and redirects
+// Create an AuthRoute component to handle route protection and redirects
+const AuthRoute = ({ children }: { children: React.ReactNode }) => {
+  const { user, loading } = useAuth();
+  
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="animate-pulse text-lg">Loading...</div>
+      </div>
+    );
+  }
+  
+  return user ? <>{children}</> : <Navigate to="/auth" replace />;
+};
+
+// Create a separate IndexRoute component
 const IndexRoute = () => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+  
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="animate-pulse text-lg">Loading...</div>
+      </div>
+    );
+  }
+  
   return user ? <Navigate to="/dashboard" replace /> : <Navigate to="/auth" replace />;
+};
+
+// Root component
+const Root = () => {
+  // Only use useAuth inside the AuthProvider
+  return (
+    <Routes>
+      <Route path="/" element={<IndexRoute />} />
+      <Route path="/landing" element={<LandingPage />} />
+      <Route path="/auth" element={<AuthPage />} />
+      <Route path="/auth/callback" element={<AuthCallback />} />
+      <Route path="/dashboard" element={<AuthRoute><Dashboard /></AuthRoute>} />
+      <Route path="/projects" element={<AuthRoute><ProjectsPage /></AuthRoute>} />
+      <Route path="/projects/new" element={<AuthRoute><NewProject /></AuthRoute>} />
+      <Route path="/projects/:id" element={<AuthRoute><ProjectDetail /></AuthRoute>} />
+      <Route path="/calendar" element={<AuthRoute><CalendarPage /></AuthRoute>} />
+      <Route path="/team" element={<AuthRoute><TeamPage /></AuthRoute>} />
+      <Route path="/profile" element={<AuthRoute><ProfilePage /></AuthRoute>} />
+      <Route path="/settings" element={<AuthRoute><SettingsPage /></AuthRoute>} />
+      <Route path="/admin" element={<AuthRoute><AdminPage /></AuthRoute>} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
 };
 
 const App = () => (
@@ -33,22 +79,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
-          <Routes>
-            <Route path="/" element={<IndexRoute />} />
-            <Route path="/landing" element={<LandingPage />} />
-            <Route path="/auth" element={<AuthPage />} />
-            <Route path="/auth/callback" element={<AuthCallback />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/projects" element={<ProjectsPage />} />
-            <Route path="/projects/new" element={<NewProject />} />
-            <Route path="/projects/:id" element={<ProjectDetail />} />
-            <Route path="/calendar" element={<CalendarPage />} />
-            <Route path="/team" element={<TeamPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
-            <Route path="/settings" element={<SettingsPage />} />
-            <Route path="/admin" element={<AdminPage />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <Root />
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
