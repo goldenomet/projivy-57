@@ -2,7 +2,7 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { AuthProvider } from "@/hooks/use-auth";
 import Dashboard from "./pages/Dashboard";
@@ -18,7 +18,13 @@ import AuthPage from "./pages/AuthPage";
 import ProfilePage from "./pages/ProfilePage";
 import AdminPage from "./pages/AdminPage";
 import AuthCallback from "./components/auth/AuthCallback";
-import Index from "./pages/Index";
+import { useAuth } from "@/hooks/use-auth";
+
+// Create a proper index route component that checks auth status and redirects
+const IndexRoute = () => {
+  const { user } = useAuth();
+  return user ? <Navigate to="/dashboard" replace /> : <Navigate to="/auth" replace />;
+};
 
 const App = () => (
   <ThemeProvider defaultTheme="system" storageKey="app-theme">
@@ -28,7 +34,8 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <Routes>
-            <Route path="/" element={<LandingPage />} />
+            <Route path="/" element={<IndexRoute />} />
+            <Route path="/landing" element={<LandingPage />} />
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
             <Route path="/dashboard" element={<Dashboard />} />
