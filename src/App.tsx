@@ -17,6 +17,7 @@ import LandingPage from "./pages/LandingPage";
 import AuthPage from "./pages/AuthPage";
 import ProfilePage from "./pages/ProfilePage";
 import AdminPage from "./pages/AdminPage";
+import AuthCallback from "./components/auth/AuthCallback";
 import Index from "./pages/Index";
 
 const App = () => (
@@ -29,6 +30,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/auth" element={<AuthPage />} />
+            <Route path="/auth/callback" element={<AuthCallback />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/projects" element={<ProjectsPage />} />
             <Route path="/projects/new" element={<NewProject />} />
