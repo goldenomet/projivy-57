@@ -42,6 +42,14 @@ export default function ProjectDetail() {
   const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
   const [isProjectDeleteDialogOpen, setIsProjectDeleteDialogOpen] = useState(false);
   const [deletedTaskIds, setDeletedTaskIds] = useState<Set<string>>(new Set());
+  
+  // Calculate project progress based on task completion
+  const calculateProjectProgress = (projectTasks: Task[]): number => {
+    if (!projectTasks || projectTasks.length === 0) return 0;
+    
+    const completedTasks = projectTasks.filter(task => task.status === 'completed').length;
+    return Math.round((completedTasks / projectTasks.length) * 100);
+  };
 
   useEffect(() => {
     if (!id) return;
@@ -98,6 +106,36 @@ export default function ProjectDetail() {
     navigate("/projects");
   }, [id, navigate]);
 
+  // Update project progress whenever tasks change
+  useEffect(() => {
+    if (project && tasks.length > 0) {
+      const updatedProgress = calculateProjectProgress(tasks);
+      
+      // Only update if progress has changed
+      if (updatedProgress !== project.progress) {
+        const updatedProject = { ...project, progress: updatedProgress };
+        setProject(updatedProject);
+        
+        // Update in localStorage
+        const storedProjects = localStorage.getItem("projects");
+        if (storedProjects) {
+          try {
+            const parsedProjects = JSON.parse(storedProjects);
+            const updatedProjects = parsedProjects.map((p: any) => {
+              if (p.id === project.id) {
+                return { ...p, progress: updatedProgress };
+              }
+              return p;
+            });
+            localStorage.setItem("projects", JSON.stringify(updatedProjects));
+          } catch (error) {
+            console.error("Error updating project progress in localStorage:", error);
+          }
+        }
+      }
+    }
+  }, [tasks, project]);
+
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "active":
@@ -146,7 +184,13 @@ export default function ProjectDetail() {
         // Update project in state and localStorage
         if (project) {
           updateProjectTasks(project.id, updatedTasks);
-          toast.success("Task updated successfully");
+          
+          // Show appropriate toast message based on status change
+          if (taskData.status === 'completed' && selectedTask.status !== 'completed') {
+            toast.success(`Task "${taskData.name}" marked as completed!`);
+          } else {
+            toast.success("Task updated successfully");
+          }
         }
       } else {
         // Create new task
@@ -180,7 +224,13 @@ export default function ProjectDetail() {
         const parsedProjects = JSON.parse(storedProjects);
         const updatedProjects = parsedProjects.map((p: any) => {
           if (p.id === projectId) {
-            return { ...p, tasks: updatedTasks };
+            // Calculate the new progress when updating tasks
+            const newProgress = calculateProjectProgress(updatedTasks);
+            return { 
+              ...p, 
+              tasks: updatedTasks,
+              progress: newProgress // Update progress based on task completion
+            };
           }
           return p;
         });
@@ -193,7 +243,8 @@ export default function ProjectDetail() {
     
     // Update project state
     if (project) {
-      setProject({ ...project, tasks: updatedTasks });
+      const newProgress = calculateProjectProgress(updatedTasks);
+      setProject({ ...project, tasks: updatedTasks, progress: newProgress });
     }
   };
 
@@ -369,6 +420,9 @@ export default function ProjectDetail() {
                 value={project.progress}
                 className="h-3 bg-gradient-to-r from-secondary/30 to-secondary/10"
               />
+              <p className="text-xs text-muted-foreground mt-1">
+                {tasks.filter(t => t.status === 'completed').length} of {tasks.length} tasks completed
+              </p>
             </div>
           </div>
         </div>
