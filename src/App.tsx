@@ -17,6 +17,7 @@ import LandingPage from "./pages/LandingPage";
 import AuthPage from "./pages/AuthPage";
 import ProfilePage from "./pages/ProfilePage";
 import AdminPage from "./pages/AdminPage";
+import SubscriptionPage from "./pages/SubscriptionPage";
 
 const App = () => (
   <ThemeProvider defaultTheme="system" storageKey="app-theme">
@@ -37,6 +38,7 @@ const App = () => (
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/admin" element={<AdminPage />} />
+            <Route path="/subscription" element={<SubscriptionPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

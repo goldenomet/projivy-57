@@ -12,7 +12,7 @@ import {
   SidebarGroupLabel
 } from "@/components/ui/sidebar";
 import { Link } from "react-router-dom";
-import { Home, Briefcase, Calendar, Users, Settings, User, Shield } from "lucide-react";
+import { Home, Briefcase, Calendar, Users, Settings, User, Shield, Sparkles } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
 import { useAuth } from "@/hooks/use-auth";
 import { useState, useEffect } from "react";
@@ -113,6 +113,15 @@ export function Sidebar() {
                   <Link to="/team" className="flex items-center hover:scale-105 transition-transform">
                     <Users className="mr-2 h-4 w-4" />
                     <span>Team</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to="/subscription" className="flex items-center hover:scale-105 transition-transform bg-amber-50/50 dark:bg-amber-900/10 rounded-md">
+                    <Sparkles className="mr-2 h-4 w-4 text-amber-500" />
+                    <span className="text-amber-700 dark:text-amber-400">Upgrade</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
