@@ -4,7 +4,6 @@ import { Profile, Project, Task } from "@/types/project";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { mockProjects, mockTasks } from "@/data/mockData";
 
 export function useDashboardData() {
   const { user } = useAuth();
@@ -45,6 +44,21 @@ export function useDashboardData() {
     const loadProjects = () => {
       setIsLoading(true);
       
+      // Check for deleted project IDs
+      const storedDeletedIds = localStorage.getItem("deletedProjectIds");
+      let deletedProjects: Set<string> = new Set();
+      
+      if (storedDeletedIds) {
+        try {
+          const deletedIdsArray = JSON.parse(storedDeletedIds);
+          if (Array.isArray(deletedIdsArray)) {
+            deletedProjects = new Set(deletedIdsArray);
+          }
+        } catch (error) {
+          console.error("Error loading deleted project IDs:", error);
+        }
+      }
+      
       // Try to load projects from localStorage
       try {
         const storedProjects = localStorage.getItem("projects");
@@ -64,31 +78,19 @@ export function useDashboardData() {
           })) : [];
         }
         
-        // Combine with mock data (preventing duplicates)
-        const existingIds = new Set(localProjects.map(p => p.id));
-        const filteredMockProjects = mockProjects.filter(p => !existingIds.has(p.id));
-        const allProjects = [...localProjects, ...filteredMockProjects];
-        
         // Get active projects only
-        const activeProjects = allProjects.filter(p => p.status === 'active');
+        const activeProjects = localProjects.filter(p => p.status === 'active');
         
         setProjects(activeProjects);
         
         // Gather all tasks from all projects
         const allTasks: Task[] = [];
-        allProjects.forEach(project => {
+        localProjects.forEach(project => {
           if (Array.isArray(project.tasks)) {
             allTasks.push(...project.tasks.map(task => ({
               ...task,
               projectId: project.id
             })));
-          }
-        });
-        
-        // Add mock tasks
-        mockTasks.forEach(task => {
-          if (!allTasks.some(t => t.id === task.id)) {
-            allTasks.push(task);
           }
         });
         

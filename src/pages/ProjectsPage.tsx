@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { mockProjects } from "@/data/mockData";
@@ -27,6 +28,8 @@ export default function ProjectsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  // Add a state to track deleted project IDs
+  const [deletedProjectIds, setDeletedProjectIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     // Load projects from localStorage first
@@ -54,12 +57,21 @@ export default function ProjectsPage() {
       }
     }
 
-    // Combine local projects with mock data, preventing duplicates by ID
-    const existingIds = new Set(localProjects.map(p => p.id));
-    const filteredMockProjects = mockProjects.filter(p => !existingIds.has(p.id));
-    
-    // Set combined projects
-    setProjects([...localProjects, ...filteredMockProjects]);
+    // Load deleted project IDs from localStorage if they exist
+    const storedDeletedIds = localStorage.getItem("deletedProjectIds");
+    if (storedDeletedIds) {
+      try {
+        const deletedIdsArray = JSON.parse(storedDeletedIds);
+        if (Array.isArray(deletedIdsArray)) {
+          setDeletedProjectIds(new Set(deletedIdsArray));
+        }
+      } catch (error) {
+        console.error("Error loading deleted project IDs:", error);
+      }
+    }
+
+    // Set projects - only use localProjects, don't add mock data
+    setProjects(localProjects);
     setIsLoading(false);
   }, []);
 
@@ -97,13 +109,15 @@ export default function ProjectsPage() {
       setProjects(updatedProjects);
       
       // Update localStorage
-      const localProjects = updatedProjects.filter(p => {
-        // Only save projects that were originally from localStorage
-        // This prevents saving mock projects to localStorage
-        const mockProject = mockProjects.find(mp => mp.id === p.id);
-        return !mockProject;
-      });
-      localStorage.setItem("projects", JSON.stringify(localProjects));
+      localStorage.setItem("projects", JSON.stringify(updatedProjects));
+      
+      // Add to deleted projects set
+      const newDeletedIds = new Set(deletedProjectIds);
+      newDeletedIds.add(projectToDelete.id);
+      setDeletedProjectIds(newDeletedIds);
+      
+      // Save deleted IDs to localStorage
+      localStorage.setItem("deletedProjectIds", JSON.stringify([...newDeletedIds]));
       
       toast.success("Project deleted successfully");
       setIsDeleteDialogOpen(false);

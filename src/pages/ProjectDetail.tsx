@@ -1,7 +1,7 @@
+
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { AppLayout } from "@/components/layout/AppLayout";
-import { mockProjects, mockTasks } from "@/data/mockData";
 import { Project, Task } from "@/types/project";
 import { Button } from "@/components/ui/button";
 import { TaskCard } from "@/components/tasks/TaskCard";
@@ -41,6 +41,7 @@ export default function ProjectDetail() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
   const [isProjectDeleteDialogOpen, setIsProjectDeleteDialogOpen] = useState(false);
+  const [deletedTaskIds, setDeletedTaskIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (!id) return;
@@ -77,16 +78,24 @@ export default function ProjectDetail() {
       }
     }
     
-    // If not found in localStorage, try mock data
-    const foundProject = mockProjects.find((p) => p.id === id);
-    if (foundProject) {
-      setProject(foundProject);
-      setTasks(mockTasks.filter((task) => task.projectId === id));
-      setIsLoading(false);
-    } else {
-      toast.error("Project not found");
-      navigate("/projects");
+    // Check if the project ID is in the deleted projects list
+    const storedDeletedIds = localStorage.getItem("deletedProjectIds");
+    if (storedDeletedIds) {
+      try {
+        const deletedIdsArray = JSON.parse(storedDeletedIds);
+        if (Array.isArray(deletedIdsArray) && deletedIdsArray.includes(id)) {
+          toast.error("This project has been deleted");
+          navigate("/projects");
+          return;
+        }
+      } catch (error) {
+        console.error("Error checking deleted project IDs:", error);
+      }
     }
+    
+    // If not found in localStorage and not deleted, redirect to projects page
+    toast.error("Project not found");
+    navigate("/projects");
   }, [id, navigate]);
 
   const getStatusIcon = (status: string) => {
@@ -188,20 +197,25 @@ export default function ProjectDetail() {
     }
   };
 
-  // New function to handle task deletion
+  // Function to handle task deletion
   const handleDeleteTask = (task: Task, event: React.MouseEvent) => {
     event.stopPropagation(); // Prevent clicking through to the task card
     setTaskToDelete(task);
     setIsDeleteDialogOpen(true);
   };
 
-  // New function to confirm task deletion
+  // Function to confirm task deletion
   const confirmDeleteTask = () => {
     if (!taskToDelete || !project) return;
     
     try {
       const updatedTasks = tasks.filter((t) => t.id !== taskToDelete.id);
       setTasks(updatedTasks);
+      
+      // Add to deleted tasks set
+      const newDeletedIds = new Set(deletedTaskIds);
+      newDeletedIds.add(taskToDelete.id);
+      setDeletedTaskIds(newDeletedIds);
       
       // Update project in state and localStorage
       updateProjectTasks(project.id, updatedTasks);
@@ -216,12 +230,12 @@ export default function ProjectDetail() {
     }
   };
 
-  // New function to delete the entire project
+  // Function to delete the entire project
   const handleDeleteProject = () => {
     setIsProjectDeleteDialogOpen(true);
   };
 
-  // New function to confirm project deletion
+  // Function to confirm project deletion
   const confirmDeleteProject = () => {
     if (!project) return;
     
@@ -234,6 +248,23 @@ export default function ProjectDetail() {
         
         // Update localStorage
         localStorage.setItem("projects", JSON.stringify(updatedProjects));
+        
+        // Add to deleted projects list
+        const storedDeletedIds = localStorage.getItem("deletedProjectIds");
+        let deletedIds: string[] = [];
+        
+        if (storedDeletedIds) {
+          try {
+            deletedIds = JSON.parse(storedDeletedIds);
+          } catch (error) {
+            console.error("Error parsing deleted project IDs:", error);
+          }
+        }
+        
+        if (!deletedIds.includes(project.id)) {
+          deletedIds.push(project.id);
+          localStorage.setItem("deletedProjectIds", JSON.stringify(deletedIds));
+        }
         
         // Show success message and navigate back to projects page
         toast.success("Project deleted successfully");
