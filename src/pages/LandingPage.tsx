@@ -26,7 +26,7 @@ export default function LandingPage() {
         <div className="container flex items-center justify-between py-4">
           <div className="flex items-center gap-2">
             <Logo className="h-6 w-auto" />
-            <h1 className="text-xl font-bold text-transparent bg-gradient-to-r from-primary to-purple-500 bg-clip-text">Projivy</h1>
+            <h1 className="text-xl font-bold text-transparent bg-gradient-to-r from-primary to-purple-500 bg-clip-text"></h1>
           </div>
           <nav className="flex gap-4">
             <Link to="/auth">
