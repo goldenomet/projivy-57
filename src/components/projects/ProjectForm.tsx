@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ProjectTemplate } from "@/types/templates";
@@ -8,6 +9,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
 import { ProjectStatus, TaskStatus } from "@/types/project";
 import { CalendarIcon, User, Users, Mail, Clock, Link as LinkIcon, FileText, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
