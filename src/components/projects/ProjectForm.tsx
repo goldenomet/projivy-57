@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { ProjectTemplate } from "@/types/templates";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -23,9 +24,10 @@ import {
 
 interface ProjectFormProps {
   onFormSubmitting?: (isSubmitting: boolean) => void;
+  selectedTemplate?: ProjectTemplate | null;
 }
 
-export default function ProjectForm({ onFormSubmitting }: ProjectFormProps) {
+export default function ProjectForm({ onFormSubmitting, selectedTemplate }: ProjectFormProps) {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -51,6 +53,36 @@ export default function ProjectForm({ onFormSubmitting }: ProjectFormProps) {
   const [newUserName, setNewUserName] = useState("");
   const [newUserEmail, setNewUserEmail] = useState("");
   const [newUserDialogOpen, setNewUserDialogOpen] = useState(false);
+
+  // Effect to populate form with template data
+  useEffect(() => {
+    if (selectedTemplate) {
+      setName(selectedTemplate.name);
+      setDescription(selectedTemplate.description);
+      setStatus(selectedTemplate.defaultStatus);
+      
+      // Set end date based on estimated duration
+      const calculatedEndDate = new Date();
+      calculatedEndDate.setDate(calculatedEndDate.getDate() + selectedTemplate.estimatedDuration);
+      setEndDate(calculatedEndDate);
+      
+      // Set first task if template has tasks
+      if (selectedTemplate.tasks.length > 0) {
+        const firstTask = selectedTemplate.tasks[0];
+        setTaskName(firstTask.name);
+        setTaskDescription(firstTask.description);
+        setDuration(firstTask.duration.toString());
+        setDependencies(firstTask.dependencies.join(', '));
+        setTaskStatus(firstTask.status);
+        setRemarks(firstTask.remarks);
+        
+        // Set task due date based on duration
+        const taskDueDate = new Date();
+        taskDueDate.setDate(taskDueDate.getDate() + firstTask.duration);
+        setDueDate(taskDueDate);
+      }
+    }
+  }, [selectedTemplate]);
 
   const addNewUser = () => {
     if (!newUserName.trim() || !newUserEmail.trim()) {
@@ -99,8 +131,54 @@ export default function ProjectForm({ onFormSubmitting }: ProjectFormProps) {
         onFormSubmitting(true);
       }
       
-      // Create a new project with the task
+      // Create a new project with the task(s)
       const projectId = uuidv4();
+      
+      // If using a template, create all template tasks
+      let projectTasks = [];
+      if (selectedTemplate && selectedTemplate.tasks.length > 0) {
+        projectTasks = selectedTemplate.tasks.map((taskTemplate, index) => {
+          const taskStartDate = new Date();
+          taskStartDate.setDate(taskStartDate.getDate() + (index * 2)); // Stagger start dates
+          
+          const taskDueDate = new Date(taskStartDate);
+          taskDueDate.setDate(taskDueDate.getDate() + taskTemplate.duration);
+          
+          return {
+            id: uuidv4(),
+            projectId,
+            name: taskTemplate.name,
+            description: taskTemplate.description,
+            assignedTo: [],
+            responsibleParty: "",
+            contacts: [],
+            startDate: taskStartDate,
+            dueDate: taskDueDate,
+            duration: taskTemplate.duration,
+            dependencies: taskTemplate.dependencies,
+            status: taskTemplate.status,
+            remarks: taskTemplate.remarks
+          };
+        });
+      } else {
+        // Create single task from form
+        projectTasks = [{
+          id: uuidv4(),
+          projectId,
+          name: taskName,
+          description: taskDescription,
+          assignedTo: assignedTo.split(',').map(item => item.trim()).filter(Boolean),
+          responsibleParty,
+          contacts: contacts.split(',').map(item => item.trim()).filter(Boolean),
+          startDate: taskStartDate || new Date(),
+          dueDate: dueDate || new Date(),
+          duration: parseInt(duration, 10) || 1,
+          dependencies: dependencies.split(',').map(item => item.trim()).filter(Boolean),
+          status: taskStatus,
+          remarks
+        }];
+      }
+
       const newProject = {
         id: projectId,
         name,
@@ -108,24 +186,8 @@ export default function ProjectForm({ onFormSubmitting }: ProjectFormProps) {
         startDate: startDate || new Date(),
         endDate: endDate || new Date(),
         status,
-        progress: 0, // Default progress
-        tasks: [
-          {
-            id: uuidv4(),
-            projectId,
-            name: taskName,
-            description: taskDescription,
-            assignedTo: assignedTo.split(',').map(item => item.trim()).filter(Boolean),
-            responsibleParty,
-            contacts: contacts.split(',').map(item => item.trim()).filter(Boolean),
-            startDate: taskStartDate || new Date(),
-            dueDate: dueDate || new Date(),
-            duration: parseInt(duration, 10) || 1,
-            dependencies: dependencies.split(',').map(item => item.trim()).filter(Boolean),
-            status: taskStatus,
-            remarks
-          }
-        ]
+        progress: 0,
+        tasks: projectTasks
       };
 
       // Simulate network delay
@@ -136,7 +198,7 @@ export default function ProjectForm({ onFormSubmitting }: ProjectFormProps) {
       const updatedProjects = [...existingProjects, newProject];
       localStorage.setItem('projects', JSON.stringify(updatedProjects));
       
-      toast.success("Project created successfully!");
+      toast.success(selectedTemplate ? `${selectedTemplate.name} created successfully!` : "Project created successfully!");
       
       // Simulate a bit more delay before navigation
       await new Promise(resolve => setTimeout(resolve, 500));
@@ -195,6 +257,27 @@ export default function ProjectForm({ onFormSubmitting }: ProjectFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       {addUserDialog}
+      
+      {selectedTemplate && (
+        <div className="bg-gradient-to-r from-primary/10 to-purple-500/10 border border-primary/20 rounded-lg p-4 mb-6">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="text-primary font-medium">Template: {selectedTemplate.name}</div>
+            <Badge variant="secondary">{selectedTemplate.category}</Badge>
+          </div>
+          <p className="text-sm text-muted-foreground mb-2">{selectedTemplate.description}</p>
+          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+            <span className="flex items-center gap-1">
+              <Clock className="h-3 w-3" />
+              {selectedTemplate.estimatedDuration} days
+            </span>
+            <span className="flex items-center gap-1">
+              <FileText className="h-3 w-3" />
+              {selectedTemplate.tasks.length} tasks
+            </span>
+          </div>
+        </div>
+      )}
+
       <div className="space-y-6">
         <h2 className="text-xl font-semibold border-b pb-2">Project Information</h2>
         <div className="space-y-4">
@@ -527,7 +610,7 @@ export default function ProjectForm({ onFormSubmitting }: ProjectFormProps) {
           type="submit"
           className="bg-gradient-to-r from-primary to-purple-500 hover:opacity-90 shadow-md hover:shadow-lg transition-all"
         >
-          Create Project
+          {selectedTemplate ? `Create ${selectedTemplate.name}` : "Create Project"}
         </Button>
       </div>
     </form>
