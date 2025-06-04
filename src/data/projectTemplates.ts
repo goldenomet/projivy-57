@@ -1,4 +1,3 @@
-
 import { ProjectTemplate } from '@/types/templates';
 
 export const projectTemplates: ProjectTemplate[] = [
@@ -349,6 +348,98 @@ export const projectTemplates: ProjectTemplate[] = [
         remarks: 'Ongoing support and optimization'
       }
     ]
+  },
+  {
+    id: 'eia-project',
+    name: 'Environmental Impact Assessment (EIA)',
+    description: 'Comprehensive environmental impact assessment for development projects',
+    category: 'Environmental',
+    icon: 'Leaf',
+    estimatedDuration: 180,
+    defaultStatus: 'active',
+    tags: ['Environmental', 'Assessment', 'Compliance', 'Sustainability'],
+    tasks: [
+      {
+        name: 'Project Screening',
+        description: 'Determine if EIA is required and define scope',
+        duration: 7,
+        dependencies: [],
+        status: 'not-started',
+        remarks: 'Initial assessment and regulatory requirements'
+      },
+      {
+        name: 'Scoping Study',
+        description: 'Define the scope and methodology for the EIA',
+        duration: 14,
+        dependencies: ['Project Screening'],
+        status: 'not-started',
+        remarks: 'Stakeholder consultation and impact identification'
+      },
+      {
+        name: 'Baseline Environmental Survey',
+        description: 'Conduct comprehensive environmental baseline studies',
+        duration: 45,
+        dependencies: ['Scoping Study'],
+        status: 'not-started',
+        remarks: 'Air, water, soil, biodiversity, and socio-economic surveys'
+      },
+      {
+        name: 'Impact Prediction & Assessment',
+        description: 'Predict and assess potential environmental impacts',
+        duration: 30,
+        dependencies: ['Baseline Environmental Survey'],
+        status: 'not-started',
+        remarks: 'Quantitative and qualitative impact analysis'
+      },
+      {
+        name: 'Mitigation Measures Design',
+        description: 'Develop environmental mitigation and management measures',
+        duration: 21,
+        dependencies: ['Impact Prediction & Assessment'],
+        status: 'not-started',
+        remarks: 'Prevention, reduction, and compensation measures'
+      },
+      {
+        name: 'Environmental Management Plan',
+        description: 'Prepare comprehensive environmental management plan',
+        duration: 14,
+        dependencies: ['Mitigation Measures Design'],
+        status: 'not-started',
+        remarks: 'Implementation, monitoring, and reporting framework'
+      },
+      {
+        name: 'Public Consultation',
+        description: 'Conduct public consultation and stakeholder engagement',
+        duration: 21,
+        dependencies: ['Environmental Management Plan'],
+        status: 'not-started',
+        remarks: 'Community meetings and feedback incorporation'
+      },
+      {
+        name: 'EIA Report Preparation',
+        description: 'Compile comprehensive EIA report',
+        duration: 14,
+        dependencies: ['Public Consultation'],
+        status: 'not-started',
+        remarks: 'Technical documentation and executive summary'
+      },
+      {
+        name: 'Regulatory Submission',
+        description: 'Submit EIA report to regulatory authorities',
+        duration: 7,
+        dependencies: ['EIA Report Preparation'],
+        status: 'not-started',
+        remarks: 'Compliance with regulatory requirements'
+      },
+      {
+        name: 'Review & Approval Process',
+        description: 'Support regulatory review and approval process',
+        duration: 30,
+        dependencies: ['Regulatory Submission'],
+        status: 'not-started',
+        remarks: 'Response to queries and additional information requests'
+      }
+    ]
   }
 ];
 
@@ -358,5 +449,6 @@ export const templateCategories = [
   'Marketing',
   'Product',
   'Events',
-  'IT'
+  'IT',
+  'Environmental'
 ];
