@@ -45,3 +45,16 @@ export interface Profile {
   avatar_url: string | null;
   updated_at: string | null;
 }
+
+// Project File interface for file management
+export interface ProjectFile {
+  id: string;
+  project_id: string;
+  file_name: string;
+  file_size: number;
+  file_type: string;
+  storage_path: string;
+  uploaded_by: string | null;
+  created_at: string;
+  updated_at: string;
+}

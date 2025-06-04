@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { AppLayout } from "@/components/layout/AppLayout";
@@ -6,6 +5,7 @@ import { Project, Task } from "@/types/project";
 import { Button } from "@/components/ui/button";
 import { TaskCard } from "@/components/tasks/TaskCard";
 import { TaskForm } from "@/components/tasks/TaskForm";
+import { FileManager } from "@/components/files/FileManager";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
@@ -36,7 +36,8 @@ export default function ProjectDetail() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isNewTaskDialogOpen, setIsNewTaskDialogOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-  const [activeTab, setActiveTab] = useState("all");
+  const [activeTab, setActiveTab] = useState("tasks");
+  const [taskSubTab, setTaskSubTab] = useState("all");
   const [isLoading, setIsLoading] = useState(true);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
@@ -156,8 +157,8 @@ export default function ProjectDetail() {
   };
 
   const filteredTasks = tasks.filter((task) => {
-    if (activeTab === "all") return true;
-    return task.status === activeTab;
+    if (taskSubTab === "all") return true;
+    return task.status === taskSubTab;
   });
 
   const handleNewTask = () => {
@@ -429,23 +430,35 @@ export default function ProjectDetail() {
 
         <div className="animate-slide-in" style={{ animationDelay: "0.2s" }}>
           <Tabs
-            defaultValue="all"
+            defaultValue="tasks"
             value={activeTab}
             onValueChange={setActiveTab}
             className="w-full"
           >
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold text-transparent bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">Tasks</h2>
-              <TabsList className="bg-gradient-to-r from-muted to-muted/80">
-                <TabsTrigger value="all" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/50 data-[state=active]:to-purple-500/50 data-[state=active]:text-primary-foreground transition-all">All</TabsTrigger>
-                <TabsTrigger value="not-started" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/50 data-[state=active]:to-purple-500/50 data-[state=active]:text-primary-foreground transition-all">Not Started</TabsTrigger>
-                <TabsTrigger value="in-progress" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/50 data-[state=active]:to-purple-500/50 data-[state=active]:text-primary-foreground transition-all">In Progress</TabsTrigger>
-                <TabsTrigger value="completed" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/50 data-[state=active]:to-purple-500/50 data-[state=active]:text-primary-foreground transition-all">Completed</TabsTrigger>
-                <TabsTrigger value="delayed" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/50 data-[state=active]:to-purple-500/50 data-[state=active]:text-primary-foreground transition-all">Delayed</TabsTrigger>
-              </TabsList>
-            </div>
+            <TabsList className="bg-gradient-to-r from-muted to-muted/80 mb-6">
+              <TabsTrigger value="tasks" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/50 data-[state=active]:to-purple-500/50 data-[state=active]:text-primary-foreground transition-all">Tasks</TabsTrigger>
+              <TabsTrigger value="files" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/50 data-[state=active]:to-purple-500/50 data-[state=active]:text-primary-foreground transition-all">Files</TabsTrigger>
+            </TabsList>
 
-            <TabsContent value={activeTab} className="mt-0">
+            <TabsContent value="tasks" className="mt-0">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold text-transparent bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">Tasks</h2>
+                <Tabs
+                  defaultValue="all"
+                  value={taskSubTab}
+                  onValueChange={setTaskSubTab}
+                  className="w-auto"
+                >
+                  <TabsList className="bg-gradient-to-r from-muted to-muted/80">
+                    <TabsTrigger value="all" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/50 data-[state=active]:to-purple-500/50 data-[state=active]:text-primary-foreground transition-all">All</TabsTrigger>
+                    <TabsTrigger value="not-started" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/50 data-[state=active]:to-purple-500/50 data-[state=active]:text-primary-foreground transition-all">Not Started</TabsTrigger>
+                    <TabsTrigger value="in-progress" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/50 data-[state=active]:to-purple-500/50 data-[state=active]:text-primary-foreground transition-all">In Progress</TabsTrigger>
+                    <TabsTrigger value="completed" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/50 data-[state=active]:to-purple-500/50 data-[state=active]:text-primary-foreground transition-all">Completed</TabsTrigger>
+                    <TabsTrigger value="delayed" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/50 data-[state=active]:to-purple-500/50 data-[state=active]:text-primary-foreground transition-all">Delayed</TabsTrigger>
+                  </TabsList>
+                </Tabs>
+              </div>
+
               {filteredTasks.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filteredTasks.map((task, index) => (
@@ -469,12 +482,16 @@ export default function ProjectDetail() {
               ) : (
                 <div className="py-16 flex items-center justify-center border rounded-lg bg-gradient-to-br from-muted/40 to-muted/20 animate-pulse">
                   <p className="text-muted-foreground">
-                    {activeTab === "all"
+                    {taskSubTab === "all"
                       ? "No tasks in this project yet"
-                      : `No ${activeTab.replace("-", " ")} tasks`}
+                      : `No ${taskSubTab.replace("-", " ")} tasks`}
                   </p>
                 </div>
               )}
+            </TabsContent>
+
+            <TabsContent value="files" className="mt-0">
+              <FileManager projectId={project.id} />
             </TabsContent>
           </Tabs>
         </div>
