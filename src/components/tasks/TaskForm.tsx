@@ -72,7 +72,7 @@ export function TaskForm({ task, projectId, existingTasks = [], onSubmit, onCanc
   const [selectedContacts, setSelectedContacts] = useState<string[]>(task?.contacts || []);
   const [selectedDependencies, setSelectedDependencies] = useState<string[]>(task?.dependencies || []);
   
-  // State for managing users
+  // State for managing users - start with empty array from mock data
   const [availableUsers, setAvailableUsers] = useState<User[]>(users);
   const [newUserDialogOpen, setNewUserDialogOpen] = useState(false);
   const [newUserName, setNewUserName] = useState("");
@@ -244,29 +244,33 @@ export function TaskForm({ task, projectId, existingTasks = [], onSubmit, onCanc
                 <Plus className="h-4 w-4 mr-2" /> Add New User
               </Button>
             </div>
-            <div className="flex flex-wrap gap-2">
-              {availableUsers.map((user) => (
-                <div
-                  key={user.id}
-                  onClick={() => handleAssigneeChange(user.id)}
-                  className={cn(
-                    "flex items-center gap-2 p-2 border rounded-md cursor-pointer",
-                    selectedAssignees.includes(user.id)
-                      ? "border-primary bg-primary/10"
-                      : "border-border hover:border-primary/50"
-                  )}
-                >
-                  <div className="h-8 w-8 rounded-full overflow-hidden">
-                    <img
-                      src={user.avatarUrl}
-                      alt={user.name}
-                      className="h-full w-full object-cover"
-                    />
+            {availableUsers.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {availableUsers.map((user) => (
+                  <div
+                    key={user.id}
+                    onClick={() => handleAssigneeChange(user.id)}
+                    className={cn(
+                      "flex items-center gap-2 p-2 border rounded-md cursor-pointer",
+                      selectedAssignees.includes(user.id)
+                        ? "border-primary bg-primary/10"
+                        : "border-border hover:border-primary/50"
+                    )}
+                  >
+                    <div className="h-8 w-8 rounded-full overflow-hidden">
+                      <img
+                        src={user.avatarUrl}
+                        alt={user.name}
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                    <span>{user.name}</span>
                   </div>
-                  <span>{user.name}</span>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">No users available. Add users to assign them to tasks.</p>
+            )}
           </div>
 
           <FormField
@@ -313,29 +317,33 @@ export function TaskForm({ task, projectId, existingTasks = [], onSubmit, onCanc
                 <Plus className="h-4 w-4 mr-2" /> Add New Contact
               </Button>
             </div>
-            <div className="flex flex-wrap gap-2">
-              {availableUsers.map((user) => (
-                <div
-                  key={user.id}
-                  onClick={() => handleContactChange(user.id)}
-                  className={cn(
-                    "flex items-center gap-2 p-2 border rounded-md cursor-pointer",
-                    selectedContacts.includes(user.id)
-                      ? "border-primary bg-primary/10"
-                      : "border-border hover:border-primary/50"
-                  )}
-                >
-                  <div className="h-8 w-8 rounded-full overflow-hidden">
-                    <img
-                      src={user.avatarUrl}
-                      alt={user.name}
-                      className="h-full w-full object-cover"
-                    />
+            {availableUsers.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {availableUsers.map((user) => (
+                  <div
+                    key={user.id}
+                    onClick={() => handleContactChange(user.id)}
+                    className={cn(
+                      "flex items-center gap-2 p-2 border rounded-md cursor-pointer",
+                      selectedContacts.includes(user.id)
+                        ? "border-primary bg-primary/10"
+                        : "border-border hover:border-primary/50"
+                    )}
+                  >
+                    <div className="h-8 w-8 rounded-full overflow-hidden">
+                      <img
+                        src={user.avatarUrl}
+                        alt={user.name}
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                    <span>{user.name}</span>
                   </div>
-                  <span>{user.name}</span>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">No users available. Add users to set as contacts.</p>
+            )}
           </div>
 
           <FormField

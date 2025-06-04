@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -21,13 +20,6 @@ import {
   DialogFooter,
   DialogClose
 } from "@/components/ui/dialog";
-
-// List of initial users (this would come from a database in a real app)
-const initialUsers = [
-  { id: "user1", name: "John Doe", email: "john@example.com" },
-  { id: "user2", name: "Jane Smith", email: "jane@example.com" },
-  { id: "user3", name: "Bob Johnson", email: "bob@example.com" },
-];
 
 interface ProjectFormProps {
   onFormSubmitting?: (isSubmitting: boolean) => void;
@@ -54,8 +46,8 @@ export default function ProjectForm({ onFormSubmitting }: ProjectFormProps) {
   const [taskStatus, setTaskStatus] = useState<TaskStatus>("not-started");
   const [remarks, setRemarks] = useState("");
   
-  // State for user management
-  const [users, setUsers] = useState(initialUsers);
+  // State for user management - start with empty array
+  const [users, setUsers] = useState<Array<{id: string; name: string; email: string}>>([]);
   const [newUserName, setNewUserName] = useState("");
   const [newUserEmail, setNewUserEmail] = useState("");
   const [newUserDialogOpen, setNewUserDialogOpen] = useState(false);
@@ -367,23 +359,25 @@ export default function ProjectForm({ onFormSubmitting }: ProjectFormProps) {
                   <Plus className="h-4 w-4" />
                 </Button>
               </div>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {users.map(user => (
-                  <div 
-                    key={user.id}
-                    className="border rounded-md p-2 text-sm flex items-center cursor-pointer hover:bg-muted transition-colors"
-                    onClick={() => {
-                      const ids = assignedTo ? assignedTo.split(',').map(id => id.trim()) : [];
-                      if (!ids.includes(user.id)) {
-                        const newAssignees = [...ids, user.id].join(', ');
-                        setAssignedTo(newAssignees);
-                      }
-                    }}
-                  >
-                    {user.name}
-                  </div>
-                ))}
-              </div>
+              {users.length > 0 && (
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {users.map(user => (
+                    <div 
+                      key={user.id}
+                      className="border rounded-md p-2 text-sm flex items-center cursor-pointer hover:bg-muted transition-colors"
+                      onClick={() => {
+                        const ids = assignedTo ? assignedTo.split(',').map(id => id.trim()) : [];
+                        if (!ids.includes(user.id)) {
+                          const newAssignees = [...ids, user.id].join(', ');
+                          setAssignedTo(newAssignees);
+                        }
+                      }}
+                    >
+                      {user.name}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div>
@@ -433,23 +427,25 @@ export default function ProjectForm({ onFormSubmitting }: ProjectFormProps) {
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {users.map(user => (
-                <div 
-                  key={user.id}
-                  className="border rounded-md p-2 text-sm flex items-center cursor-pointer hover:bg-muted transition-colors"
-                  onClick={() => {
-                    const ids = contacts ? contacts.split(',').map(id => id.trim()) : [];
-                    if (!ids.includes(user.id)) {
-                      const newContacts = [...ids, user.id].join(', ');
-                      setContacts(newContacts);
-                    }
-                  }}
-                >
-                  {user.name}
-                </div>
-              ))}
-            </div>
+            {users.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-2">
+                {users.map(user => (
+                  <div 
+                    key={user.id}
+                    className="border rounded-md p-2 text-sm flex items-center cursor-pointer hover:bg-muted transition-colors"
+                    onClick={() => {
+                      const ids = contacts ? contacts.split(',').map(id => id.trim()) : [];
+                      if (!ids.includes(user.id)) {
+                        const newContacts = [...ids, user.id].join(', ');
+                        setContacts(newContacts);
+                      }
+                    }}
+                  >
+                    {user.name}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
