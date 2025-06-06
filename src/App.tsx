@@ -7,7 +7,7 @@ import { Toaster } from "@/components/ui/sonner";
 import Index from "@/pages/Index";
 import Dashboard from "@/pages/Dashboard";
 import ProjectsPage from "@/pages/ProjectsPage";
-import ProjectDetail from "@/pages/ProjectDetail";
+import ProjectDetailPage from "@/pages/project-detail/ProjectDetailPage";
 import NewProject from "@/pages/NewProject";
 import EditProject from "@/pages/EditProject";
 import CalendarPage from "@/pages/CalendarPage";
@@ -35,7 +35,7 @@ function App() {
         {/* Protected routes */}
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/projects" element={<ProtectedRoute><ProjectsPage /></ProtectedRoute>} />
-        <Route path="/projects/:id" element={<ProtectedRoute><ProjectDetail /></ProtectedRoute>} />
+        <Route path="/projects/:id" element={<ProtectedRoute><ProjectDetailPage /></ProtectedRoute>} />
         <Route path="/projects/new" element={<ProtectedRoute><NewProject /></ProtectedRoute>} />
         <Route path="/projects/edit/:id" element={<ProtectedRoute><EditProject /></ProtectedRoute>} />
         <Route path="/calendar" element={<ProtectedRoute><CalendarPage /></ProtectedRoute>} />
