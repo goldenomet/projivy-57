@@ -17,7 +17,8 @@ import {
   PauseCircle,
   PlayCircle,
   ChevronLeft,
-  Trash2
+  Trash2,
+  Edit
 } from "lucide-react";
 import {
   Dialog,
@@ -249,6 +250,11 @@ export default function ProjectDetail() {
     }
   };
 
+  // Handle edit project navigation
+  const handleEditProject = () => {
+    navigate(`/projects/edit/${project?.id}`);
+  };
+
   // Function to handle task deletion
   const handleDeleteTask = (task: Task, event: React.MouseEvent) => {
     event.stopPropagation(); // Prevent clicking through to the task card
@@ -382,6 +388,13 @@ export default function ProjectDetail() {
                 {getStatusIcon(project.status)}
                 <span>{getStatusLabel(project.status)}</span>
               </Badge>
+              <Button 
+                onClick={handleEditProject}
+                className="bg-gradient-to-r from-secondary to-secondary/80 hover:opacity-90 shadow-md hover:shadow-lg hover:scale-105 transition-all"
+              >
+                <Edit className="h-4 w-4 mr-1" />
+                Edit
+              </Button>
               <Button 
                 onClick={handleNewTask}
                 className="bg-gradient-to-r from-primary to-purple-500 hover:opacity-90 shadow-md hover:shadow-lg hover:scale-105 transition-all"

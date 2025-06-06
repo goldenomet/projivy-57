@@ -1,7 +1,7 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ProjectTemplate } from "@/types/templates";
+import { Project } from "@/types/project";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -27,9 +27,10 @@ import {
 interface ProjectFormProps {
   onFormSubmitting?: (isSubmitting: boolean) => void;
   selectedTemplate?: ProjectTemplate | null;
+  projectToEdit?: Project | null;
 }
 
-export default function ProjectForm({ onFormSubmitting, selectedTemplate }: ProjectFormProps) {
+export default function ProjectForm({ onFormSubmitting, selectedTemplate, projectToEdit }: ProjectFormProps) {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -55,10 +56,36 @@ export default function ProjectForm({ onFormSubmitting, selectedTemplate }: Proj
   const [newUserName, setNewUserName] = useState("");
   const [newUserEmail, setNewUserEmail] = useState("");
   const [newUserDialogOpen, setNewUserDialogOpen] = useState(false);
+  
+  // Edit mode state
+  const isEditMode = !!projectToEdit;
 
   // Effect to populate form with template data
   useEffect(() => {
-    if (selectedTemplate) {
+    if (projectToEdit) {
+      // If in edit mode, populate fields with project data
+      setName(projectToEdit.name);
+      setDescription(projectToEdit.description);
+      setStartDate(projectToEdit.startDate);
+      setEndDate(projectToEdit.endDate);
+      setStatus(projectToEdit.status);
+      
+      // If there are tasks, set the first task values
+      if (projectToEdit.tasks && projectToEdit.tasks.length > 0) {
+        const firstTask = projectToEdit.tasks[0];
+        setTaskName(firstTask.name);
+        setTaskDescription(firstTask.description);
+        setAssignedTo(firstTask.assignedTo.join(', '));
+        setResponsibleParty(firstTask.responsibleParty || '');
+        setContacts(firstTask.contacts.join(', '));
+        setTaskStartDate(firstTask.startDate);
+        setDueDate(firstTask.dueDate);
+        setDuration(firstTask.duration.toString());
+        setDependencies(firstTask.dependencies.join(', '));
+        setTaskStatus(firstTask.status);
+        setRemarks(firstTask.remarks);
+      }
+    } else if (selectedTemplate) {
       setName(selectedTemplate.name);
       setDescription(selectedTemplate.description);
       setStatus(selectedTemplate.defaultStatus);
@@ -84,7 +111,7 @@ export default function ProjectForm({ onFormSubmitting, selectedTemplate }: Proj
         setDueDate(taskDueDate);
       }
     }
-  }, [selectedTemplate]);
+  }, [selectedTemplate, projectToEdit]);
 
   const addNewUser = () => {
     if (!newUserName.trim() || !newUserEmail.trim()) {
@@ -133,40 +160,15 @@ export default function ProjectForm({ onFormSubmitting, selectedTemplate }: Proj
         onFormSubmitting(true);
       }
       
-      // Create a new project with the task(s)
-      const projectId = uuidv4();
-      
-      // If using a template, create all template tasks
-      let projectTasks = [];
-      if (selectedTemplate && selectedTemplate.tasks.length > 0) {
-        projectTasks = selectedTemplate.tasks.map((taskTemplate, index) => {
-          const taskStartDate = new Date();
-          taskStartDate.setDate(taskStartDate.getDate() + (index * 2)); // Stagger start dates
-          
-          const taskDueDate = new Date(taskStartDate);
-          taskDueDate.setDate(taskDueDate.getDate() + taskTemplate.duration);
-          
-          return {
-            id: uuidv4(),
-            projectId,
-            name: taskTemplate.name,
-            description: taskTemplate.description,
-            assignedTo: [],
-            responsibleParty: "",
-            contacts: [],
-            startDate: taskStartDate,
-            dueDate: taskDueDate,
-            duration: taskTemplate.duration,
-            dependencies: taskTemplate.dependencies,
-            status: taskTemplate.status,
-            remarks: taskTemplate.remarks
-          };
-        });
-      } else {
-        // Create single task from form
-        projectTasks = [{
-          id: uuidv4(),
-          projectId,
+      // If editing an existing project
+      if (isEditMode && projectToEdit) {
+        // Get existing projects from localStorage
+        const existingProjects = JSON.parse(localStorage.getItem('projects') || '[]');
+        
+        // Create the task data
+        const taskData = {
+          id: projectToEdit.tasks && projectToEdit.tasks.length > 0 ? projectToEdit.tasks[0].id : uuidv4(),
+          projectId: projectToEdit.id,
           name: taskName,
           description: taskDescription,
           assignedTo: assignedTo.split(',').map(item => item.trim()).filter(Boolean),
@@ -178,41 +180,123 @@ export default function ProjectForm({ onFormSubmitting, selectedTemplate }: Proj
           dependencies: dependencies.split(',').map(item => item.trim()).filter(Boolean),
           status: taskStatus,
           remarks
-        }];
-      }
+        };
+        
+        // Keep other tasks from the original project
+        const otherTasks = projectToEdit.tasks ? projectToEdit.tasks.slice(1) : [];
+        
+        // Updated project data
+        const updatedProject = {
+          ...projectToEdit,
+          name,
+          description,
+          startDate: startDate || new Date(),
+          endDate: endDate || new Date(),
+          status,
+          tasks: [taskData, ...otherTasks]
+        };
+        
+        // Update project in localStorage
+        const updatedProjects = existingProjects.map((p: Project) => 
+          p.id === projectToEdit.id ? updatedProject : p
+        );
+        
+        localStorage.setItem('projects', JSON.stringify(updatedProjects));
+        
+        // Show success message
+        toast.success("Project updated successfully!");
+        
+        // Simulate a bit of delay before navigation
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        if (onFormSubmitting) {
+          onFormSubmitting(false);
+        }
+        
+        // Navigate back to project detail page
+        navigate(`/projects/${projectToEdit.id}`);
+      } else {
+        // Create a new project with the task(s)
+        const projectId = uuidv4();
+        
+        // If using a template, create all template tasks
+        let projectTasks = [];
+        if (selectedTemplate && selectedTemplate.tasks.length > 0) {
+          projectTasks = selectedTemplate.tasks.map((taskTemplate, index) => {
+            const taskStartDate = new Date();
+            taskStartDate.setDate(taskStartDate.getDate() + (index * 2)); // Stagger start dates
+            
+            const taskDueDate = new Date(taskStartDate);
+            taskDueDate.setDate(taskDueDate.getDate() + taskTemplate.duration);
+            
+            return {
+              id: uuidv4(),
+              projectId,
+              name: taskTemplate.name,
+              description: taskTemplate.description,
+              assignedTo: [],
+              responsibleParty: "",
+              contacts: [],
+              startDate: taskStartDate,
+              dueDate: taskDueDate,
+              duration: taskTemplate.duration,
+              dependencies: taskTemplate.dependencies,
+              status: taskTemplate.status,
+              remarks: taskTemplate.remarks
+            };
+          });
+        } else {
+          // Create single task from form
+          projectTasks = [{
+            id: uuidv4(),
+            projectId,
+            name: taskName,
+            description: taskDescription,
+            assignedTo: assignedTo.split(',').map(item => item.trim()).filter(Boolean),
+            responsibleParty,
+            contacts: contacts.split(',').map(item => item.trim()).filter(Boolean),
+            startDate: taskStartDate || new Date(),
+            dueDate: dueDate || new Date(),
+            duration: parseInt(duration, 10) || 1,
+            dependencies: dependencies.split(',').map(item => item.trim()).filter(Boolean),
+            status: taskStatus,
+            remarks
+          }];
+        }
 
-      const newProject = {
-        id: projectId,
-        name,
-        description,
-        startDate: startDate || new Date(),
-        endDate: endDate || new Date(),
-        status,
-        progress: 0,
-        tasks: projectTasks
-      };
+        const newProject = {
+          id: projectId,
+          name,
+          description,
+          startDate: startDate || new Date(),
+          endDate: endDate || new Date(),
+          status,
+          progress: 0,
+          tasks: projectTasks
+        };
 
-      // Simulate network delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Save to localStorage
-      const existingProjects = JSON.parse(localStorage.getItem('projects') || '[]');
-      const updatedProjects = [...existingProjects, newProject];
-      localStorage.setItem('projects', JSON.stringify(updatedProjects));
-      
-      toast.success(selectedTemplate ? `${selectedTemplate.name} created successfully!` : "Project created successfully!");
-      
-      // Simulate a bit more delay before navigation
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      if (onFormSubmitting) {
-        onFormSubmitting(false);
+        // Simulate network delay
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Save to localStorage
+        const existingProjects = JSON.parse(localStorage.getItem('projects') || '[]');
+        const updatedProjects = [...existingProjects, newProject];
+        localStorage.setItem('projects', JSON.stringify(updatedProjects));
+        
+        toast.success(selectedTemplate ? `${selectedTemplate.name} created successfully!` : "Project created successfully!");
+        
+        // Simulate a bit more delay before navigation
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        if (onFormSubmitting) {
+          onFormSubmitting(false);
+        }
+        
+        navigate("/projects");
       }
-      
-      navigate("/projects");
     } catch (error) {
-      console.error("Error creating project:", error);
-      toast.error("Failed to create project");
+      console.error(isEditMode ? "Error updating project:" : "Error creating project:", error);
+      toast.error(isEditMode ? "Failed to update project" : "Failed to create project");
       if (onFormSubmitting) {
         onFormSubmitting(false);
       }
@@ -260,7 +344,7 @@ export default function ProjectForm({ onFormSubmitting, selectedTemplate }: Proj
     <form onSubmit={handleSubmit} className="space-y-8">
       {addUserDialog}
       
-      {selectedTemplate && (
+      {selectedTemplate && !isEditMode && (
         <div className="bg-gradient-to-r from-primary/10 to-purple-500/10 border border-primary/20 rounded-lg p-4 mb-6">
           <div className="flex items-center gap-3 mb-2">
             <div className="text-primary font-medium">Template: {selectedTemplate.name}</div>
@@ -391,7 +475,7 @@ export default function ProjectForm({ onFormSubmitting, selectedTemplate }: Proj
           </div>
         </div>
 
-        <h2 className="text-xl font-semibold border-b pb-2 mt-8">Initial Task</h2>
+        <h2 className="text-xl font-semibold border-b pb-2 mt-8">Main Task</h2>
         <div className="space-y-4">
           <div>
             <label htmlFor="taskName" className="block text-sm font-medium mb-1">
@@ -603,7 +687,7 @@ export default function ProjectForm({ onFormSubmitting, selectedTemplate }: Proj
         <Button 
           variant="outline" 
           type="button" 
-          onClick={() => navigate("/projects")}
+          onClick={() => navigate(isEditMode && projectToEdit ? `/projects/${projectToEdit.id}` : "/projects")}
           className="hover:bg-gradient-to-r hover:from-accent/50 hover:to-accent/30 transition-all"
         >
           Cancel
@@ -612,7 +696,7 @@ export default function ProjectForm({ onFormSubmitting, selectedTemplate }: Proj
           type="submit"
           className="bg-gradient-to-r from-primary to-purple-500 hover:opacity-90 shadow-md hover:shadow-lg transition-all"
         >
-          {selectedTemplate ? `Create ${selectedTemplate.name}` : "Create Project"}
+          {isEditMode ? "Save Changes" : (selectedTemplate ? `Create ${selectedTemplate.name}` : "Create Project")}
         </Button>
       </div>
     </form>
