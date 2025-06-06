@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/use-auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -9,12 +9,14 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Navigate, Link } from 'react-router-dom';
+import { Navigate, Link, useSearchParams } from 'react-router-dom';
 import { Logo } from '@/components/ui/logo';
+import { Checkbox } from '@/components/ui/checkbox';
 
 const loginSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address' }),
   password: z.string().min(6, { message: 'Password must be at least 6 characters' }),
+  rememberMe: z.boolean().optional(),
 });
 
 const signupSchema = z.object({
@@ -29,11 +31,17 @@ const signupSchema = z.object({
 
 export default function AuthPage() {
   const { user, loading, signIn, signUp } = useAuth();
-  const [activeTab, setActiveTab] = useState('login');
+  const [searchParams] = useSearchParams();
+  const tabParam = searchParams.get('tab');
+  const [activeTab, setActiveTab] = useState(tabParam === 'signup' ? 'signup' : 'login');
 
   const loginForm = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
-    defaultValues: { email: '', password: '' },
+    defaultValues: { 
+      email: '', 
+      password: '',
+      rememberMe: false,
+    },
   });
 
   const signupForm = useForm<z.infer<typeof signupSchema>>({
@@ -41,8 +49,29 @@ export default function AuthPage() {
     defaultValues: { email: '', password: '', fullName: '', confirmPassword: '' },
   });
 
+  // Load saved credentials if they exist
+  useEffect(() => {
+    const savedEmail = localStorage.getItem('rememberedEmail');
+    const savedPassword = localStorage.getItem('rememberedPassword');
+    
+    if (savedEmail && savedPassword) {
+      loginForm.setValue('email', savedEmail);
+      loginForm.setValue('password', savedPassword);
+      loginForm.setValue('rememberMe', true);
+    }
+  }, [loginForm]);
+
   const onLoginSubmit = async (values: z.infer<typeof loginSchema>) => {
     try {
+      // Handle remember me functionality
+      if (values.rememberMe) {
+        localStorage.setItem('rememberedEmail', values.email);
+        localStorage.setItem('rememberedPassword', values.password);
+      } else {
+        localStorage.removeItem('rememberedEmail');
+        localStorage.removeItem('rememberedPassword');
+      }
+      
       await signIn(values.email, values.password);
     } catch (error) {
       console.error('Login failed', error);
@@ -118,6 +147,23 @@ export default function AuthPage() {
                             <Input type="password" placeholder="•••••••" {...field} />
                           </FormControl>
                           <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={loginForm.control}
+                      name="rememberMe"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                          <FormControl>
+                            <Checkbox 
+                              checked={field.value} 
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                          <div className="space-y-1 leading-none">
+                            <FormLabel>Remember password</FormLabel>
+                          </div>
                         </FormItem>
                       )}
                     />
