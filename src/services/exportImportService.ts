@@ -1,5 +1,8 @@
-
 import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import { Document, Packer, Paragraph, Table, TableCell, TableRow, WidthType } from 'docx';
+import { saveAs } from 'file-saver';
 import { Project, Task } from '@/types/project';
 
 export interface ExportData {
@@ -125,6 +128,154 @@ export class ExportImportService {
     XLSX.utils.book_append_sheet(workbook, tasksSheet, 'Tasks');
 
     return XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+  }
+
+  static exportToPDF(projects: Project[], type: 'projects' | 'tasks'): void {
+    const doc = new jsPDF();
+    
+    doc.setFontSize(16);
+    doc.text(`${type.charAt(0).toUpperCase() + type.slice(1)} Report`, 20, 20);
+    
+    doc.setFontSize(10);
+    doc.text(`Generated on: ${new Date().toLocaleString()}`, 20, 30);
+
+    if (type === 'projects') {
+      const projectData = projects.map(project => [
+        project.name,
+        project.description.substring(0, 50) + (project.description.length > 50 ? '...' : ''),
+        this.formatDate(project.startDate),
+        this.formatDate(project.endDate),
+        project.status,
+        `${project.progress}%`
+      ]);
+
+      autoTable(doc, {
+        head: [['Name', 'Description', 'Start Date', 'End Date', 'Status', 'Progress']],
+        body: projectData,
+        startY: 40,
+      });
+    } else {
+      const allTasks: any[] = [];
+      projects.forEach(project => {
+        if (project.tasks) {
+          project.tasks.forEach(task => {
+            allTasks.push([
+              project.name,
+              task.name,
+              task.description.substring(0, 30) + (task.description.length > 30 ? '...' : ''),
+              task.responsibleParty,
+              this.formatDate(task.dueDate),
+              task.status
+            ]);
+          });
+        }
+      });
+
+      autoTable(doc, {
+        head: [['Project', 'Task', 'Description', 'Responsible', 'Due Date', 'Status']],
+        body: allTasks,
+        startY: 40,
+      });
+    }
+
+    const timestamp = new Date().toISOString().split('T')[0];
+    doc.save(`${type}-export-${timestamp}.pdf`);
+  }
+
+  static async exportToWord(projects: Project[], type: 'projects' | 'tasks'): Promise<void> {
+    const children: any[] = [
+      new Paragraph({
+        text: `${type.charAt(0).toUpperCase() + type.slice(1)} Report`,
+        heading: 'Heading1',
+      }),
+      new Paragraph({
+        text: `Generated on: ${new Date().toLocaleString()}`,
+      }),
+      new Paragraph({ text: '' }),
+    ];
+
+    if (type === 'projects') {
+      const tableRows = [
+        new TableRow({
+          children: [
+            new TableCell({ children: [new Paragraph('Name')] }),
+            new TableCell({ children: [new Paragraph('Description')] }),
+            new TableCell({ children: [new Paragraph('Start Date')] }),
+            new TableCell({ children: [new Paragraph('End Date')] }),
+            new TableCell({ children: [new Paragraph('Status')] }),
+            new TableCell({ children: [new Paragraph('Progress')] }),
+          ],
+        }),
+        ...projects.map(project => 
+          new TableRow({
+            children: [
+              new TableCell({ children: [new Paragraph(project.name)] }),
+              new TableCell({ children: [new Paragraph(project.description)] }),
+              new TableCell({ children: [new Paragraph(this.formatDate(project.startDate))] }),
+              new TableCell({ children: [new Paragraph(this.formatDate(project.endDate))] }),
+              new TableCell({ children: [new Paragraph(project.status)] }),
+              new TableCell({ children: [new Paragraph(`${project.progress}%`)] }),
+            ],
+          })
+        ),
+      ];
+
+      children.push(
+        new Table({
+          width: { size: 100, type: WidthType.PERCENTAGE },
+          rows: tableRows,
+        })
+      );
+    } else {
+      const allTasks: Task[] = [];
+      projects.forEach(project => {
+        if (project.tasks) {
+          allTasks.push(...project.tasks.map(task => ({ ...task, projectName: project.name })));
+        }
+      });
+
+      const tableRows = [
+        new TableRow({
+          children: [
+            new TableCell({ children: [new Paragraph('Project')] }),
+            new TableCell({ children: [new Paragraph('Task')] }),
+            new TableCell({ children: [new Paragraph('Description')] }),
+            new TableCell({ children: [new Paragraph('Responsible')] }),
+            new TableCell({ children: [new Paragraph('Due Date')] }),
+            new TableCell({ children: [new Paragraph('Status')] }),
+          ],
+        }),
+        ...allTasks.map(task => 
+          new TableRow({
+            children: [
+              new TableCell({ children: [new Paragraph((task as any).projectName || '')] }),
+              new TableCell({ children: [new Paragraph(task.name)] }),
+              new TableCell({ children: [new Paragraph(task.description)] }),
+              new TableCell({ children: [new Paragraph(task.responsibleParty)] }),
+              new TableCell({ children: [new Paragraph(this.formatDate(task.dueDate))] }),
+              new TableCell({ children: [new Paragraph(task.status)] }),
+            ],
+          })
+        ),
+      ];
+
+      children.push(
+        new Table({
+          width: { size: 100, type: WidthType.PERCENTAGE },
+          rows: tableRows,
+        })
+      );
+    }
+
+    const doc = new Document({
+      sections: [{
+        children,
+      }],
+    });
+
+    const buffer = await Packer.toBuffer(doc);
+    const timestamp = new Date().toISOString().split('T')[0];
+    saveAs(new Blob([buffer]), `${type}-export-${timestamp}.docx`);
   }
 
   static downloadFile(content: string | ArrayBuffer, filename: string, mimeType: string): void {
