@@ -1,124 +1,150 @@
 
+import { useState } from "react";
 import { AppLayout } from "@/components/layout/AppLayout";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ThemeSwitcher } from "@/components/theme/ThemeSwitcher";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { toast } from "@/components/ui/sonner";
-import { Settings as SettingsIcon, Moon, Bell } from "lucide-react";
-import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { ChevronLeft, Bell, Database, Palette, Shield, User, ExternalLink } from "lucide-react";
+import { Link } from "react-router-dom";
 import { NotificationSettings } from "@/components/notifications/NotificationSettings";
 
 export default function SettingsPage() {
-  const [debugMode, setDebugMode] = useState(false);
-  const [verboseLogging, setVerboseLogging] = useState(false);
-  const [devTools, setDevTools] = useState(false);
-
-  const handleDevToolsChange = (checked: boolean) => {
-    setDevTools(checked);
-    if (checked) {
-      toast.success("Developer tools enabled");
-    } else {
-      toast.info("Developer tools disabled");
-    }
-  };
+  const [activeTab, setActiveTab] = useState("notifications");
 
   return (
     <AppLayout>
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
+      <div className="space-y-6 animate-fade-in">
+        <div className="flex flex-col space-y-2">
+          <Link to="/dashboard">
+            <Button variant="ghost" size="sm" className="-ml-2 hover:scale-105 transition-transform">
+              <ChevronLeft className="h-4 w-4 mr-1" />
+              Back to Dashboard
+            </Button>
+          </Link>
+          
+          <h1 className="text-3xl font-bold tracking-tight text-transparent bg-gradient-to-r from-primary to-purple-500 bg-clip-text">Settings</h1>
         </div>
 
-        <Tabs defaultValue="general" className="w-full">
-          <TabsList className="mb-6">
-            <TabsTrigger value="general">General</TabsTrigger>
-            <TabsTrigger value="notifications">Notifications</TabsTrigger>
-            <TabsTrigger value="development">Development</TabsTrigger>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-5">
+            <TabsTrigger value="notifications" className="flex items-center gap-2">
+              <Bell className="h-4 w-4" />
+              Notifications
+            </TabsTrigger>
+            <TabsTrigger value="data" className="flex items-center gap-2">
+              <Database className="h-4 w-4" />
+              Data
+            </TabsTrigger>
+            <TabsTrigger value="appearance" className="flex items-center gap-2">
+              <Palette className="h-4 w-4" />
+              Appearance
+            </TabsTrigger>
+            <TabsTrigger value="account" className="flex items-center gap-2">
+              <User className="h-4 w-4" />
+              Account
+            </TabsTrigger>
+            <TabsTrigger value="security" className="flex items-center gap-2">
+              <Shield className="h-4 w-4" />
+              Security
+            </TabsTrigger>
           </TabsList>
-          
-          <TabsContent value="general">
+
+          <TabsContent value="notifications" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <SettingsIcon className="h-5 w-5" />
-                  General Settings
-                </CardTitle>
+                <CardTitle>Email Notifications</CardTitle>
                 <CardDescription>
-                  Manage your application preferences
+                  Configure how and when you receive email notifications for project events
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-medium">Appearance</h3>
-                    <p className="text-muted-foreground text-sm">
-                      Customize the theme of your application
-                    </p>
+              <CardContent>
+                <NotificationSettings />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="data" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Data Management</CardTitle>
+                <CardDescription>
+                  Export your data or import from external sources
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Link to="/settings/data">
+                  <Button className="flex items-center gap-2">
+                    <Database className="h-4 w-4" />
+                    Manage Data
+                    <ExternalLink className="h-4 w-4" />
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="appearance" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Theme Preferences</CardTitle>
+                <CardDescription>
+                  Customize the appearance of your workspace
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium">Dark Mode</h4>
+                      <p className="text-sm text-muted-foreground">Toggle between light and dark themes</p>
+                    </div>
+                    <Badge variant="secondary">Auto-detected</Badge>
                   </div>
-                  <ThemeSwitcher />
                 </div>
               </CardContent>
             </Card>
           </TabsContent>
 
-          <TabsContent value="notifications">
-            <NotificationSettings />
-          </TabsContent>
-          
-          <TabsContent value="development">
+          <TabsContent value="account" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Moon className="h-5 w-5" />
-                  Development Settings
-                </CardTitle>
+                <CardTitle>Account Information</CardTitle>
                 <CardDescription>
-                  Configure development and debugging options
+                  Manage your account details and preferences
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="flex items-center justify-between space-x-2">
-                  <div>
-                    <Label htmlFor="debug-mode" className="font-medium">Debug Mode</Label>
-                    <p className="text-muted-foreground text-sm">
-                      Enable additional debugging information
-                    </p>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-sm font-medium">Display Name</label>
+                      <p className="text-sm text-muted-foreground">Your public display name</p>
+                    </div>
+                    <Badge variant="outline">Not configured</Badge>
                   </div>
-                  <Switch 
-                    id="debug-mode" 
-                    checked={debugMode} 
-                    onCheckedChange={setDebugMode} 
-                  />
                 </div>
-                
-                <div className="flex items-center justify-between space-x-2">
-                  <div>
-                    <Label htmlFor="verbose-logging" className="font-medium">Verbose Logging</Label>
-                    <p className="text-muted-foreground text-sm">
-                      Show detailed logs in the console
-                    </p>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="security" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Security Settings</CardTitle>
+                <CardDescription>
+                  Manage your account security and authentication
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium">Two-Factor Authentication</h4>
+                      <p className="text-sm text-muted-foreground">Add an extra layer of security</p>
+                    </div>
+                    <Badge variant="destructive">Disabled</Badge>
                   </div>
-                  <Switch 
-                    id="verbose-logging" 
-                    checked={verboseLogging} 
-                    onCheckedChange={setVerboseLogging} 
-                  />
-                </div>
-                
-                <div className="flex items-center justify-between space-x-2">
-                  <div>
-                    <Label htmlFor="dev-tools" className="font-medium">Developer Tools</Label>
-                    <p className="text-muted-foreground text-sm">
-                      Enable advanced developer features
-                    </p>
-                  </div>
-                  <Switch 
-                    id="dev-tools" 
-                    checked={devTools} 
-                    onCheckedChange={handleDevToolsChange} 
-                  />
                 </div>
               </CardContent>
             </Card>

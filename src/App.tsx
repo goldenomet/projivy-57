@@ -19,6 +19,7 @@ import AuthPage from "@/pages/AuthPage";
 import NotFound from "@/pages/NotFound";
 import LandingPage from "@/pages/LandingPage";
 import SubscriptionPage from "@/pages/SubscriptionPage";
+import DataManagementPage from "@/pages/DataManagementPage";
 
 // Protected routes
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
@@ -42,6 +43,7 @@ function App() {
         <Route path="/team" element={<ProtectedRoute><TeamPage /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
         <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+        <Route path="/settings/data" element={<ProtectedRoute><DataManagementPage /></ProtectedRoute>} />
         <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
         <Route path="/subscription" element={<ProtectedRoute><SubscriptionPage /></ProtectedRoute>} />
 
