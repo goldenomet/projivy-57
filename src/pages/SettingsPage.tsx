@@ -6,8 +6,9 @@ import { ThemeSwitcher } from "@/components/theme/ThemeSwitcher";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/sonner";
-import { Settings as SettingsIcon, Moon } from "lucide-react";
+import { Settings as SettingsIcon, Moon, Bell } from "lucide-react";
 import { useState } from "react";
+import { NotificationSettings } from "@/components/notifications/NotificationSettings";
 
 export default function SettingsPage() {
   const [debugMode, setDebugMode] = useState(false);
@@ -33,6 +34,7 @@ export default function SettingsPage() {
         <Tabs defaultValue="general" className="w-full">
           <TabsList className="mb-6">
             <TabsTrigger value="general">General</TabsTrigger>
+            <TabsTrigger value="notifications">Notifications</TabsTrigger>
             <TabsTrigger value="development">Development</TabsTrigger>
           </TabsList>
           
@@ -59,6 +61,10 @@ export default function SettingsPage() {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="notifications">
+            <NotificationSettings />
           </TabsContent>
           
           <TabsContent value="development">

@@ -9,6 +9,81 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      notification_logs: {
+        Row: {
+          created_at: string
+          email_sent: boolean | null
+          id: string
+          notification_type: string
+          project_id: string | null
+          sent_at: string | null
+          task_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email_sent?: boolean | null
+          id?: string
+          notification_type: string
+          project_id?: string | null
+          sent_at?: string | null
+          task_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email_sent?: boolean | null
+          id?: string
+          notification_type?: string
+          project_id?: string | null
+          sent_at?: string | null
+          task_id?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      notification_preferences: {
+        Row: {
+          created_at: string
+          deadline_approaching: boolean | null
+          email_enabled: boolean | null
+          id: string
+          project_created: boolean | null
+          project_status_changed: boolean | null
+          task_assigned: boolean | null
+          task_completed: boolean | null
+          task_created: boolean | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          deadline_approaching?: boolean | null
+          email_enabled?: boolean | null
+          id?: string
+          project_created?: boolean | null
+          project_status_changed?: boolean | null
+          task_assigned?: boolean | null
+          task_completed?: boolean | null
+          task_created?: boolean | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          deadline_approaching?: boolean | null
+          email_enabled?: boolean | null
+          id?: string
+          project_created?: boolean | null
+          project_status_changed?: boolean | null
+          task_assigned?: boolean | null
+          task_completed?: boolean | null
+          task_created?: boolean | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -71,7 +146,22 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_or_create_notification_preferences: {
+        Args: { user_uuid: string }
+        Returns: {
+          created_at: string
+          deadline_approaching: boolean | null
+          email_enabled: boolean | null
+          id: string
+          project_created: boolean | null
+          project_status_changed: boolean | null
+          task_assigned: boolean | null
+          task_completed: boolean | null
+          task_created: boolean | null
+          updated_at: string
+          user_id: string
+        }
+      }
     }
     Enums: {
       [_ in never]: never
