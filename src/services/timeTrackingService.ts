@@ -10,9 +10,14 @@ export class TimeTrackingService {
       // First, stop any running timers
       await this.stopRunningTimers();
       
+      // Get current user
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('No authenticated user');
+
       const { data, error } = await supabase
         .from('time_entries')
         .insert({
+          user_id: user.id,
           project_id: projectId,
           task_id: taskId,
           description,
@@ -54,12 +59,16 @@ export class TimeTrackingService {
   // Stop all running timers for the current user
   static async stopRunningTimers(): Promise<void> {
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
       await supabase
         .from('time_entries')
         .update({
           end_time: new Date().toISOString(),
           is_running: false
         })
+        .eq('user_id', user.id)
         .eq('is_running', true);
     } catch (error) {
       console.error('Error stopping running timers:', error);
@@ -69,9 +78,13 @@ export class TimeTrackingService {
   // Get currently running timer
   static async getRunningTimer(): Promise<TimeEntry | null> {
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
+
       const { data, error } = await supabase
         .from('time_entries')
         .select('*')
+        .eq('user_id', user.id)
         .eq('is_running', true)
         .single();
 
@@ -86,9 +99,13 @@ export class TimeTrackingService {
   // Get time entries for a specific project
   static async getProjectTimeEntries(projectId: string): Promise<TimeEntry[]> {
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return [];
+
       const { data, error } = await supabase
         .from('time_entries')
         .select('*')
+        .eq('user_id', user.id)
         .eq('project_id', projectId)
         .order('start_time', { ascending: false });
 
@@ -103,9 +120,13 @@ export class TimeTrackingService {
   // Get all time entries for the current user
   static async getAllTimeEntries(): Promise<TimeEntry[]> {
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return [];
+
       const { data, error } = await supabase
         .from('time_entries')
         .select('*')
+        .eq('user_id', user.id)
         .order('start_time', { ascending: false });
 
       if (error) throw error;
@@ -166,10 +187,14 @@ export class TimeTrackingService {
   // Delete a time entry
   static async deleteTimeEntry(timeEntryId: string): Promise<boolean> {
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return false;
+
       const { error } = await supabase
         .from('time_entries')
         .delete()
-        .eq('id', timeEntryId);
+        .eq('id', timeEntryId)
+        .eq('user_id', user.id);
 
       if (error) throw error;
       return true;
@@ -182,10 +207,14 @@ export class TimeTrackingService {
   // Update a time entry
   static async updateTimeEntry(timeEntryId: string, updates: Partial<TimeEntry>): Promise<TimeEntry | null> {
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
+
       const { data, error } = await supabase
         .from('time_entries')
         .update(updates)
         .eq('id', timeEntryId)
+        .eq('user_id', user.id)
         .select()
         .single();
 

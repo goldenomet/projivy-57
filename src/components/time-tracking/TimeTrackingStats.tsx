@@ -1,7 +1,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { TimeTrackingStats } from "@/types/timeTracking";
+import type { TimeTrackingStats } from "@/types/timeTracking";
 import { Clock, Calendar, TrendingUp, Target } from "lucide-react";
 
 interface TimeTrackingStatsProps {
