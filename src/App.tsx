@@ -1,59 +1,122 @@
 
-import { Route, Routes } from "react-router-dom";
-import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import Index from "./pages/Index";
+import LandingPage from "./pages/LandingPage";
+import Dashboard from "./pages/Dashboard";
+import ProjectsPage from "./pages/ProjectsPage";
+import NewProject from "./pages/NewProject";
+import EditProject from "./pages/EditProject";
+import TeamPage from "./pages/TeamPage";
+import TeamMetricsPage from "./pages/TeamMetricsPage";
+import TimeTrackingPage from "./pages/TimeTrackingPage";
+import CalendarPage from "./pages/CalendarPage";
+import SettingsPage from "./pages/SettingsPage";
+import ProfilePage from "./pages/ProfilePage";
+import SubscriptionPage from "./pages/SubscriptionPage";
+import AdminPage from "./pages/AdminPage";
+import ProjectDetailPage from "./pages/project-detail/ProjectDetailPage";
+import DataManagementPage from "./pages/DataManagementPage";
+import AuthPage from "./pages/AuthPage";
+import NotFound from "./pages/NotFound";
+import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 
-// Pages
-import Index from "@/pages/Index";
-import Dashboard from "@/pages/Dashboard";
-import ProjectsPage from "@/pages/ProjectsPage";
-import ProjectDetailPage from "@/pages/project-detail/ProjectDetailPage";
-import NewProject from "@/pages/NewProject";
-import EditProject from "@/pages/EditProject";
-import CalendarPage from "@/pages/CalendarPage";
-import TeamPage from "@/pages/TeamPage";
-import ProfilePage from "@/pages/ProfilePage";
-import SettingsPage from "@/pages/SettingsPage";
-import AdminPage from "@/pages/AdminPage";
-import AuthPage from "@/pages/AuthPage";
-import NotFound from "@/pages/NotFound";
-import LandingPage from "@/pages/LandingPage";
-import SubscriptionPage from "@/pages/SubscriptionPage";
-import DataManagementPage from "@/pages/DataManagementPage";
-import TimeTrackingPage from "@/pages/TimeTrackingPage";
-
-// Protected routes
-import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+const queryClient = new QueryClient();
 
 function App() {
   return (
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <Routes>
-        {/* Public routes */}
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/welcome" element={<Index />} />
-        <Route path="/auth" element={<AuthPage />} />
-
-        {/* Protected routes */}
-        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-        <Route path="/projects" element={<ProtectedRoute><ProjectsPage /></ProtectedRoute>} />
-        <Route path="/projects/:id" element={<ProtectedRoute><ProjectDetailPage /></ProtectedRoute>} />
-        <Route path="/projects/new" element={<ProtectedRoute><NewProject /></ProtectedRoute>} />
-        <Route path="/projects/edit/:id" element={<ProtectedRoute><EditProject /></ProtectedRoute>} />
-        <Route path="/calendar" element={<ProtectedRoute><CalendarPage /></ProtectedRoute>} />
-        <Route path="/team" element={<ProtectedRoute><TeamPage /></ProtectedRoute>} />
-        <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-        <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
-        <Route path="/settings/data" element={<ProtectedRoute><DataManagementPage /></ProtectedRoute>} />
-        <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
-        <Route path="/subscription" element={<ProtectedRoute><SubscriptionPage /></ProtectedRoute>} />
-        <Route path="/time-tracking" element={<ProtectedRoute><TimeTrackingPage /></ProtectedRoute>} />
-
-        {/* 404 route */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-      <Toaster richColors closeButton position="top-right" />
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+        <TooltipProvider>
+          <SidebarProvider>
+            <Toaster />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/landing" element={<LandingPage />} />
+                <Route path="/auth" element={<AuthPage />} />
+                <Route path="/dashboard" element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                } />
+                <Route path="/projects" element={
+                  <ProtectedRoute>
+                    <ProjectsPage />
+                  </ProtectedRoute>
+                } />
+                <Route path="/projects/new" element={
+                  <ProtectedRoute>
+                    <NewProject />
+                  </ProtectedRoute>
+                } />
+                <Route path="/projects/:id/edit" element={
+                  <ProtectedRoute>
+                    <EditProject />
+                  </ProtectedRoute>
+                } />
+                <Route path="/projects/:id" element={
+                  <ProtectedRoute>
+                    <ProjectDetailPage />
+                  </ProtectedRoute>
+                } />
+                <Route path="/team" element={
+                  <ProtectedRoute>
+                    <TeamPage />
+                  </ProtectedRoute>
+                } />
+                <Route path="/team/metrics" element={
+                  <ProtectedRoute>
+                    <TeamMetricsPage />
+                  </ProtectedRoute>
+                } />
+                <Route path="/time-tracking" element={
+                  <ProtectedRoute>
+                    <TimeTrackingPage />
+                  </ProtectedRoute>
+                } />
+                <Route path="/calendar" element={
+                  <ProtectedRoute>
+                    <CalendarPage />
+                  </ProtectedRoute>
+                } />
+                <Route path="/settings" element={
+                  <ProtectedRoute>
+                    <SettingsPage />
+                  </ProtectedRoute>
+                } />
+                <Route path="/profile" element={
+                  <ProtectedRoute>
+                    <ProfilePage />
+                  </ProtectedRoute>
+                } />
+                <Route path="/subscription" element={
+                  <ProtectedRoute>
+                    <SubscriptionPage />
+                  </ProtectedRoute>
+                } />
+                <Route path="/admin" element={
+                  <ProtectedRoute>
+                    <AdminPage />
+                  </ProtectedRoute>
+                } />
+                <Route path="/data-management" element={
+                  <ProtectedRoute>
+                    <DataManagementPage />
+                  </ProtectedRoute>
+                } />
+                <Route path="/404" element={<NotFound />} />
+                <Route path="*" element={<Navigate to="/404" />} />
+              </Routes>
+            </BrowserRouter>
+          </SidebarProvider>
+        </TooltipProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 }
 

@@ -12,7 +12,8 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Users, Search, ChevronLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Users, Search, ChevronLeft, BarChart3 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -21,7 +22,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
 export default function TeamPage() {
@@ -52,7 +52,15 @@ export default function TeamPage() {
               Back to Dashboard
             </Button>
           </Link>
-          <h1 className="text-3xl font-bold tracking-tight text-transparent bg-gradient-to-r from-primary to-purple-500 bg-clip-text">Team</h1>
+          <div className="flex items-center justify-between">
+            <h1 className="text-3xl font-bold tracking-tight text-transparent bg-gradient-to-r from-primary to-purple-500 bg-clip-text">Team</h1>
+            <Link to="/team/metrics">
+              <Button className="gap-2">
+                <BarChart3 className="h-4 w-4" />
+                View Performance Metrics
+              </Button>
+            </Link>
+          </div>
         </div>
 
         <Card className="border bg-gradient-to-br from-card to-card/90 shadow-md animate-slide-in">
