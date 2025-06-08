@@ -12,7 +12,7 @@ import {
   SidebarGroupLabel
 } from "@/components/ui/sidebar";
 import { Link } from "react-router-dom";
-import { Home, Briefcase, Calendar, Users, Settings, User, Shield, Sparkles } from "lucide-react";
+import { Home, Briefcase, Calendar, Users, Settings, User, Shield, Sparkles, Clock } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
 import { useAuth } from "@/hooks/use-auth";
 import { useState, useEffect } from "react";
@@ -95,6 +95,15 @@ export function Sidebar() {
                   <Link to="/projects" className="flex items-center hover:scale-105 transition-transform">
                     <Briefcase className="mr-2 h-4 w-4" />
                     <span>Projects</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to="/time-tracking" className="flex items-center hover:scale-105 transition-transform">
+                    <Clock className="mr-2 h-4 w-4" />
+                    <span>Time Tracking</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

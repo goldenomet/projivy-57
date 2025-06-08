@@ -20,6 +20,7 @@ import NotFound from "@/pages/NotFound";
 import LandingPage from "@/pages/LandingPage";
 import SubscriptionPage from "@/pages/SubscriptionPage";
 import DataManagementPage from "@/pages/DataManagementPage";
+import TimeTrackingPage from "@/pages/TimeTrackingPage";
 
 // Protected routes
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
@@ -46,6 +47,7 @@ function App() {
         <Route path="/settings/data" element={<ProtectedRoute><DataManagementPage /></ProtectedRoute>} />
         <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
         <Route path="/subscription" element={<ProtectedRoute><SubscriptionPage /></ProtectedRoute>} />
+        <Route path="/time-tracking" element={<ProtectedRoute><TimeTrackingPage /></ProtectedRoute>} />
 
         {/* 404 route */}
         <Route path="*" element={<NotFound />} />
