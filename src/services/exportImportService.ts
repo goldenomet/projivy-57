@@ -1,13 +1,14 @@
 
 import { Project, Task } from '@/types/project';
-import { JSONExporter, ExportData } from './export/jsonExporter';
+import { JSONExporter } from './export/jsonExporter';
+import type { ExportData } from './export/jsonExporter';
 import { CSVExporter } from './export/csvExporter';
 import { ExcelExporter } from './export/excelExporter';
 import { PDFExporter } from './export/pdfExporter';
 import { WordExporter } from './export/wordExporter';
 import { FileDownloader } from './utils/fileDownloader';
 
-export { ExportData };
+export type { ExportData };
 
 export class ExportImportService {
   // Export methods
