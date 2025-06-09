@@ -96,20 +96,59 @@ export default {
 					}
 				},
         'fade-in': {
-          '0%': { opacity: '0' },
-          '100%': { opacity: '1' },
+          '0%': { opacity: '0', transform: 'translateY(10px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
         },
         'slide-in': {
-          '0%': { transform: 'translateY(10px)', opacity: '0' },
+          '0%': { transform: 'translateY(20px)', opacity: '0' },
           '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+        'scale-in': {
+          '0%': { transform: 'scale(0.95)', opacity: '0' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
+        },
+        'shimmer': {
+          '0%': { backgroundPosition: '-200% -200%' },
+          '100%': { backgroundPosition: '200% 200%' },
+        },
+        'floating': {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
+        'bounce-gentle': {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-5px)' },
+        },
+        'pulse-soft': {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.7' },
+        },
+        'wiggle': {
+          '0%, 100%': { transform: 'rotate(0deg)' },
+          '25%': { transform: 'rotate(3deg)' },
+          '75%': { transform: 'rotate(-3deg)' },
         }
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
-        'fade-in': 'fade-in 0.3s ease-out forwards',
-        'slide-in': 'slide-in 0.4s ease-out forwards'
-			}
+        'fade-in': 'fade-in 0.6s ease-out forwards',
+        'slide-in': 'slide-in 0.6s ease-out forwards',
+        'scale-in': 'scale-in 0.5s ease-out forwards',
+        'shimmer': 'shimmer 2s infinite',
+        'floating': 'floating 3s ease-in-out infinite',
+        'bounce-gentle': 'bounce-gentle 2s infinite',
+        'pulse-soft': 'pulse-soft 2s infinite',
+        'wiggle': 'wiggle 1s ease-in-out infinite'
+			},
+			transitionDuration: {
+        '400': '400ms',
+        '600': '600ms',
+        '800': '800ms',
+      },
+      backdropBlur: {
+        xs: '2px',
+      }
 		}
 	},
 	plugins: [require("tailwindcss-animate")],
