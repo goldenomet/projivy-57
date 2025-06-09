@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import { AuthProvider } from "./hooks/use-auth";
 import Index from "./pages/Index";
 import LandingPage from "./pages/LandingPage";
 import Dashboard from "./pages/Dashboard";
@@ -42,83 +43,85 @@ function App() {
           <SidebarProvider>
             <Toaster />
             <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/landing" element={<LandingPage />} />
-                <Route path="/auth" element={<AuthPage />} />
-                <Route path="/dashboard" element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                } />
-                <Route path="/projects" element={
-                  <ProtectedRoute>
-                    <ProjectsPage />
-                  </ProtectedRoute>
-                } />
-                <Route path="/projects/new" element={
-                  <ProtectedRoute>
-                    <NewProject />
-                  </ProtectedRoute>
-                } />
-                <Route path="/projects/:id/edit" element={
-                  <ProtectedRoute>
-                    <EditProject />
-                  </ProtectedRoute>
-                } />
-                <Route path="/projects/:id" element={
-                  <ProtectedRoute>
-                    <ProjectDetailPage />
-                  </ProtectedRoute>
-                } />
-                <Route path="/team" element={
-                  <ProtectedRoute>
-                    <TeamPage />
-                  </ProtectedRoute>
-                } />
-                <Route path="/team/metrics" element={
-                  <ProtectedRoute>
-                    <TeamMetricsPage />
-                  </ProtectedRoute>
-                } />
-                <Route path="/time-tracking" element={
-                  <ProtectedRoute>
-                    <TimeTrackingPage />
-                  </ProtectedRoute>
-                } />
-                <Route path="/calendar" element={
-                  <ProtectedRoute>
-                    <CalendarPage />
-                  </ProtectedRoute>
-                } />
-                <Route path="/settings" element={
-                  <ProtectedRoute>
-                    <SettingsPage />
-                  </ProtectedRoute>
-                } />
-                <Route path="/profile" element={
-                  <ProtectedRoute>
-                    <ProfilePage />
-                  </ProtectedRoute>
-                } />
-                <Route path="/subscription" element={
-                  <ProtectedRoute>
-                    <SubscriptionPage />
-                  </ProtectedRoute>
-                } />
-                <Route path="/admin" element={
-                  <ProtectedRoute>
-                    <AdminPage />
-                  </ProtectedRoute>
-                } />
-                <Route path="/data-management" element={
-                  <ProtectedRoute>
-                    <DataManagementPage />
-                  </ProtectedRoute>
-                } />
-                <Route path="/404" element={<NotFound />} />
-                <Route path="*" element={<Navigate to="/404" />} />
-              </Routes>
+              <AuthProvider>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/landing" element={<LandingPage />} />
+                  <Route path="/auth" element={<AuthPage />} />
+                  <Route path="/dashboard" element={
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/projects" element={
+                    <ProtectedRoute>
+                      <ProjectsPage />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/projects/new" element={
+                    <ProtectedRoute>
+                      <NewProject />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/projects/:id/edit" element={
+                    <ProtectedRoute>
+                      <EditProject />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/projects/:id" element={
+                    <ProtectedRoute>
+                      <ProjectDetailPage />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/team" element={
+                    <ProtectedRoute>
+                      <TeamPage />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/team/metrics" element={
+                    <ProtectedRoute>
+                      <TeamMetricsPage />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/time-tracking" element={
+                    <ProtectedRoute>
+                      <TimeTrackingPage />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/calendar" element={
+                    <ProtectedRoute>
+                      <CalendarPage />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/settings" element={
+                    <ProtectedRoute>
+                      <SettingsPage />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/profile" element={
+                    <ProtectedRoute>
+                      <ProfilePage />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/subscription" element={
+                    <ProtectedRoute>
+                      <SubscriptionPage />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/admin" element={
+                    <ProtectedRoute>
+                      <AdminPage />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/data-management" element={
+                    <ProtectedRoute>
+                      <DataManagementPage />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/404" element={<NotFound />} />
+                  <Route path="*" element={<Navigate to="/404" />} />
+                </Routes>
+              </AuthProvider>
             </BrowserRouter>
           </SidebarProvider>
         </TooltipProvider>
