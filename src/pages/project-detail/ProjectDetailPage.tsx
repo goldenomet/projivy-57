@@ -5,6 +5,7 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { Project, Task } from "@/types/project";
 import { TaskForm } from "@/components/tasks/TaskForm";
 import { FileManager } from "@/components/files/FileManager";
+import { CollaborationPanel } from "@/components/collaboration/CollaborationPanel";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
 import { toast } from "sonner";
@@ -233,6 +234,7 @@ export default function ProjectDetailPage() {
             <TabsList className="bg-gradient-to-r from-muted to-muted/80 mb-6">
               <TabsTrigger value="tasks" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/50 data-[state=active]:to-purple-500/50 data-[state=active]:text-primary-foreground transition-all">Tasks</TabsTrigger>
               <TabsTrigger value="files" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/50 data-[state=active]:to-purple-500/50 data-[state=active]:text-primary-foreground transition-all">Files</TabsTrigger>
+              <TabsTrigger value="collaboration" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/50 data-[state=active]:to-purple-500/50 data-[state=active]:text-primary-foreground transition-all">Collaboration</TabsTrigger>
             </TabsList>
 
             <TabsContent value="tasks" className="mt-0">
@@ -245,6 +247,10 @@ export default function ProjectDetailPage() {
 
             <TabsContent value="files" className="mt-0">
               <FileManager projectId={project.id} />
+            </TabsContent>
+
+            <TabsContent value="collaboration" className="mt-0">
+              <CollaborationPanel projectId={project.id} />
             </TabsContent>
           </Tabs>
         </div>

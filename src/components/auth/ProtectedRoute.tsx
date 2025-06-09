@@ -1,26 +1,24 @@
 
-import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
+import { Navigate } from "react-router-dom";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
 }
 
 export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const { user, loading } = useAuth();
-  const location = useLocation();
+  const { user, isLoading } = useAuth();
 
-  if (loading) {
+  if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="animate-pulse text-lg">Loading...</div>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   if (!user) {
-    // Use replace to avoid adding to history stack
-    return <Navigate to="/auth" state={{ from: location.pathname }} replace />;
+    return <Navigate to="/auth" replace />;
   }
 
   return <>{children}</>;
