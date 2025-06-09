@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Project, Task } from "@/types/project";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, Area, AreaChart } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -32,10 +32,36 @@ export function AnalyticsSection({ projects, tasks, isPreview = false }: Analyti
     value: count
   }));
 
+  // Generate timeline data
+  const timelineData = projects.map(project => {
+    const startDate = new Date(project.startDate);
+    const endDate = new Date(project.endDate);
+    const today = new Date();
+    const totalDays = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+    const daysElapsed = Math.ceil((today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+    const timeProgress = Math.min(Math.max((daysElapsed / totalDays) * 100, 0), 100);
+    
+    return {
+      name: project.name.length > 10 ? project.name.substring(0, 10) + '...' : project.name,
+      progress: project.progress || 0,
+      timeProgress: Math.round(timeProgress),
+      variance: Math.round((project.progress || 0) - timeProgress)
+    };
+  });
+
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
   
   return (
-    <div className={`space-y-6 ${isPreview ? 'filter blur-[1px]' : ''}`}>
+    <div className={`space-y-6 ${isPreview ? 'filter blur-[1px] pointer-events-none' : ''}`}>
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold tracking-tight">Analytics Dashboard</h2>
+        {!isPreview && (
+          <div className="text-sm text-muted-foreground">
+            Real-time insights into your project performance
+          </div>
+        )}
+      </div>
+
       <Tabs 
         value={activeTab} 
         onValueChange={setActiveTab}
@@ -44,7 +70,7 @@ export function AnalyticsSection({ projects, tasks, isPreview = false }: Analyti
         <TabsList className="grid grid-cols-3 mb-4">
           <TabsTrigger value="progress">Project Progress</TabsTrigger>
           <TabsTrigger value="status">Task Status</TabsTrigger>
-          <TabsTrigger value="timeline">Timeline</TabsTrigger>
+          <TabsTrigger value="timeline">Timeline Analysis</TabsTrigger>
         </TabsList>
         
         <TabsContent value="progress" className="space-y-4">
@@ -118,14 +144,61 @@ export function AnalyticsSection({ projects, tasks, isPreview = false }: Analyti
         <TabsContent value="timeline" className="space-y-4">
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-lg font-medium">Project Timeline</CardTitle>
+              <CardTitle className="text-lg font-medium">Project Timeline Analysis</CardTitle>
             </CardHeader>
-            <CardContent className="pt-0 h-[300px] flex items-center justify-center">
-              <div className="text-center text-muted-foreground">
-                <p>Timeline visualization available in the full premium version</p>
-                {isPreview && (
-                  <p className="text-sm mt-2 font-semibold">Upgrade to access advanced timeline analytics</p>
-                )}
+            <CardContent className="pt-0">
+              <div className="h-[300px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={timelineData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
+                    <XAxis 
+                      dataKey="name" 
+                      angle={-45}
+                      textAnchor="end"
+                      height={80}
+                      tick={{ fontSize: 12 }}
+                    />
+                    <YAxis 
+                      label={{ value: 'Progress %', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle' } }}
+                      domain={[0, 100]}
+                    />
+                    <Tooltip 
+                      formatter={(value, name) => {
+                        if (name === 'progress') return [`${value}%`, 'Work Progress'];
+                        if (name === 'timeProgress') return [`${value}%`, 'Time Progress'];
+                        return [`${value}%`, name];
+                      }} 
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="progress" 
+                      stroke="#8884d8" 
+                      strokeWidth={2}
+                      dot={{ r: 4 }}
+                      name="progress"
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="timeProgress" 
+                      stroke="#82ca9d" 
+                      strokeWidth={2}
+                      dot={{ r: 4 }}
+                      strokeDasharray="5 5"
+                      name="timeProgress"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="mt-4 text-sm text-muted-foreground">
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-0.5 bg-[#8884d8]"></div>
+                    <span>Work Progress</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-0.5 bg-[#82ca9d] border-dashed border-t"></div>
+                    <span>Time Progress</span>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
