@@ -16,6 +16,7 @@ import TeamPage from "./pages/TeamPage";
 import TeamMetricsPage from "./pages/TeamMetricsPage";
 import TimeTrackingPage from "./pages/TimeTrackingPage";
 import CalendarPage from "./pages/CalendarPage";
+import MeetingsPage from "./pages/MeetingsPage";
 import SettingsPage from "./pages/SettingsPage";
 import ProfilePage from "./pages/ProfilePage";
 import SubscriptionPage from "./pages/SubscriptionPage";
@@ -91,6 +92,11 @@ function App() {
                   <Route path="/calendar" element={
                     <ProtectedRoute>
                       <CalendarPage />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/meetings" element={
+                    <ProtectedRoute>
+                      <MeetingsPage />
                     </ProtectedRoute>
                   } />
                   <Route path="/settings" element={
