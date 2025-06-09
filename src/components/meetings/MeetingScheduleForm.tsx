@@ -47,7 +47,11 @@ export function MeetingScheduleForm({ onSubmit, onCancel, projects = [], isLoadi
 
   const handleSubmit = (values: z.infer<typeof meetingSchema>) => {
     const meetingData: CreateMeetingData = {
-      ...values,
+      title: values.title,
+      description: values.description || undefined,
+      start_time: values.start_time,
+      end_time: values.end_time,
+      meeting_type: values.meeting_type,
       attendee_emails: values.attendee_emails.split(',').map(email => email.trim()).filter(Boolean),
       meeting_url: values.meeting_url || undefined,
       project_id: values.project_id || undefined,
