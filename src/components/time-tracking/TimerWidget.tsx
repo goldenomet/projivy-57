@@ -47,7 +47,8 @@ export function TimerWidget({ runningTimer, projects, onStartTimer, onStopTimer 
 
   const handleStart = () => {
     if (!selectedProjectId) return;
-    onStartTimer(selectedProjectId, selectedTaskId || undefined, description || undefined);
+    const taskId = selectedTaskId === "no-task" ? undefined : selectedTaskId;
+    onStartTimer(selectedProjectId, taskId, description || undefined);
     setDescription("");
   };
 
@@ -126,7 +127,7 @@ export function TimerWidget({ runningTimer, projects, onStartTimer, onStopTimer 
                 <SelectValue placeholder="Select task (optional)" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">No specific task</SelectItem>
+                <SelectItem value="no-task">No specific task</SelectItem>
                 {availableTasks.map((task) => (
                   <SelectItem key={task.id} value={task.id}>
                     {task.name}
