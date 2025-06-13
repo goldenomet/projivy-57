@@ -314,12 +314,14 @@ export default function CalendarPage() {
                       const tasksForDay = getTasksForDate(date);
                       const hasImportantTasks = tasksForDay.some(task => task.status === 'delayed' || task.status === 'in-progress');
                       
-                      // Extract only button-compatible props
-                      const { displayMonth, ...buttonProps } = dayProps as any;
+                      // Extract only button-compatible props and remove DayPicker-specific props
+                      const { displayMonth, modifiers, ...buttonProps } = dayProps as any;
                       
                       return (
                         <div className="relative">
-                          <button {...buttonProps} />
+                          <button {...buttonProps}>
+                            {date.getDate()}
+                          </button>
                           {tasksForDay.length > 0 && (
                             <div className={`absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 rounded-full ${
                               hasImportantTasks ? 'bg-red-500' : 'bg-primary'
