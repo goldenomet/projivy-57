@@ -8,9 +8,10 @@ import { Badge } from "@/components/ui/badge";
 import { ChevronLeft, Bell, Database, Palette, Shield, User, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 import { NotificationSettings } from "@/components/notifications/NotificationSettings";
+import { ThemeSelector } from "@/components/theme/ThemeSelector";
 
 export default function SettingsPage() {
-  const [activeTab, setActiveTab] = useState("notifications");
+  const [activeTab, setActiveTab] = useState("appearance");
 
   return (
     <AppLayout>
@@ -28,6 +29,10 @@ export default function SettingsPage() {
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-5">
+            <TabsTrigger value="appearance" className="flex items-center gap-2">
+              <Palette className="h-4 w-4" />
+              Appearance
+            </TabsTrigger>
             <TabsTrigger value="notifications" className="flex items-center gap-2">
               <Bell className="h-4 w-4" />
               Notifications
@@ -35,10 +40,6 @@ export default function SettingsPage() {
             <TabsTrigger value="data" className="flex items-center gap-2">
               <Database className="h-4 w-4" />
               Data
-            </TabsTrigger>
-            <TabsTrigger value="appearance" className="flex items-center gap-2">
-              <Palette className="h-4 w-4" />
-              Appearance
             </TabsTrigger>
             <TabsTrigger value="account" className="flex items-center gap-2">
               <User className="h-4 w-4" />
@@ -49,6 +50,20 @@ export default function SettingsPage() {
               Security
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="appearance" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Theme Preferences</CardTitle>
+                <CardDescription>
+                  Customize the appearance of your workspace with beautiful themes
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ThemeSelector />
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           <TabsContent value="notifications" className="space-y-6">
             <Card>
@@ -80,28 +95,6 @@ export default function SettingsPage() {
                     <ExternalLink className="h-4 w-4" />
                   </Button>
                 </Link>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="appearance" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Theme Preferences</CardTitle>
-                <CardDescription>
-                  Customize the appearance of your workspace
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="font-medium">Dark Mode</h4>
-                      <p className="text-sm text-muted-foreground">Toggle between light and dark themes</p>
-                    </div>
-                    <Badge variant="secondary">Auto-detected</Badge>
-                  </div>
-                </div>
               </CardContent>
             </Card>
           </TabsContent>
