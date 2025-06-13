@@ -38,10 +38,24 @@ export function ThemeManagerProvider({ children }: { children: React.ReactNode }
     // Apply theme to CSS variables
     const root = document.documentElement;
     
-    // Apply color variables
+    // Apply all color variables from the theme
     Object.entries(currentTheme.colors).forEach(([key, value]) => {
       root.style.setProperty(`--${key}`, value);
     });
+
+    // Apply theme colors to semantic design tokens
+    root.style.setProperty('--primary', currentTheme.colors.primary);
+    root.style.setProperty('--background', currentTheme.colors.background);
+    root.style.setProperty('--card', currentTheme.colors.card);
+    root.style.setProperty('--border', currentTheme.colors.border);
+    root.style.setProperty('--secondary', currentTheme.colors.secondary);
+    root.style.setProperty('--accent', currentTheme.colors.accent);
+
+    // Update sidebar colors to match theme
+    root.style.setProperty('--sidebar-background', currentTheme.colors.card);
+    root.style.setProperty('--sidebar-border', currentTheme.colors.border);
+    root.style.setProperty('--sidebar-accent', currentTheme.colors.secondary);
+    root.style.setProperty('--sidebar-primary', currentTheme.colors.primary);
 
     // Handle dark/light mode
     root.classList.remove("light", "dark");

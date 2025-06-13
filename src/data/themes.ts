@@ -11,7 +11,7 @@ export const availableThemes: AppTheme[] = [
       primary: '248 74% 74%', // Purple
       secondary: '210 40% 96.1%',
       accent: '210 40% 96.1%',
-      background: '240 6% 98%',
+      background: '0 0% 100%',
       card: '0 0% 100%',
       border: '214.3 31.8% 91.4%',
     },
@@ -41,8 +41,8 @@ export const availableThemes: AppTheme[] = [
       primary: '207 90% 54%', // Ocean Blue
       secondary: '213 27% 84%',
       accent: '213 27% 84%',
-      background: '210 20% 98%',
-      card: '0 0% 100%',
+      background: '210 100% 97%', // Light blue background
+      card: '210 100% 99%',
       border: '213 27% 84%',
     },
     isDark: false,
@@ -56,8 +56,8 @@ export const availableThemes: AppTheme[] = [
       primary: '142 71% 45%', // Forest Green
       secondary: '138 76% 97%',
       accent: '138 76% 97%',
-      background: '0 0% 100%',
-      card: '0 0% 100%',
+      background: '120 60% 97%', // Light green background
+      card: '120 60% 99%',
       border: '138 76% 90%',
     },
     isDark: false,
@@ -71,8 +71,8 @@ export const availableThemes: AppTheme[] = [
       primary: '25 95% 53%', // Sunset Orange
       secondary: '25 100% 97%',
       accent: '25 100% 97%',
-      background: '0 0% 100%',
-      card: '0 0% 100%',
+      background: '30 100% 97%', // Light orange background
+      card: '30 100% 99%',
       border: '25 100% 94%',
     },
     isDark: false,
@@ -86,7 +86,7 @@ export const availableThemes: AppTheme[] = [
       primary: '271 91% 65%', // Midnight Purple
       secondary: '270 8% 15%',
       accent: '270 8% 15%',
-      background: '266 14% 8%',
+      background: '266 14% 8%', // Dark purple background
       card: '270 8% 11%',
       border: '270 8% 20%',
     },
@@ -101,8 +101,8 @@ export const availableThemes: AppTheme[] = [
       primary: '330 81% 60%', // Rose Pink
       secondary: '327 73% 97%',
       accent: '327 73% 97%',
-      background: '0 0% 100%',
-      card: '0 0% 100%',
+      background: '330 100% 98%', // Light pink background
+      card: '330 100% 99%',
       border: '327 73% 94%',
     },
     isDark: false,
@@ -116,7 +116,7 @@ export const availableThemes: AppTheme[] = [
       primary: '176 100% 44%', // Cyber Neon
       secondary: '180 8% 15%',
       accent: '180 8% 15%',
-      background: '180 14% 8%',
+      background: '180 14% 8%', // Dark cyan background
       card: '180 8% 11%',
       border: '180 8% 20%',
     },
