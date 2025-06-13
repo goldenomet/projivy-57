@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { mockTasks } from "@/data/mockData";
@@ -311,9 +310,12 @@ export default function CalendarPage() {
                   onMonthChange={setCurrentMonth}
                   className="pointer-events-auto"
                   components={{
-                    Day: ({ date, ...buttonProps }) => {
+                    Day: ({ date, ...dayProps }) => {
                       const tasksForDay = getTasksForDate(date);
                       const hasImportantTasks = tasksForDay.some(task => task.status === 'delayed' || task.status === 'in-progress');
+                      
+                      // Extract only button-compatible props
+                      const { displayMonth, ...buttonProps } = dayProps as any;
                       
                       return (
                         <div className="relative">
