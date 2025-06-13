@@ -311,13 +311,13 @@ export default function CalendarPage() {
                   onMonthChange={setCurrentMonth}
                   className="pointer-events-auto"
                   components={{
-                    Day: ({ date, ...props }) => {
+                    Day: ({ date, ...buttonProps }) => {
                       const tasksForDay = getTasksForDate(date);
                       const hasImportantTasks = tasksForDay.some(task => task.status === 'delayed' || task.status === 'in-progress');
                       
                       return (
                         <div className="relative">
-                          <button {...props} />
+                          <button {...buttonProps} />
                           {tasksForDay.length > 0 && (
                             <div className={`absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 rounded-full ${
                               hasImportantTasks ? 'bg-red-500' : 'bg-primary'
