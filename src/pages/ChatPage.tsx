@@ -39,6 +39,7 @@ export default function ChatPage() {
   const loadMyChatRooms = async () => {
     try {
       const rooms = await ChatService.getChatRooms();
+      console.log('Loaded my rooms:', rooms);
       setMyRooms(rooms);
       
       // Auto-select first room if none selected
@@ -47,34 +48,49 @@ export default function ChatPage() {
       }
     } catch (error) {
       console.error('Error loading my chat rooms:', error);
+      toast.error('Failed to load your chat rooms');
     }
   };
 
   const loadPublicRooms = async () => {
     try {
       const rooms = await ChatService.getAllPublicRooms();
+      console.log('Loaded public rooms:', rooms);
       setPublicRooms(rooms);
     } catch (error) {
       console.error('Error loading public rooms:', error);
+      toast.error('Failed to load public rooms');
     }
   };
 
   const handleCreateRoom = async (name: string, description?: string) => {
     try {
+      console.log('Creating room:', { name, description });
       const newRoom = await ChatService.createChatRoom(name, description);
+      console.log('Room created:', newRoom);
+      
+      // Join the room immediately after creation
       await ChatService.joinChatRoom(newRoom.id);
+      console.log('Joined room:', newRoom.id);
+      
+      // Update the rooms list and select the new room
       setMyRooms(prev => [newRoom, ...prev]);
       setSelectedRoom(newRoom);
       setShowCreateDialog(false);
-      toast.success('Chat room created successfully');
+      toast.success(`Chat room "${name}" created successfully`);
     } catch (error) {
       console.error('Error creating chat room:', error);
-      toast.error('Failed to create chat room');
+      if (error instanceof Error) {
+        toast.error(`Failed to create chat room: ${error.message}`);
+      } else {
+        toast.error('Failed to create chat room');
+      }
     }
   };
 
   const handleJoinRoom = async (room: ChatRoom) => {
     try {
+      console.log('Joining room:', room);
       await ChatService.joinChatRoom(room.id);
       setSelectedRoom(room);
       
@@ -86,7 +102,11 @@ export default function ChatPage() {
       toast.success(`Joined ${room.name}`);
     } catch (error) {
       console.error('Error joining room:', error);
-      toast.error('Failed to join room');
+      if (error instanceof Error) {
+        toast.error(`Failed to join room: ${error.message}`);
+      } else {
+        toast.error('Failed to join room');
+      }
     }
   };
 

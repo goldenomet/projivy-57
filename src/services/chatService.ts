@@ -5,7 +5,7 @@ import { ChatRoom, ChatMessage, ChatRoomMember } from "@/types/chat";
 export class ChatService {
   // Chat Rooms
   static async createChatRoom(name: string, description?: string): Promise<ChatRoom> {
-    const user = (await supabase.auth.getUser()).data.user;
+    const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('User not authenticated');
 
     const { data, error } = await supabase
@@ -20,42 +20,39 @@ export class ChatService {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error creating chat room:', error);
+      throw error;
+    }
     return data;
   }
 
   static async getChatRooms(): Promise<ChatRoom[]> {
-    const user = (await supabase.auth.getUser()).data.user;
+    const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('User not authenticated');
 
-    // Get all rooms where user is a member OR rooms they created
+    // Get rooms where user is a member
     const { data, error } = await supabase
       .from('chat_rooms')
       .select(`
         *,
         chat_room_members!inner(user_id)
       `)
-      .or(`created_by.eq.${user.id},chat_room_members.user_id.eq.${user.id}`)
+      .eq('chat_room_members.user_id', user.id)
+      .eq('chat_room_members.is_active', true)
       .order('updated_at', { ascending: false });
 
     if (error) {
-      console.error('Error fetching rooms:', error);
-      // Fallback: just get rooms the user created
-      const { data: fallbackData, error: fallbackError } = await supabase
-        .from('chat_rooms')
-        .select('*')
-        .eq('created_by', user.id)
-        .order('updated_at', { ascending: false });
-      
-      if (fallbackError) throw fallbackError;
-      return fallbackData || [];
+      console.error('Error fetching user rooms:', error);
+      // Return empty array instead of throwing to gracefully handle the error
+      return [];
     }
     
     return data || [];
   }
 
   static async joinChatRoom(roomId: string): Promise<void> {
-    const user = (await supabase.auth.getUser()).data.user;
+    const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('User not authenticated');
 
     const { error } = await supabase
@@ -70,12 +67,15 @@ export class ChatService {
         onConflict: 'room_id,user_id'
       });
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error joining chat room:', error);
+      throw error;
+    }
   }
 
   // Messages
   static async sendMessage(roomId: string, content: string, messageType: 'text' | 'system' = 'text'): Promise<ChatMessage> {
-    const user = (await supabase.auth.getUser()).data.user;
+    const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('User not authenticated');
 
     const { data, error } = await supabase
@@ -91,12 +91,15 @@ export class ChatService {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error sending message:', error);
+      throw error;
+    }
     return data as ChatMessage;
   }
 
   static async sendFileMessage(roomId: string, file: File): Promise<ChatMessage> {
-    const user = (await supabase.auth.getUser()).data.user;
+    const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('User not authenticated');
 
     // Upload file to storage
@@ -107,7 +110,10 @@ export class ChatService {
       .from('chat-files')
       .upload(fileName, file);
 
-    if (uploadError) throw uploadError;
+    if (uploadError) {
+      console.error('Error uploading file:', uploadError);
+      throw uploadError;
+    }
 
     // Get public URL
     const { data: { publicUrl } } = supabase.storage
@@ -130,7 +136,10 @@ export class ChatService {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error sending file message:', error);
+      throw error;
+    }
     return data as ChatMessage;
   }
 
@@ -141,7 +150,10 @@ export class ChatService {
       .eq('room_id', roomId)
       .order('created_at', { ascending: true });
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error fetching messages:', error);
+      throw error;
+    }
     return (data || []) as ChatMessage[];
   }
 
@@ -172,7 +184,10 @@ export class ChatService {
       .eq('room_id', roomId)
       .eq('is_active', true);
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error fetching room members:', error);
+      return [];
+    }
     return data || [];
   }
 
@@ -183,7 +198,10 @@ export class ChatService {
       .order('created_at', { ascending: false })
       .limit(50);
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error fetching public rooms:', error);
+      return [];
+    }
     return data || [];
   }
 
@@ -194,7 +212,10 @@ export class ChatService {
       .or(`name.ilike.%${query}%,description.ilike.%${query}%`)
       .order('updated_at', { ascending: false });
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error searching rooms:', error);
+      return [];
+    }
     return data || [];
   }
 }
