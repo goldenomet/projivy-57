@@ -66,7 +66,7 @@ export class ChatService {
       .single();
 
     if (error) throw error;
-    return data;
+    return data as ChatMessage;
   }
 
   static async sendFileMessage(roomId: string, file: File): Promise<ChatMessage> {
@@ -95,7 +95,7 @@ export class ChatService {
         {
           room_id: roomId,
           sender_id: user.id,
-          message_type: 'file',
+          message_type: 'file' as const,
           file_url: publicUrl,
           file_name: file.name,
           file_size: file.size
@@ -105,7 +105,7 @@ export class ChatService {
       .single();
 
     if (error) throw error;
-    return data;
+    return data as ChatMessage;
   }
 
   static async getMessages(roomId: string): Promise<ChatMessage[]> {
@@ -116,7 +116,7 @@ export class ChatService {
       .order('created_at', { ascending: true });
 
     if (error) throw error;
-    return data || [];
+    return (data || []) as ChatMessage[];
   }
 
   // Real-time subscriptions

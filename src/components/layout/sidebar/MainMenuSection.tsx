@@ -1,3 +1,4 @@
+
 import { BarChart3, FolderOpen, Calendar, Users, Clock, Video, TrendingUp, MessageCircle } from "lucide-react";
 import { useLocation, Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
