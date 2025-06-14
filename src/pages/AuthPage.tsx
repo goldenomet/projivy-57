@@ -6,9 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/use-auth";
-import { Navigate } from "react-router-dom";
+import { Navigate, Link } from "react-router-dom";
 import { toast } from "sonner";
-import { Eye, EyeOff, Mail, Lock, User, Sparkles } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, User, Sparkles, ArrowLeft } from "lucide-react";
 
 export default function AuthPage() {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -64,6 +64,20 @@ export default function AuthPage() {
       {/* Left Side - Illustration */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 relative overflow-hidden">
         <div className="absolute inset-0 bg-black/10"></div>
+        
+        {/* Back to Home Button */}
+        <div className="absolute top-6 left-6 z-20">
+          <Link to="/landing">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="bg-white/20 border-white/30 text-white hover:bg-white/30 backdrop-blur-sm"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Home
+            </Button>
+          </Link>
+        </div>
         
         {/* Floating Elements */}
         <div className="absolute top-20 left-20 w-16 h-16 bg-white/20 rounded-full animate-floating"></div>
@@ -134,8 +148,18 @@ export default function AuthPage() {
       </div>
 
       {/* Right Side - Auth Form */}
-      <div className="flex-1 flex items-center justify-center p-8 bg-gradient-to-br from-gray-50 via-white to-blue-50">
-        <Card className="w-full max-w-md shadow-2xl border-0 backdrop-blur-sm bg-white/80">
+      <div className="flex-1 flex flex-col items-center justify-center p-8 bg-gradient-to-br from-gray-50 via-white to-blue-50 relative">
+        {/* Back to Home Button for Mobile */}
+        <div className="absolute top-6 left-6 lg:hidden">
+          <Link to="/landing">
+            <Button variant="outline" size="sm">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Home
+            </Button>
+          </Link>
+        </div>
+
+        <Card className="w-full max-w-md shadow-2xl border-0 backdrop-blur-sm bg-white/80 mt-16 lg:mt-0">
           <CardHeader className="space-y-2 text-center pb-8">
             <div className="mx-auto w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mb-4 shadow-lg">
               <Sparkles className="h-8 w-8 text-white" />
@@ -252,6 +276,11 @@ export default function AuthPage() {
             </Tabs>
           </CardContent>
         </Card>
+
+        {/* Additional content for the right side to fill space */}
+        <div className="mt-8 text-center text-gray-500 text-sm max-w-md">
+          <p>By continuing, you agree to our Terms of Service and Privacy Policy.</p>
+        </div>
       </div>
     </div>
   );
