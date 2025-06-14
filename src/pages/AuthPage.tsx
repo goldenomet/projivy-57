@@ -37,7 +37,7 @@ export default function AuthPage() {
       </div>
 
       {/* Right Side - Clean Form - Reduced width */}
-      <div className="flex-1 lg:w-2/5 flex flex-col items-center justify-center p-8 bg-white relative">
+      <div className="flex-1 lg:w-2/5 flex items-center justify-center p-8 bg-white relative min-h-screen">
         {/* Back to Home Button for Mobile */}
         <div className="absolute top-6 left-6 lg:hidden z-10">
           <Link to="/landing">
