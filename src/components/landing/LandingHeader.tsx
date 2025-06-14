@@ -6,9 +6,16 @@ export function LandingHeader() {
   return (
     <header className="w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
       <div className="w-full max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-        <h1 className="font-bold text-3xl bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-          Projivy
-        </h1>
+        <div className="flex items-center gap-2">
+          <img 
+            src="/lovable-uploads/91e719aa-0b75-4c1e-a8de-ce6ccbed860b.png" 
+            alt="Projivy Logo" 
+            className="h-8 w-8 object-contain"
+          />
+          <h1 className="font-bold text-2xl bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+            Projivy
+          </h1>
+        </div>
         <div className="space-x-2">
           <Link to="/auth">
             <Button variant="ghost" className="hover:bg-primary/10">Sign In</Button>
