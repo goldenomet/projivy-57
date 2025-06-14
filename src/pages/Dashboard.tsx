@@ -37,7 +37,7 @@ export default function Dashboard() {
 
   return (
     <AppLayout>
-      <div className="space-y-8">
+      <div className="space-y-8 max-w-7xl mx-auto">
         <DashboardHeader userProfile={userProfile} />
         
         {/* Quick Stats Overview */}
@@ -98,7 +98,8 @@ export default function Dashboard() {
         {/* Premium Analytics - Now Unlocked */}
         <AnalyticsSection projects={projects} tasks={recentTasks} isPreview={false} />
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Main Content - Stacked Layout */}
+        <div className="space-y-8">
           <ProjectsSection projects={projects} isLoading={isLoading} />
           <TasksSection tasks={recentTasks} isLoading={isLoading} />
         </div>
