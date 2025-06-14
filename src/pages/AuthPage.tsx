@@ -30,8 +30,8 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen flex">
-      {/* Left Side - Clean Gradient */}
+    <div className="min-h-screen flex bg-gray-50">
+      {/* Left Side - Abstract Illustration */}
       <AuthIllustration />
 
       {/* Right Side - Clean Form */}
