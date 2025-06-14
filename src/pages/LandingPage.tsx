@@ -1,13 +1,14 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/use-auth";
 import { Navigate, Link } from "react-router-dom";
 import { CheckCircle, Users, Clock, BarChart3 } from "lucide-react";
-
 export default function LandingPage() {
-  const { user, isLoading } = useAuth();
-  
+  const {
+    user,
+    isLoading
+  } = useAuth();
+
   // Redirect to dashboard if authenticated
   if (user && !isLoading) {
     return <Navigate to="/dashboard" replace />;
@@ -15,42 +16,32 @@ export default function LandingPage() {
 
   // Show loading while checking auth status
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
+    return <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
+      </div>;
   }
-
-  const features = [
-    {
-      icon: CheckCircle,
-      title: "Task Management",
-      description: "Organize and track your tasks with powerful project management tools."
-    },
-    {
-      icon: Users,
-      title: "Team Collaboration", 
-      description: "Work together seamlessly with your team members and stakeholders."
-    },
-    {
-      icon: Clock,
-      title: "Time Tracking",
-      description: "Monitor time spent on projects and improve productivity insights."
-    },
-    {
-      icon: BarChart3,
-      title: "Analytics & Reports",
-      description: "Get detailed insights into your project progress and team performance."
-    }
-  ];
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20">
+  const features = [{
+    icon: CheckCircle,
+    title: "Task Management",
+    description: "Organize and track your tasks with powerful project management tools."
+  }, {
+    icon: Users,
+    title: "Team Collaboration",
+    description: "Work together seamlessly with your team members and stakeholders."
+  }, {
+    icon: Clock,
+    title: "Time Tracking",
+    description: "Monitor time spent on projects and improve productivity insights."
+  }, {
+    icon: BarChart3,
+    title: "Analytics & Reports",
+    description: "Get detailed insights into your project progress and team performance."
+  }];
+  return <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20">
       {/* Header */}
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold">ProjectHub</h1>
+          <h1 className="text-2xl font-bold">Projivy</h1>
           <div className="space-x-2">
             <Link to="/auth">
               <Button variant="ghost">Sign In</Button>
@@ -81,19 +72,13 @@ export default function LandingPage() {
                   Start Free Trial
                 </Button>
               </Link>
-              <Button variant="outline" size="lg" className="text-lg px-8 py-3">
-                Watch Demo
-              </Button>
+              <Button variant="outline" size="lg" className="text-lg px-8 py-3">Learn More 🔰</Button>
             </div>
           </div>
           
           {/* Right side - Illustration */}
           <div className="flex justify-center lg:justify-end">
-            <img 
-              src="/lovable-uploads/2fdc24f0-651a-49b6-9a2c-0fb781bf042c.png" 
-              alt="Professional woman working at desk with laptop"
-              className="w-[500px] h-auto drop-shadow-2xl animate-floating"
-            />
+            <img src="/lovable-uploads/2fdc24f0-651a-49b6-9a2c-0fb781bf042c.png" alt="Professional woman working at desk with laptop" className="w-[500px] h-auto drop-shadow-2xl animate-floating" />
           </div>
         </div>
       </section>
@@ -104,8 +89,7 @@ export default function LandingPage() {
           Everything you need to succeed
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {features.map((feature, index) => (
-            <Card key={index} className="border-border/50 hover:shadow-lg transition-shadow">
+          {features.map((feature, index) => <Card key={index} className="border-border/50 hover:shadow-lg transition-shadow">
               <CardHeader>
                 <feature.icon className="h-12 w-12 text-primary mb-4" />
                 <CardTitle className="text-xl">{feature.title}</CardTitle>
@@ -115,8 +99,7 @@ export default function LandingPage() {
                   {feature.description}
                 </CardDescription>
               </CardContent>
-            </Card>
-          ))}
+            </Card>)}
         </div>
       </section>
 
@@ -145,6 +128,5 @@ export default function LandingPage() {
           <p>&copy; 2024 ProjectHub. All rights reserved.</p>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 }
