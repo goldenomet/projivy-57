@@ -9,18 +9,26 @@ interface LogoProps {
 
 export function Logo({ className, size = "md", showText = false }: LogoProps) {
   const sizes = {
-    sm: "h-12 w-12",
-    md: "h-16 w-16", 
-    lg: "h-20 w-20"
+    sm: "h-8 w-8",
+    md: "h-10 w-10", 
+    lg: "h-12 w-12"
   };
 
   return (
-    <div className={cn("flex items-center", className)}>
+    <div className={cn("flex items-center gap-2", className)}>
       <img 
         src="/lovable-uploads/91e719aa-0b75-4c1e-a8de-ce6ccbed860b.png" 
         alt="Projivy Logo" 
         className={cn("object-contain", sizes[size])}
       />
+      {showText && (
+        <h2 className={cn(
+          size === "sm" ? "text-lg" : size === "md" ? "text-xl" : "text-2xl", 
+          "font-semibold text-transparent bg-gradient-to-r from-primary to-purple-500 bg-clip-text tracking-tight"
+        )}>
+          Projivy
+        </h2>
+      )}
     </div>
   );
 }
