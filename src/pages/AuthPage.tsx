@@ -36,8 +36,31 @@ export default function AuthPage() {
         <AuthIllustration />
       </div>
 
-      {/* Right Side - Clean Form - Reduced width */}
-      <div className="flex-1 lg:w-2/5 flex items-center justify-center p-8 bg-white relative min-h-screen">
+      {/* Right Side - Clean Form with Background Design - Reduced width */}
+      <div className="flex-1 lg:w-2/5 flex items-center justify-center p-8 bg-white relative min-h-screen overflow-hidden">
+        {/* Background Design - Similar to left side but mirrored and lighter */}
+        <div className="absolute inset-0 overflow-hidden opacity-30">
+          {/* Large primary curved shape from top-right */}
+          <div className="absolute -top-20 -right-20 w-[400px] h-[400px] bg-gradient-to-bl from-blue-300 via-blue-400 to-blue-500 rounded-full transform -rotate-12 opacity-60 animate-pulse-soft"></div>
+          
+          {/* Medium curved shape - center right */}
+          <div className="absolute top-1/4 -right-32 w-80 h-80 bg-gradient-to-bl from-indigo-300 via-indigo-400 to-blue-400 rounded-full transform rotate-12 opacity-50 animate-floating"></div>
+          
+          {/* Small accent shape - center */}
+          <div className="absolute top-1/2 right-12 w-48 h-48 bg-gradient-to-bl from-sky-300 via-sky-400 to-blue-300 rounded-full transform -rotate-45 opacity-60 animate-bounce-gentle"></div>
+          
+          {/* Bottom flowing shape */}
+          <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-gradient-to-bl from-blue-400 via-blue-500 to-indigo-500 rounded-full transform -rotate-6 opacity-40 animate-pulse-soft"></div>
+          
+          {/* Left side accent - vertical */}
+          <div className="absolute top-40 left-0 w-32 h-80 bg-gradient-to-r from-blue-200 via-blue-300 to-transparent rounded-r-full opacity-30"></div>
+          
+          {/* Additional small floating elements */}
+          <div className="absolute top-16 right-1/3 w-8 h-8 bg-white/40 rounded-full animate-bounce-gentle"></div>
+          <div className="absolute bottom-28 right-1/4 w-6 h-6 bg-white/50 rounded-full animate-floating"></div>
+          <div className="absolute top-1/3 left-16 w-12 h-12 bg-gradient-to-bl from-purple-300 to-blue-300 rounded-full opacity-40 animate-pulse-soft"></div>
+        </div>
+
         {/* Back to Home Button for Mobile */}
         <div className="absolute top-6 left-6 lg:hidden z-10">
           <Link to="/landing">
@@ -49,7 +72,7 @@ export default function AuthPage() {
         </div>
 
         {/* Main Content Container */}
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-md relative z-10">
           <AuthForm isSignUp={isSignUp} setIsSignUp={setIsSignUp} />
         </div>
       </div>
