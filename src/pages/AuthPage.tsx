@@ -19,7 +19,7 @@ export default function AuthPage() {
   // Show loading while checking auth status
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-400 via-blue-500 to-indigo-600">
+      <div className="flex items-center justify-center min-h-screen w-full bg-gradient-to-br from-blue-400 via-blue-500 to-indigo-600">
         <div className="relative">
           <div className="animate-spin rounded-full h-16 w-16 border-4 border-white/30 border-t-white"></div>
           <Sparkles className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-6 w-6 text-white animate-pulse" />
@@ -29,17 +29,20 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-blue-400 via-blue-500 to-indigo-600">
-      {/* Enhanced Full Background Design covering entire page */}
-      <div className="absolute inset-0 overflow-hidden">
+    <div className="min-h-screen w-full fixed inset-0 overflow-hidden bg-gradient-to-br from-blue-400 via-blue-500 to-indigo-600">
+      {/* Enhanced Full Background Design covering entire viewport */}
+      <div className="absolute inset-0 w-full h-full overflow-hidden">
         {/* Large primary curved shape */}
         <div className="absolute -top-20 -left-20 w-[500px] h-[500px] bg-gradient-to-br from-blue-300 via-blue-400 to-blue-500 rounded-full transform rotate-12 opacity-80 animate-pulse-soft"></div>
         
         {/* Medium curved shape on left */}
         <div className="absolute top-1/4 -left-40 w-96 h-96 bg-gradient-to-br from-indigo-300 via-indigo-400 to-blue-400 rounded-full transform -rotate-12 opacity-60 animate-floating"></div>
         
-        {/* Large shape covering right side */}
-        <div className="absolute -top-32 -right-32 w-[600px] h-[600px] bg-gradient-to-bl from-blue-200 via-blue-300 to-blue-400 rounded-full transform -rotate-12 opacity-50 animate-pulse-soft"></div>
+        {/* Large shape covering right side - Extended to cover full right */}
+        <div className="absolute -top-32 -right-32 w-[800px] h-[800px] bg-gradient-to-bl from-blue-200 via-blue-300 to-blue-400 rounded-full transform -rotate-12 opacity-50 animate-pulse-soft"></div>
+        
+        {/* Additional right coverage */}
+        <div className="absolute top-0 right-0 w-[400px] h-full bg-gradient-to-l from-blue-300 via-blue-400 to-transparent opacity-40"></div>
         
         {/* Medium shape on top right */}
         <div className="absolute top-1/4 -right-28 w-80 h-80 bg-gradient-to-bl from-indigo-200 via-indigo-300 to-blue-300 rounded-full transform rotate-12 opacity-40 animate-floating"></div>
@@ -63,10 +66,13 @@ export default function AuthPage() {
         <div className="absolute top-0 left-1/4 w-32 h-32 bg-gradient-to-br from-blue-200 to-indigo-300 rounded-full opacity-30 animate-floating"></div>
         <div className="absolute bottom-1/4 right-0 w-40 h-40 bg-gradient-to-bl from-sky-200 to-blue-200 rounded-full opacity-25 animate-pulse-soft"></div>
         <div className="absolute top-3/4 left-0 w-24 h-24 bg-gradient-to-br from-indigo-200 to-blue-200 rounded-full opacity-35 animate-bounce-gentle"></div>
+        
+        {/* Right edge coverage to prevent any gaps */}
+        <div className="absolute top-0 right-0 w-32 h-full bg-gradient-to-l from-blue-400 to-transparent opacity-30"></div>
       </div>
 
       {/* Content Container */}
-      <div className="flex flex-col lg:flex-row relative z-10 min-h-screen">
+      <div className="flex flex-col lg:flex-row relative z-10 min-h-screen w-full">
         {/* Left Side - Logo and Welcome Text - Hidden on mobile, visible on desktop */}
         <div className="hidden lg:flex lg:w-3/5 xl:w-2/3 relative">
           {/* Back to Home Button */}
