@@ -31,7 +31,7 @@ export function FeaturesSection() {
 
         {/* Bottom right illustration */}
         <div className="absolute right-2 bottom-8 sm:right-4 sm:bottom-12 lg:right-8 lg:bottom-16">
-          <img src="/lovable-uploads/7964cfa1-76f0-4ff8-a183-73eeeb4ea455.png" alt="Team collaboration illustration with people working together on analytics" className="w-32 h-32 sm:w-40 sm:h-40 lg:w-56 lg:h-56 animate-bounce-gentle opacity-80 object-cover" />
+          <img src="/lovable-uploads/7964cfa1-76f0-4ff8-a183-73eeeb4ea455.png" alt="Team collaboration illustration with people working together on analytics" className="w-32 h-32 sm:w-40 sm:h-40 lg:w-56 lg:h-56 opacity-80 object-cover" />
         </div>
 
         <div className="text-center mb-16">

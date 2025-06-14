@@ -1,5 +1,4 @@
 
-
 import { Card, CardContent } from "@/components/ui/card";
 import { Users, CheckCircle, Shield, Clock, TrendingDown, TrendingUp } from "lucide-react";
 
@@ -45,7 +44,7 @@ export function StatsSection() {
             <img 
               src="/lovable-uploads/8fc75ebe-eae4-434b-b93e-45084a359b3f.png" 
               alt="Productivity and cost-saving illustration with charts, coins, and project management elements"
-              className="w-full max-w-md h-auto animate-floating"
+              className="w-full max-w-md h-auto"
             />
           </div>
           
@@ -69,4 +68,3 @@ export function StatsSection() {
     </section>
   );
 }
-

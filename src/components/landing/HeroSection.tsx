@@ -10,7 +10,7 @@ export function HeroSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left side - Text content */}
           <div className="text-center lg:text-left space-y-8 animate-fade-in">
-            <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-4 py-2 text-sm font-medium text-primary animate-bounce-gentle">
+            <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-4 py-2 text-sm font-medium text-primary">
               <Star className="h-4 w-4" />
               Trusted by 10,000+ teams worldwide
             </div>
@@ -61,7 +61,7 @@ export function HeroSection() {
               <img 
                 src="/lovable-uploads/2fdc24f0-651a-49b6-9a2c-0fb781bf042c.png" 
                 alt="Professional woman working at desk with laptop" 
-                className="relative w-[500px] h-auto drop-shadow-2xl animate-floating hover:scale-105 transition-transform duration-500" 
+                className="relative w-[500px] h-auto drop-shadow-2xl hover:scale-105 transition-transform duration-500" 
               />
             </div>
           </div>
