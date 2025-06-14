@@ -31,8 +31,26 @@ export function FeaturesSection() {
   ];
 
   return (
-    <section className="w-full py-20 animate-slide-in">
+    <section className="w-full py-20 animate-slide-in relative">
       <div className="w-full max-w-7xl mx-auto px-4">
+        {/* Left side illustration */}
+        <div className="absolute left-4 top-32 hidden lg:block">
+          <img 
+            src="/lovable-uploads/8d6cef94-6b1a-43d4-80f7-d111e348b010.png" 
+            alt="Project management workflow illustration with document and task organization"
+            className="w-32 h-32 object-contain animate-floating opacity-80"
+          />
+        </div>
+
+        {/* Right side illustration */}
+        <div className="absolute right-4 bottom-32 hidden lg:block">
+          <img 
+            src="/lovable-uploads/7964cfa1-76f0-4ff8-a183-73eeeb4ea455.png" 
+            alt="Team collaboration illustration with people working together on analytics"
+            className="w-32 h-32 object-contain animate-bounce-gentle opacity-80"
+          />
+        </div>
+
         <div className="text-center mb-16">
           <h3 className="text-4xl font-bold mb-4">
             Everything you need to 
@@ -41,24 +59,6 @@ export function FeaturesSection() {
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Powerful features designed to streamline your workflow and boost team productivity
           </p>
-        </div>
-        
-        {/* Visual illustrations */}
-        <div className="flex justify-center items-center gap-8 mb-16">
-          <div className="flex justify-center">
-            <img 
-              src="/lovable-uploads/8d6cef94-6b1a-43d4-80f7-d111e348b010.png" 
-              alt="Project management workflow illustration with document and task organization"
-              className="w-48 h-48 object-contain animate-floating"
-            />
-          </div>
-          <div className="flex justify-center">
-            <img 
-              src="/lovable-uploads/7964cfa1-76f0-4ff8-a183-73eeeb4ea455.png" 
-              alt="Team collaboration illustration with people working together on analytics"
-              className="w-48 h-48 object-contain animate-bounce-gentle"
-            />
-          </div>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
