@@ -63,24 +63,38 @@ export default function LandingPage() {
       </header>
 
       {/* Hero Section */}
-      <section className="container mx-auto px-4 py-16 text-center">
-        <h2 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
-          Manage Projects with
-          <span className="text-primary"> Confidence</span>
-        </h2>
-        <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-          The ultimate project management platform that helps teams collaborate, 
-          track progress, and deliver results efficiently.
-        </p>
-        <div className="space-x-4">
-          <Link to="/auth">
-            <Button size="lg" className="text-lg px-8 py-3">
-              Start Free Trial
-            </Button>
-          </Link>
-          <Button variant="outline" size="lg" className="text-lg px-8 py-3">
-            Watch Demo
-          </Button>
+      <section className="container mx-auto px-4 py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          {/* Left side - Text content */}
+          <div className="text-center lg:text-left">
+            <h2 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
+              Manage Projects with
+              <span className="text-primary"> Confidence</span>
+            </h2>
+            <p className="text-xl text-muted-foreground mb-8 max-w-2xl">
+              The ultimate project management platform that helps teams collaborate, 
+              track progress, and deliver results efficiently.
+            </p>
+            <div className="space-x-4">
+              <Link to="/auth">
+                <Button size="lg" className="text-lg px-8 py-3">
+                  Start Free Trial
+                </Button>
+              </Link>
+              <Button variant="outline" size="lg" className="text-lg px-8 py-3">
+                Watch Demo
+              </Button>
+            </div>
+          </div>
+          
+          {/* Right side - Illustration */}
+          <div className="flex justify-center lg:justify-end">
+            <img 
+              src="/lovable-uploads/2fdc24f0-651a-49b6-9a2c-0fb781bf042c.png" 
+              alt="Professional woman working at desk with laptop"
+              className="w-[500px] h-auto drop-shadow-2xl animate-floating"
+            />
+          </div>
         </div>
       </section>
 
