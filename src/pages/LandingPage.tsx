@@ -41,7 +41,7 @@ export default function LandingPage() {
       {/* Header */}
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Projivy</h1>
+          <h1 className="font-bold text-3xl">Projivy</h1>
           <div className="space-x-2">
             <Link to="/auth">
               <Button variant="ghost">Sign In</Button>
