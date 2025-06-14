@@ -1,8 +1,7 @@
-
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { ThemeManagerProvider } from "@/hooks/use-theme-manager";
@@ -27,6 +26,7 @@ import DataManagementPage from "./pages/DataManagementPage";
 import AuthPage from "./pages/AuthPage";
 import NotFound from "./pages/NotFound";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
+import ChatPage from "@/pages/ChatPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -126,6 +126,7 @@ function App() {
                         <DataManagementPage />
                       </ProtectedRoute>
                     } />
+                    <Route path="/chat" element={<ChatPage />} />
                     <Route path="/404" element={<NotFound />} />
                     <Route path="*" element={<Navigate to="/404" />} />
                   </Routes>
