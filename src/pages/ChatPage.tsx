@@ -5,8 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, MessageCircle, Search, Users, Hash } from "lucide-react";
+import { Plus, MessageCircle, Search, Users, Hash, MoreVertical } from "lucide-react";
 import { ChatService } from "@/services/chatService";
 import { ChatRoom } from "@/types/chat";
 import { toast } from "sonner";
@@ -20,7 +19,7 @@ export default function ChatPage() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeTab, setActiveTab] = useState("my-rooms");
+  const [showSearch, setShowSearch] = useState(false);
 
   useEffect(() => {
     loadInitialData();
@@ -45,6 +44,11 @@ export default function ChatPage() {
     try {
       const rooms = await ChatService.getChatRooms();
       setMyRooms(rooms);
+      
+      // Auto-select first room if none selected
+      if (rooms.length > 0 && !selectedRoom) {
+        setSelectedRoom(rooms[0]);
+      }
     } catch (error) {
       console.error('Error loading my chat rooms:', error);
     }
@@ -105,14 +109,16 @@ export default function ChatPage() {
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+  const formatLastMessage = (room: ChatRoom) => {
+    return `Last updated ${new Date(room.updated_at).toLocaleDateString()}`;
   };
+
+  const filteredRooms = showSearch 
+    ? [...myRooms, ...publicRooms].filter(room => 
+        room.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        room.description?.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : myRooms;
 
   if (loading) {
     return (
@@ -129,155 +135,140 @@ export default function ChatPage() {
 
   return (
     <AppLayout>
-      <div className="h-[calc(100vh-8rem)] flex gap-4">
-        {/* Chat Rooms Sidebar */}
-        <Card className="w-80 flex flex-col">
-          <CardHeader className="flex-shrink-0">
-            <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                <MessageCircle className="h-5 w-5" />
-                Team Chat
-              </CardTitle>
+      <div className="h-[calc(100vh-8rem)] flex">
+        {/* Chat Rooms Sidebar - Telegram Style */}
+        <div className="w-80 border-r border-border flex flex-col bg-card">
+          {/* Header */}
+          <div className="p-4 border-b border-border">
+            <div className="flex items-center justify-between mb-3">
+              <h1 className="text-xl font-semibold">Chats</h1>
+              <div className="flex gap-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowSearch(!showSearch)}
+                  className="h-8 w-8"
+                >
+                  <Search className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowCreateDialog(true)}
+                  className="h-8 w-8"
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+            
+            {showSearch && (
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Search chats..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                  className="flex-1"
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Chat List */}
+          <div className="flex-1 overflow-auto">
+            {filteredRooms.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-full text-center p-8">
+                <MessageCircle className="h-16 w-16 text-muted-foreground mb-4" />
+                <h3 className="text-lg font-medium mb-2">No chats yet</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Start a conversation by creating a new chat room
+                </p>
+                <Button onClick={() => setShowCreateDialog(true)}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  New Chat
+                </Button>
+              </div>
+            ) : (
+              <div className="py-2">
+                {filteredRooms.map((room) => (
+                  <div
+                    key={room.id}
+                    className={`flex items-center p-3 mx-2 mb-1 rounded-lg cursor-pointer transition-colors ${
+                      selectedRoom?.id === room.id
+                        ? 'bg-primary/10 border border-primary/20'
+                        : 'hover:bg-muted/50'
+                    }`}
+                    onClick={() => setSelectedRoom(room)}
+                  >
+                    {/* Avatar */}
+                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mr-3 flex-shrink-0">
+                      <Hash className="h-6 w-6 text-primary" />
+                    </div>
+                    
+                    {/* Chat Info */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between mb-1">
+                        <h3 className="font-medium truncate text-sm">{room.name}</h3>
+                        <span className="text-xs text-muted-foreground ml-2">
+                          {new Date(room.updated_at).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <p className="text-xs text-muted-foreground truncate">
+                        {room.description || 'No description'}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Quick Actions */}
+          <div className="p-3 border-t border-border">
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setShowSearch(true);
+                  loadPublicRooms();
+                }}
+                className="flex-1"
+              >
+                <Users className="h-4 w-4 mr-2" />
+                Discover
+              </Button>
               <Button
                 size="sm"
                 onClick={() => setShowCreateDialog(true)}
-                className="h-8 w-8 p-0"
+                className="flex-1"
               >
-                <Plus className="h-4 w-4" />
+                <Plus className="h-4 w-4 mr-2" />
+                New Chat
               </Button>
             </div>
-          </CardHeader>
-          
-          <CardContent className="flex-1 overflow-auto p-0">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full">
-              <TabsList className="grid w-full grid-cols-2 mx-4 mb-4">
-                <TabsTrigger value="my-rooms" className="text-xs">
-                  My Rooms ({myRooms.length})
-                </TabsTrigger>
-                <TabsTrigger value="discover" className="text-xs">
-                  Discover
-                </TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="my-rooms" className="px-4 mt-0">
-                {myRooms.length === 0 ? (
-                  <div className="text-center text-muted-foreground py-8">
-                    <Hash className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p className="font-medium">No rooms yet</p>
-                    <p className="text-sm">Create your first room to get started</p>
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    {myRooms.map((room) => (
-                      <div
-                        key={room.id}
-                        className={`p-3 rounded-lg cursor-pointer transition-colors border ${
-                          selectedRoom?.id === room.id
-                            ? 'bg-primary/10 border-primary/20'
-                            : 'hover:bg-muted/50 border-transparent'
-                        }`}
-                        onClick={() => handleJoinRoom(room)}
-                      >
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1 min-w-0">
-                            <h3 className="font-medium truncate"># {room.name}</h3>
-                            {room.description && (
-                              <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
-                                {room.description}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                        <div className="flex items-center justify-between mt-2">
-                          <span className="text-xs text-muted-foreground">
-                            {formatDate(room.updated_at)}
-                          </span>
-                          <Badge variant="secondary" className="text-xs">
-                            <Users className="h-3 w-3 mr-1" />
-                            Room
-                          </Badge>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </TabsContent>
-              
-              <TabsContent value="discover" className="px-4 mt-0">
-                <div className="space-y-4">
-                  <div className="flex gap-2">
-                    <Input
-                      placeholder="Search rooms..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                      className="flex-1"
-                    />
-                    <Button variant="outline" size="icon" onClick={handleSearch}>
-                      <Search className="h-4 w-4" />
-                    </Button>
-                  </div>
-                  
-                  {publicRooms.length === 0 ? (
-                    <div className="text-center text-muted-foreground py-8">
-                      <Search className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                      <p className="font-medium">No rooms found</p>
-                      <p className="text-sm">Try a different search term</p>
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      {publicRooms.map((room) => (
-                        <div
-                          key={room.id}
-                          className="p-3 rounded-lg border hover:bg-muted/50 cursor-pointer transition-colors"
-                          onClick={() => handleJoinRoom(room)}
-                        >
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1 min-w-0">
-                              <h3 className="font-medium truncate"># {room.name}</h3>
-                              {room.description && (
-                                <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
-                                  {room.description}
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                          <div className="flex items-center justify-between mt-2">
-                            <span className="text-xs text-muted-foreground">
-                              Created {formatDate(room.created_at)}
-                            </span>
-                            <Badge variant="outline" className="text-xs">
-                              <Plus className="h-3 w-3 mr-1" />
-                              Join
-                            </Badge>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </TabsContent>
-            </Tabs>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* Chat Window */}
-        <div className="flex-1">
+        <div className="flex-1 flex flex-col">
           {selectedRoom ? (
             <ChatWindow room={selectedRoom} />
           ) : (
-            <Card className="h-full flex items-center justify-center">
-              <div className="text-center text-muted-foreground max-w-md">
-                <MessageCircle className="h-16 w-16 mx-auto mb-4 opacity-50" />
-                <h3 className="text-lg font-medium mb-2">Welcome to Team Chat</h3>
-                <p className="mb-4">Connect with your team in real-time. Create chat rooms, share files, and collaborate effectively.</p>
-                <div className="space-y-2 text-sm">
-                  <p>• Create new chat rooms for different topics</p>
-                  <p>• Join existing rooms to participate in discussions</p>
-                  <p>• Share files and voice messages</p>
-                </div>
+            <div className="flex-1 flex items-center justify-center bg-muted/20">
+              <div className="text-center max-w-md">
+                <MessageCircle className="h-20 w-20 mx-auto mb-6 text-muted-foreground" />
+                <h2 className="text-2xl font-semibold mb-4">Welcome to Team Chat</h2>
+                <p className="text-muted-foreground mb-6">
+                  Select a chat to start messaging or create a new one to get started.
+                </p>
+                <Button onClick={() => setShowCreateDialog(true)}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Create New Chat
+                </Button>
               </div>
-            </Card>
+            </div>
           )}
         </div>
       </div>

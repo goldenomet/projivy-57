@@ -12,7 +12,7 @@ import { SettingsMenuSection } from "./sidebar/SettingsMenuSection";
 import { UserProfileFooter } from "./sidebar/UserProfileFooter";
 
 export function Sidebar() {
-  const { user, profile, isAdmin, getInitials } = useSidebarData();
+  const { user, profile, getInitials } = useSidebarData();
 
   return (
     <SidebarContainer>
@@ -23,7 +23,7 @@ export function Sidebar() {
       </SidebarHeader>
       
       <SidebarContent>
-        <MainMenuSection isAdmin={isAdmin} />
+        <MainMenuSection />
         <SettingsMenuSection />
       </SidebarContent>
       
