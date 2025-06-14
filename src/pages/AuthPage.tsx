@@ -20,7 +20,7 @@ export default function AuthPage() {
   // Show loading while checking auth status
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-white">
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <div className="relative">
           <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-200 border-t-blue-600"></div>
           <Sparkles className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-6 w-6 text-blue-600 animate-pulse" />
@@ -30,9 +30,9 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row">
+    <div className="min-h-screen flex flex-col lg:flex-row bg-gray-50">
       {/* Left Side - Abstract Illustration - Hidden on mobile, visible on desktop */}
-      <div className="hidden lg:flex lg:w-3/5 xl:w-2/3 bg-white relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-3/5 xl:w-2/3 bg-gray-50 relative overflow-hidden">
         <AuthIllustration />
       </div>
 
