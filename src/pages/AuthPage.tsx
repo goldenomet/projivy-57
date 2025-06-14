@@ -31,11 +31,13 @@ export default function AuthPage() {
 
   return (
     <div className="min-h-screen flex bg-gray-50">
-      {/* Left Side - Abstract Illustration */}
-      <AuthIllustration />
+      {/* Left Side - Abstract Illustration - Increased width */}
+      <div className="hidden lg:flex lg:w-3/5 bg-white relative overflow-hidden">
+        <AuthIllustration />
+      </div>
 
-      {/* Right Side - Clean Form */}
-      <div className="flex-1 flex flex-col items-center justify-center p-8 bg-white relative">
+      {/* Right Side - Clean Form - Reduced width */}
+      <div className="flex-1 lg:w-2/5 flex flex-col items-center justify-center p-8 bg-white relative">
         {/* Back to Home Button for Mobile */}
         <div className="absolute top-6 left-6 lg:hidden z-10">
           <Link to="/landing">

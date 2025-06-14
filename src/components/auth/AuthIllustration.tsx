@@ -5,7 +5,7 @@ import { ArrowLeft } from "lucide-react";
 
 export function AuthIllustration() {
   return (
-    <div className="hidden lg:flex lg:w-1/2 bg-white relative overflow-hidden">
+    <>
       {/* Back to Home Button */}
       <div className="absolute top-6 left-6 z-20">
         <Link to="/landing">
@@ -54,6 +54,6 @@ export function AuthIllustration() {
           </p>
         </div>
       </div>
-    </div>
+    </>
   );
 }
