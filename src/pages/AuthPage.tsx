@@ -97,7 +97,7 @@ export default function AuthPage() {
                 <img 
                   src="/lovable-uploads/2fdc24f0-651a-49b6-9a2c-0fb781bf042c.png" 
                   alt="Professional woman working at desk with laptop"
-                  className="w-80 h-auto mx-auto drop-shadow-2xl animate-floating"
+                  className="w-96 h-auto mx-auto drop-shadow-2xl animate-floating"
                 />
               </div>
               
