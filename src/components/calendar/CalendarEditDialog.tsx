@@ -23,7 +23,7 @@ interface CalendarEditDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   selectedTask: Task | null;
-  setSelectedTask: (task: Task | null) => void;
+  setSelectedTask: React.Dispatch<React.SetStateAction<Task | null>>;
   onSave: () => void;
 }
 
