@@ -30,14 +30,14 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row bg-gray-50">
+    <div className="min-h-screen flex flex-col lg:flex-row">
       {/* Left Side - Abstract Illustration - Hidden on mobile, visible on desktop */}
       <div className="hidden lg:flex lg:w-3/5 xl:w-2/3 bg-white relative overflow-hidden">
         <AuthIllustration />
       </div>
 
       {/* Right Side - Form Area - Full width on mobile, partial on desktop */}
-      <div className="flex-1 lg:w-2/5 xl:w-1/3 flex items-center justify-center p-4 sm:p-6 md:p-8 lg:p-12 bg-white relative min-h-screen overflow-hidden">
+      <div className="flex-1 lg:w-2/5 xl:w-1/3 flex items-center justify-center p-4 sm:p-6 md:p-8 lg:p-12 bg-gray-50 relative min-h-screen overflow-hidden">
         {/* Background Design - Responsive sizing */}
         <div className="absolute inset-0 overflow-hidden opacity-20 sm:opacity-25 lg:opacity-30">
           {/* Large primary curved shape - Responsive sizes */}
