@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/use-auth";
 import { Navigate, Link } from "react-router-dom";
 import { toast } from "sonner";
-import { Eye, EyeOff, Mail, Lock, User, Sparkles, ArrowLeft } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, User, Sparkles, ArrowLeft, Shield, Zap, Users } from "lucide-react";
 
 export default function AuthPage() {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -147,139 +147,179 @@ export default function AuthPage() {
         </div>
       </div>
 
-      {/* Right Side - Auth Form */}
-      <div className="flex-1 flex flex-col items-center justify-center p-8 bg-gradient-to-br from-gray-50 via-white to-blue-50 relative">
+      {/* Right Side - Auth Form with Background */}
+      <div className="flex-1 flex flex-col items-center justify-center p-8 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-10 right-10 w-32 h-32 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-20 left-10 w-40 h-40 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full blur-3xl"></div>
+          <div className="absolute top-1/2 right-1/4 w-24 h-24 bg-gradient-to-br from-indigo-400 to-blue-500 rounded-full blur-2xl"></div>
+        </div>
+
+        {/* Floating Geometric Shapes */}
+        <div className="absolute top-20 right-20 w-8 h-8 bg-blue-400/20 rounded-full animate-bounce"></div>
+        <div className="absolute bottom-32 right-32 w-6 h-6 bg-purple-400/30 rounded-full animate-pulse"></div>
+        <div className="absolute top-40 right-40 w-4 h-4 bg-pink-400/25 rounded-full animate-ping"></div>
+
         {/* Back to Home Button for Mobile */}
-        <div className="absolute top-6 left-6 lg:hidden">
+        <div className="absolute top-6 left-6 lg:hidden z-10">
           <Link to="/landing">
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" className="bg-white/80 backdrop-blur-sm">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Home
             </Button>
           </Link>
         </div>
 
-        <Card className="w-full max-w-md shadow-2xl border-0 backdrop-blur-sm bg-white/80 mt-16 lg:mt-0">
-          <CardHeader className="space-y-2 text-center pb-8">
-            <div className="mx-auto w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mb-4 shadow-lg">
-              <Sparkles className="h-8 w-8 text-white" />
-            </div>
-            <CardTitle className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              {isSignUp ? "Create Account" : "Welcome Back"}
-            </CardTitle>
-            <CardDescription className="text-base text-gray-600">
-              {isSignUp 
-                ? "Start your journey with us today" 
-                : "Sign in to continue to your workspace"
-              }
-            </CardDescription>
-          </CardHeader>
-          
-          <CardContent>
-            <Tabs value={isSignUp ? "signup" : "signin"} onValueChange={(value) => setIsSignUp(value === "signup")}>
-              <TabsList className="grid w-full grid-cols-2 mb-8 bg-gray-100 p-1">
-                <TabsTrigger value="signin" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
-                  Sign In
-                </TabsTrigger>
-                <TabsTrigger value="signup" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
-                  Sign Up
-                </TabsTrigger>
-              </TabsList>
-              
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {isSignUp && (
+        {/* Main Content Container */}
+        <div className="relative z-10 w-full max-w-md">
+          <Card className="shadow-2xl border-0 backdrop-blur-sm bg-white/90 mt-16 lg:mt-0">
+            <CardHeader className="space-y-2 text-center pb-8">
+              <div className="mx-auto w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mb-4 shadow-lg">
+                <Sparkles className="h-8 w-8 text-white" />
+              </div>
+              <CardTitle className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                {isSignUp ? "Create Account" : "Welcome Back"}
+              </CardTitle>
+              <CardDescription className="text-base text-gray-600">
+                {isSignUp 
+                  ? "Start your journey with us today" 
+                  : "Sign in to continue to your workspace"
+                }
+              </CardDescription>
+            </CardHeader>
+            
+            <CardContent>
+              <Tabs value={isSignUp ? "signup" : "signin"} onValueChange={(value) => setIsSignUp(value === "signup")}>
+                <TabsList className="grid w-full grid-cols-2 mb-8 bg-gray-100 p-1">
+                  <TabsTrigger value="signin" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
+                    Sign In
+                  </TabsTrigger>
+                  <TabsTrigger value="signup" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
+                    Sign Up
+                  </TabsTrigger>
+                </TabsList>
+                
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  {isSignUp && (
+                    <div className="space-y-2">
+                      <Label htmlFor="fullName" className="text-sm font-medium text-gray-700">
+                        Full Name
+                      </Label>
+                      <div className="relative">
+                        <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                        <Input
+                          id="fullName"
+                          type="text"
+                          placeholder="John Doe"
+                          value={fullName}
+                          onChange={(e) => setFullName(e.target.value)}
+                          required={isSignUp}
+                          className="pl-10 h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                        />
+                      </div>
+                    </div>
+                  )}
+                  
                   <div className="space-y-2">
-                    <Label htmlFor="fullName" className="text-sm font-medium text-gray-700">
-                      Full Name
+                    <Label htmlFor="email" className="text-sm font-medium text-gray-700">
+                      Email Address
                     </Label>
                     <div className="relative">
-                      <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                      <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                       <Input
-                        id="fullName"
-                        type="text"
-                        placeholder="John Doe"
-                        value={fullName}
-                        onChange={(e) => setFullName(e.target.value)}
-                        required={isSignUp}
+                        id="email"
+                        type="email"
+                        placeholder="john@example.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
                         className="pl-10 h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
                       />
                     </div>
                   </div>
-                )}
-                
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="text-sm font-medium text-gray-700">
-                    Email Address
-                  </Label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="john@example.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      className="pl-10 h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
-                    />
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="password" className="text-sm font-medium text-gray-700">
+                      Password
+                    </Label>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                      <Input
+                        id="password"
+                        type={showPassword ? "text" : "password"}
+                        placeholder="••••••••"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        className="pl-10 pr-10 h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      >
+                        {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                      </button>
+                    </div>
                   </div>
-                </div>
+                  
+                  <Button 
+                    type="submit" 
+                    className="w-full h-12 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]" 
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <div className="flex items-center">
+                        <div className="animate-spin rounded-full h-5 w-5 border-2 border-white/30 border-t-white mr-2"></div>
+                        Processing...
+                      </div>
+                    ) : (
+                      isSignUp ? "Create Account" : "Sign In"
+                    )}
+                  </Button>
+                </form>
                 
-                <div className="space-y-2">
-                  <Label htmlFor="password" className="text-sm font-medium text-gray-700">
-                    Password
-                  </Label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <Input
-                      id="password"
-                      type={showPassword ? "text" : "password"}
-                      placeholder="••••••••"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      className="pl-10 pr-10 h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                    >
-                      {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                {!isSignUp && (
+                  <div className="text-center mt-6">
+                    <button className="text-sm text-blue-600 hover:text-blue-700 hover:underline transition-colors">
+                      Forgot your password?
                     </button>
                   </div>
-                </div>
-                
-                <Button 
-                  type="submit" 
-                  className="w-full h-12 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]" 
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? (
-                    <div className="flex items-center">
-                      <div className="animate-spin rounded-full h-5 w-5 border-2 border-white/30 border-t-white mr-2"></div>
-                      Processing...
-                    </div>
-                  ) : (
-                    isSignUp ? "Create Account" : "Sign In"
-                  )}
-                </Button>
-              </form>
-              
-              {!isSignUp && (
-                <div className="text-center mt-6">
-                  <button className="text-sm text-blue-600 hover:text-blue-700 hover:underline transition-colors">
-                    Forgot your password?
-                  </button>
-                </div>
-              )}
-            </Tabs>
-          </CardContent>
-        </Card>
+                )}
+              </Tabs>
+            </CardContent>
+          </Card>
 
-        {/* Additional content for the right side to fill space */}
-        <div className="mt-8 text-center text-gray-500 text-sm max-w-md">
-          <p>By continuing, you agree to our Terms of Service and Privacy Policy.</p>
+          {/* Feature Highlights */}
+          <div className="mt-8 grid grid-cols-3 gap-4 text-center">
+            <div className="flex flex-col items-center space-y-2">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                <Shield className="h-6 w-6 text-white" />
+              </div>
+              <p className="text-sm font-medium text-gray-700">Secure</p>
+              <p className="text-xs text-gray-500">Bank-level security</p>
+            </div>
+            <div className="flex flex-col items-center space-y-2">
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                <Zap className="h-6 w-6 text-white" />
+              </div>
+              <p className="text-sm font-medium text-gray-700">Fast</p>
+              <p className="text-xs text-gray-500">Lightning quick</p>
+            </div>
+            <div className="flex flex-col items-center space-y-2">
+              <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl flex items-center justify-center shadow-lg">
+                <Users className="h-6 w-6 text-white" />
+              </div>
+              <p className="text-sm font-medium text-gray-700">Collaborative</p>
+              <p className="text-xs text-gray-500">Team-friendly</p>
+            </div>
+          </div>
+
+          {/* Terms and Privacy */}
+          <div className="mt-8 text-center text-gray-500 text-xs max-w-sm mx-auto">
+            <p>By continuing, you agree to our <span className="text-blue-600 hover:underline cursor-pointer">Terms of Service</span> and <span className="text-blue-600 hover:underline cursor-pointer">Privacy Policy</span>.</p>
+          </div>
         </div>
       </div>
     </div>
