@@ -43,6 +43,24 @@ export function FeaturesSection() {
           </p>
         </div>
         
+        {/* Visual illustrations */}
+        <div className="flex justify-center items-center gap-8 mb-16">
+          <div className="flex justify-center">
+            <img 
+              src="/lovable-uploads/8d6cef94-6b1a-43d4-80f7-d111e348b010.png" 
+              alt="Project management workflow illustration with document and task organization"
+              className="w-48 h-48 object-contain animate-floating"
+            />
+          </div>
+          <div className="flex justify-center">
+            <img 
+              src="/lovable-uploads/7964cfa1-76f0-4ff8-a183-73eeeb4ea455.png" 
+              alt="Team collaboration illustration with people working together on analytics"
+              className="w-48 h-48 object-contain animate-bounce-gentle"
+            />
+          </div>
+        </div>
+        
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {features.map((feature, index) => (
             <Card 
