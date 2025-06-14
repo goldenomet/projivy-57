@@ -43,7 +43,7 @@ export function ThemeManagerProvider({ children }: { children: React.ReactNode }
       root.style.setProperty(`--${key}`, value);
     });
 
-    // Apply theme colors to semantic design tokens
+    // Apply theme colors to semantic design tokens with higher specificity
     root.style.setProperty('--primary', currentTheme.colors.primary);
     root.style.setProperty('--background', currentTheme.colors.background);
     root.style.setProperty('--card', currentTheme.colors.card);
@@ -51,11 +51,28 @@ export function ThemeManagerProvider({ children }: { children: React.ReactNode }
     root.style.setProperty('--secondary', currentTheme.colors.secondary);
     root.style.setProperty('--accent', currentTheme.colors.accent);
 
+    // Apply foreground colors for better contrast
+    if (currentTheme.isDark) {
+      root.style.setProperty('--foreground', '0 0% 98%');
+      root.style.setProperty('--muted-foreground', '0 0% 63.9%');
+      root.style.setProperty('--card-foreground', '0 0% 98%');
+      root.style.setProperty('--primary-foreground', '0 0% 9%');
+    } else {
+      root.style.setProperty('--foreground', '0 0% 3.9%');
+      root.style.setProperty('--muted-foreground', '0 0% 45.1%');
+      root.style.setProperty('--card-foreground', '0 0% 3.9%');
+      root.style.setProperty('--primary-foreground', '0 0% 98%');
+    }
+
     // Update sidebar colors to match theme
     root.style.setProperty('--sidebar-background', currentTheme.colors.card);
     root.style.setProperty('--sidebar-border', currentTheme.colors.border);
     root.style.setProperty('--sidebar-accent', currentTheme.colors.secondary);
     root.style.setProperty('--sidebar-primary', currentTheme.colors.primary);
+
+    // Apply muted background for better visibility
+    root.style.setProperty('--muted', currentTheme.colors.secondary);
+    root.style.setProperty('--accent-background', currentTheme.colors.accent);
 
     // Handle dark/light mode
     root.classList.remove("light", "dark");

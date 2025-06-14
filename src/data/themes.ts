@@ -39,11 +39,11 @@ export const availableThemes: AppTheme[] = [
     preview: 'https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=300&h=200&fit=crop',
     colors: {
       primary: '207 90% 54%', // Ocean Blue
-      secondary: '213 27% 84%',
-      accent: '213 27% 84%',
-      background: '210 100% 97%', // Light blue background
-      card: '210 100% 99%',
-      border: '213 27% 84%',
+      secondary: '207 80% 85%',
+      accent: '207 60% 90%',
+      background: '206 100% 95%', // More pronounced light blue background
+      card: '207 100% 98%',
+      border: '207 50% 80%',
     },
     isDark: false,
   },
@@ -54,11 +54,11 @@ export const availableThemes: AppTheme[] = [
     preview: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=300&h=200&fit=crop',
     colors: {
       primary: '142 71% 45%', // Forest Green
-      secondary: '138 76% 97%',
-      accent: '138 76% 97%',
-      background: '120 60% 97%', // Light green background
-      card: '120 60% 99%',
-      border: '138 76% 90%',
+      secondary: '142 60% 85%',
+      accent: '142 40% 90%',
+      background: '120 80% 94%', // More pronounced light green background
+      card: '120 60% 97%',
+      border: '120 40% 85%',
     },
     isDark: false,
   },
@@ -69,11 +69,11 @@ export const availableThemes: AppTheme[] = [
     preview: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=200&fit=crop',
     colors: {
       primary: '25 95% 53%', // Sunset Orange
-      secondary: '25 100% 97%',
-      accent: '25 100% 97%',
-      background: '30 100% 97%', // Light orange background
-      card: '30 100% 99%',
-      border: '25 100% 94%',
+      secondary: '25 80% 85%',
+      accent: '25 60% 90%',
+      background: '30 100% 94%', // More pronounced light orange background
+      card: '30 80% 97%',
+      border: '30 60% 85%',
     },
     isDark: false,
   },
@@ -84,11 +84,11 @@ export const availableThemes: AppTheme[] = [
     preview: 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=300&h=200&fit=crop',
     colors: {
       primary: '271 91% 65%', // Midnight Purple
-      secondary: '270 8% 15%',
-      accent: '270 8% 15%',
-      background: '266 14% 8%', // Dark purple background
-      card: '270 8% 11%',
-      border: '270 8% 20%',
+      secondary: '270 20% 25%',
+      accent: '270 15% 30%',
+      background: '266 30% 6%', // Deeper purple background
+      card: '270 25% 10%',
+      border: '270 15% 25%',
     },
     isDark: true,
   },
@@ -99,11 +99,11 @@ export const availableThemes: AppTheme[] = [
     preview: 'https://images.unsplash.com/photo-1518621012420-8ab10c7cb729?w=300&h=200&fit=crop',
     colors: {
       primary: '330 81% 60%', // Rose Pink
-      secondary: '327 73% 97%',
-      accent: '327 73% 97%',
-      background: '330 100% 98%', // Light pink background
-      card: '330 100% 99%',
-      border: '327 73% 94%',
+      secondary: '330 60% 85%',
+      accent: '330 40% 90%',
+      background: '330 100% 95%', // More pronounced light pink background
+      card: '330 80% 98%',
+      border: '330 50% 85%',
     },
     isDark: false,
   },
@@ -114,12 +114,42 @@ export const availableThemes: AppTheme[] = [
     preview: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=300&h=200&fit=crop',
     colors: {
       primary: '176 100% 44%', // Cyber Neon
-      secondary: '180 8% 15%',
-      accent: '180 8% 15%',
-      background: '180 14% 8%', // Dark cyan background
-      card: '180 8% 11%',
-      border: '180 8% 20%',
+      secondary: '180 20% 25%',
+      accent: '180 15% 30%',
+      background: '180 30% 6%', // Deeper cyan background
+      card: '180 25% 10%',
+      border: '180 15% 25%',
     },
     isDark: true,
+  },
+  {
+    id: 'golden-yellow',
+    name: 'Golden Yellow',
+    description: 'Bright and energizing golden theme',
+    preview: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=200&fit=crop',
+    colors: {
+      primary: '45 100% 51%', // Golden Yellow
+      secondary: '45 80% 85%',
+      accent: '45 60% 90%',
+      background: '50 100% 94%', // Light golden background
+      card: '50 80% 97%',
+      border: '50 60% 85%',
+    },
+    isDark: false,
+  },
+  {
+    id: 'deep-red',
+    name: 'Deep Red',
+    description: 'Bold red theme for passionate creators',
+    preview: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=200&fit=crop',
+    colors: {
+      primary: '0 84% 60%', // Deep Red
+      secondary: '0 60% 85%',
+      accent: '0 40% 90%',
+      background: '0 100% 95%', // Light red background
+      card: '0 80% 98%',
+      border: '0 50% 85%',
+    },
+    isDark: false,
   },
 ];

@@ -76,11 +76,14 @@ export function AppLayout({ children, className }: AppLayoutProps) {
   return (
     <ProtectedRoute>
       <SidebarProvider>
-        <div className="min-h-screen flex w-full bg-gradient-to-br from-background to-background/95">
+        <div className="min-h-screen flex w-full" style={{ backgroundColor: 'hsl(var(--background))' }}>
           <Sidebar />
-          <main className="flex-1 overflow-hidden animate-fade-in">
+          <main className="flex-1 overflow-hidden animate-fade-in" style={{ backgroundColor: 'hsl(var(--background))' }}>
             <div className="container h-full flex flex-col">
-              <div className="flex items-center justify-between py-4 border-b border-border/50 bg-gradient-to-r from-card/80 to-card">
+              <div className="flex items-center justify-between py-4 border-b" style={{ 
+                borderColor: 'hsl(var(--border))', 
+                backgroundColor: 'hsl(var(--card))'
+              }}>
                 <SidebarTrigger className="hover:scale-105 transition-transform" />
                 <div className="ml-auto flex items-center gap-4">
                   <div className="flex items-center gap-2">
@@ -103,7 +106,8 @@ export function AppLayout({ children, className }: AppLayoutProps) {
                   </div>
                   <ThemeSwitcher />
                   <button 
-                    className="text-sm text-muted-foreground bg-gradient-to-r from-muted/50 to-transparent px-3 py-1 rounded-md hover:from-muted/70 hover:to-muted/20 transition-all"
+                    className="text-sm text-muted-foreground px-3 py-1 rounded-md transition-all"
+                    style={{ backgroundColor: 'hsl(var(--muted))' }}
                     onClick={showWelcomeMessage}
                   >
                     Today is {currentTime.toLocaleDateString()}
