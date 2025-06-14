@@ -1,6 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { ChatRoom, ChatMessage, ChatRoomMember } from "@/types/chat";
+import { ChatRoom, ChatMessage, ChatRoomMember, DatabaseChatRoomMember } from "@/types/chat";
 
 export class ChatService {
   // Chat Rooms
@@ -257,7 +257,18 @@ export class ChatService {
       console.error('Error fetching room members:', error);
       return [];
     }
-    return data || [];
+
+    // Transform database members to properly typed members
+    const typedMembers: ChatRoomMember[] = (data || []).map((member: DatabaseChatRoomMember) => ({
+      id: member.id,
+      room_id: member.room_id,
+      user_id: member.user_id,
+      joined_at: member.joined_at,
+      is_active: member.is_active || false,
+      role: (member.role as 'admin' | 'moderator' | 'member') || 'member'
+    }));
+
+    return typedMembers;
   }
 
   static async searchUsers(query: string): Promise<any[]> {

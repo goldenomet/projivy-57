@@ -36,3 +36,13 @@ export interface ChatUser {
   full_name?: string;
   avatar_url?: string;
 }
+
+// Database types for proper typing
+export interface DatabaseChatRoomMember {
+  id: string;
+  room_id: string;
+  user_id: string;
+  joined_at: string;
+  is_active: boolean | null;
+  role: string | null;
+}
