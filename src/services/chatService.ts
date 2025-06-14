@@ -24,6 +24,10 @@ export class ChatService {
       console.error('Error creating chat room:', error);
       throw error;
     }
+
+    // Automatically add creator as admin member
+    await this.joinChatRoom(data.id, 'admin');
+    
     return data;
   }
 
@@ -31,27 +35,21 @@ export class ChatService {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('User not authenticated');
 
-    // Get rooms where user is a member
+    // Get rooms where user is a member (now properly restricted by RLS)
     const { data, error } = await supabase
       .from('chat_rooms')
-      .select(`
-        *,
-        chat_room_members!inner(user_id)
-      `)
-      .eq('chat_room_members.user_id', user.id)
-      .eq('chat_room_members.is_active', true)
+      .select('*')
       .order('updated_at', { ascending: false });
 
     if (error) {
       console.error('Error fetching user rooms:', error);
-      // Return empty array instead of throwing to gracefully handle the error
       return [];
     }
     
     return data || [];
   }
 
-  static async joinChatRoom(roomId: string): Promise<void> {
+  static async joinChatRoom(roomId: string, role: 'admin' | 'moderator' | 'member' = 'member'): Promise<void> {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('User not authenticated');
 
@@ -61,6 +59,7 @@ export class ChatService {
         {
           room_id: roomId,
           user_id: user.id,
+          role: role,
           is_active: true
         }
       ], {
@@ -69,6 +68,79 @@ export class ChatService {
 
     if (error) {
       console.error('Error joining chat room:', error);
+      throw error;
+    }
+  }
+
+  static async inviteMember(roomId: string, userId: string, role: 'member' | 'moderator' = 'member'): Promise<void> {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('User not authenticated');
+
+    // Check if current user is admin or room creator
+    const { data: currentMember } = await supabase
+      .from('chat_room_members')
+      .select('role')
+      .eq('room_id', roomId)
+      .eq('user_id', user.id)
+      .single();
+
+    const { data: room } = await supabase
+      .from('chat_rooms')
+      .select('created_by')
+      .eq('id', roomId)
+      .single();
+
+    if (!currentMember || (currentMember.role !== 'admin' && room?.created_by !== user.id)) {
+      throw new Error('Only admins and room creators can invite members');
+    }
+
+    const { error } = await supabase
+      .from('chat_room_members')
+      .upsert([
+        {
+          room_id: roomId,
+          user_id: userId,
+          role: role,
+          is_active: true
+        }
+      ], {
+        onConflict: 'room_id,user_id'
+      });
+
+    if (error) {
+      console.error('Error inviting member:', error);
+      throw error;
+    }
+  }
+
+  static async removeMember(roomId: string, userId: string): Promise<void> {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('User not authenticated');
+
+    const { error } = await supabase
+      .from('chat_room_members')
+      .update({ is_active: false })
+      .eq('room_id', roomId)
+      .eq('user_id', userId);
+
+    if (error) {
+      console.error('Error removing member:', error);
+      throw error;
+    }
+  }
+
+  static async updateMemberRole(roomId: string, userId: string, newRole: 'admin' | 'moderator' | 'member'): Promise<void> {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('User not authenticated');
+
+    const { error } = await supabase
+      .from('chat_room_members')
+      .update({ role: newRole })
+      .eq('room_id', roomId)
+      .eq('user_id', userId);
+
+    if (error) {
+      console.error('Error updating member role:', error);
       throw error;
     }
   }
@@ -177,10 +249,7 @@ export class ChatService {
   static async getRoomMembers(roomId: string): Promise<ChatRoomMember[]> {
     const { data, error } = await supabase
       .from('chat_room_members')
-      .select(`
-        *,
-        profiles(full_name, avatar_url)
-      `)
+      .select('*')
       .eq('room_id', roomId)
       .eq('is_active', true);
 
@@ -191,31 +260,28 @@ export class ChatService {
     return data || [];
   }
 
-  static async getAllPublicRooms(): Promise<ChatRoom[]> {
+  static async searchUsers(query: string): Promise<any[]> {
     const { data, error } = await supabase
-      .from('chat_rooms')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(50);
+      .from('profiles')
+      .select('id, full_name')
+      .ilike('full_name', `%${query}%`)
+      .limit(10);
 
     if (error) {
-      console.error('Error fetching public rooms:', error);
+      console.error('Error searching users:', error);
       return [];
     }
     return data || [];
   }
 
-  static async searchRooms(query: string): Promise<ChatRoom[]> {
-    const { data, error } = await supabase
-      .from('chat_rooms')
-      .select('*')
-      .or(`name.ilike.%${query}%,description.ilike.%${query}%`)
-      .order('updated_at', { ascending: false });
+  // Remove public rooms functionality since rooms are now private by default
+  static async getAllPublicRooms(): Promise<ChatRoom[]> {
+    // Return empty array since we now use private rooms only
+    return [];
+  }
 
-    if (error) {
-      console.error('Error searching rooms:', error);
-      return [];
-    }
-    return data || [];
+  static async searchRooms(query: string): Promise<ChatRoom[]> {
+    // Return empty array since we now use private rooms only
+    return [];
   }
 }

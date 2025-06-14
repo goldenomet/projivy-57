@@ -21,6 +21,11 @@ export function ChatWindow({ room }: ChatWindowProps) {
   const [members, setMembers] = useState<ChatRoomMember[]>([]);
   const [showInfo, setShowInfo] = useState(false);
 
+  // Check if current user is admin
+  const isAdmin = members.some(m => 
+    m.user_id === user?.id && (m.role === 'admin' || room.created_by === user?.id)
+  );
+
   useEffect(() => {
     loadMessages();
     loadMembers();
@@ -123,7 +128,10 @@ export function ChatWindow({ room }: ChatWindowProps) {
       <ChatInfoPanel
         members={members}
         currentUserId={user?.id}
+        roomId={room.id}
+        isAdmin={isAdmin}
         show={showInfo}
+        onClose={() => setShowInfo(false)}
       />
     </div>
   );

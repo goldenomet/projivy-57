@@ -14,6 +14,7 @@ export interface ChatRoomMember {
   user_id: string;
   joined_at: string;
   is_active: boolean;
+  role: 'admin' | 'moderator' | 'member';
 }
 
 export interface ChatMessage {

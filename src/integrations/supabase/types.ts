@@ -64,6 +64,7 @@ export type Database = {
           id: string
           is_active: boolean | null
           joined_at: string
+          role: string | null
           room_id: string
           user_id: string
         }
@@ -71,6 +72,7 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           joined_at?: string
+          role?: string | null
           room_id: string
           user_id: string
         }
@@ -78,6 +80,7 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           joined_at?: string
+          role?: string | null
           room_id?: string
           user_id?: string
         }

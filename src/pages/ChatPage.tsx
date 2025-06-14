@@ -11,11 +11,9 @@ import { ChatEmptyState } from "@/components/chat/ChatEmptyState";
 
 export default function ChatPage() {
   const [myRooms, setMyRooms] = useState<ChatRoom[]>([]);
-  const [publicRooms, setPublicRooms] = useState<ChatRoom[]>([]);
   const [selectedRoom, setSelectedRoom] = useState<ChatRoom | null>(null);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     loadInitialData();
@@ -24,10 +22,7 @@ export default function ChatPage() {
   const loadInitialData = async () => {
     try {
       setLoading(true);
-      await Promise.all([
-        loadMyChatRooms(),
-        loadPublicRooms()
-      ]);
+      await loadMyChatRooms();
     } catch (error) {
       console.error('Error loading chat data:', error);
       toast.error('Failed to load chat rooms');
@@ -52,26 +47,11 @@ export default function ChatPage() {
     }
   };
 
-  const loadPublicRooms = async () => {
-    try {
-      const rooms = await ChatService.getAllPublicRooms();
-      console.log('Loaded public rooms:', rooms);
-      setPublicRooms(rooms);
-    } catch (error) {
-      console.error('Error loading public rooms:', error);
-      toast.error('Failed to load public rooms');
-    }
-  };
-
   const handleCreateRoom = async (name: string, description?: string) => {
     try {
       console.log('Creating room:', { name, description });
       const newRoom = await ChatService.createChatRoom(name, description);
       console.log('Room created:', newRoom);
-      
-      // Join the room immediately after creation
-      await ChatService.joinChatRoom(newRoom.id);
-      console.log('Joined room:', newRoom.id);
       
       // Update the rooms list and select the new room
       setMyRooms(prev => [newRoom, ...prev]);
@@ -88,56 +68,19 @@ export default function ChatPage() {
     }
   };
 
-  const handleJoinRoom = async (room: ChatRoom) => {
-    try {
-      console.log('Joining room:', room);
-      await ChatService.joinChatRoom(room.id);
-      setSelectedRoom(room);
-      
-      // Add to my rooms if not already there
-      if (!myRooms.find(r => r.id === room.id)) {
-        setMyRooms(prev => [room, ...prev]);
-      }
-      
-      toast.success(`Joined ${room.name}`);
-    } catch (error) {
-      console.error('Error joining room:', error);
-      if (error instanceof Error) {
-        toast.error(`Failed to join room: ${error.message}`);
-      } else {
-        toast.error('Failed to join room');
-      }
-    }
-  };
-
-  const handleSearch = async () => {
-    if (!searchQuery.trim()) {
-      loadPublicRooms();
-      return;
-    }
-
-    try {
-      const results = await ChatService.searchRooms(searchQuery);
-      setPublicRooms(results);
-    } catch (error) {
-      console.error('Error searching rooms:', error);
-      toast.error('Failed to search rooms');
-    }
-  };
-
   return (
     <AppLayout>
       <div className="h-[calc(100vh-8rem)] flex">
         <ChatSidebar
           myRooms={myRooms}
-          publicRooms={publicRooms}
+          publicRooms={[]} // No public rooms anymore
           selectedRoom={selectedRoom}
           onRoomSelect={setSelectedRoom}
           onCreateRoom={() => setShowCreateDialog(true)}
-          onJoinRoom={handleJoinRoom}
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          onSearch={handleSearch}
+          onJoinRoom={() => {}} // Not needed for private rooms
+          searchQuery=""
+          onSearchChange={() => {}} // Not needed for private rooms
+          onSearch={() => {}} // Not needed for private rooms
           loading={loading}
         />
 
