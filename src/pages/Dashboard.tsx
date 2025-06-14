@@ -15,7 +15,7 @@ export default function Dashboard() {
   const totalProjects = projects?.length || 0;
   const completedTasks = recentTasks?.filter(task => task.status === 'completed').length || 0;
   const inProgressTasks = recentTasks?.filter(task => task.status === 'in-progress').length || 0;
-  const pendingTasks = recentTasks?.filter(task => task.status === 'pending').length || 0;
+  const notStartedTasks = recentTasks?.filter(task => task.status === 'not-started').length || 0;
 
   if (error) {
     return (
@@ -26,7 +26,7 @@ export default function Dashboard() {
               <AlertCircle className="h-12 w-12 text-destructive mb-4" />
               <h3 className="text-lg font-semibold mb-2">Error Loading Dashboard</h3>
               <p className="text-sm text-muted-foreground text-center">
-                There was an error loading your dashboard data. Please try refreshing the page.
+                {error}. Please try refreshing the page.
               </p>
             </CardContent>
           </Card>
@@ -83,11 +83,11 @@ export default function Dashboard() {
           
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Pending Tasks</CardTitle>
+              <CardTitle className="text-sm font-medium">Not Started</CardTitle>
               <AlertCircle className="h-4 w-4 text-orange-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{pendingTasks}</div>
+              <div className="text-2xl font-bold">{notStartedTasks}</div>
               <p className="text-xs text-muted-foreground">
                 Tasks waiting to be started
               </p>

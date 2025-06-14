@@ -11,6 +11,7 @@ export function useDashboardData() {
   const [recentTasks, setRecentTasks] = useState<Task[]>([]);
   const [userProfile, setUserProfile] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   // Fetch user profile from Supabase
   useEffect(() => {
@@ -43,24 +44,25 @@ export function useDashboardData() {
   useEffect(() => {
     const loadProjects = () => {
       setIsLoading(true);
+      setError(null);
       
-      // Check for deleted project IDs
-      const storedDeletedIds = localStorage.getItem("deletedProjectIds");
-      let deletedProjects: Set<string> = new Set();
-      
-      if (storedDeletedIds) {
-        try {
-          const deletedIdsArray = JSON.parse(storedDeletedIds);
-          if (Array.isArray(deletedIdsArray)) {
-            deletedProjects = new Set(deletedIdsArray);
-          }
-        } catch (error) {
-          console.error("Error loading deleted project IDs:", error);
-        }
-      }
-      
-      // Try to load projects from localStorage
       try {
+        // Check for deleted project IDs
+        const storedDeletedIds = localStorage.getItem("deletedProjectIds");
+        let deletedProjects: Set<string> = new Set();
+        
+        if (storedDeletedIds) {
+          try {
+            const deletedIdsArray = JSON.parse(storedDeletedIds);
+            if (Array.isArray(deletedIdsArray)) {
+              deletedProjects = new Set(deletedIdsArray);
+            }
+          } catch (error) {
+            console.error("Error loading deleted project IDs:", error);
+          }
+        }
+        
+        // Try to load projects from localStorage
         const storedProjects = localStorage.getItem("projects");
         let localProjects: Project[] = [];
         
@@ -104,6 +106,7 @@ export function useDashboardData() {
         setIsLoading(false);
       } catch (error) {
         console.error("Error loading projects:", error);
+        setError("Failed to load projects");
         toast.error("Failed to load projects");
         setIsLoading(false);
       }
@@ -117,6 +120,7 @@ export function useDashboardData() {
     projects,
     recentTasks,
     userProfile,
-    isLoading
+    isLoading,
+    error
   };
 }
