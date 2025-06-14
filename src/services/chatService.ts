@@ -5,13 +5,16 @@ import { ChatRoom, ChatMessage, ChatRoomMember } from "@/types/chat";
 export class ChatService {
   // Chat Rooms
   static async createChatRoom(name: string, description?: string): Promise<ChatRoom> {
+    const user = (await supabase.auth.getUser()).data.user;
+    if (!user) throw new Error('User not authenticated');
+
     const { data, error } = await supabase
       .from('chat_rooms')
       .insert([
         {
           name,
           description,
-          created_by: (await supabase.auth.getUser()).data.user?.id
+          created_by: user.id
         }
       ])
       .select()
@@ -22,12 +25,32 @@ export class ChatService {
   }
 
   static async getChatRooms(): Promise<ChatRoom[]> {
+    const user = (await supabase.auth.getUser()).data.user;
+    if (!user) throw new Error('User not authenticated');
+
+    // Get all rooms where user is a member OR rooms they created
     const { data, error } = await supabase
       .from('chat_rooms')
-      .select('*')
+      .select(`
+        *,
+        chat_room_members!inner(user_id)
+      `)
+      .or(`created_by.eq.${user.id},chat_room_members.user_id.eq.${user.id}`)
       .order('updated_at', { ascending: false });
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error fetching rooms:', error);
+      // Fallback: just get rooms the user created
+      const { data: fallbackData, error: fallbackError } = await supabase
+        .from('chat_rooms')
+        .select('*')
+        .eq('created_by', user.id)
+        .order('updated_at', { ascending: false });
+      
+      if (fallbackError) throw fallbackError;
+      return fallbackData || [];
+    }
+    
     return data || [];
   }
 
@@ -37,14 +60,17 @@ export class ChatService {
 
     const { error } = await supabase
       .from('chat_room_members')
-      .insert([
+      .upsert([
         {
           room_id: roomId,
-          user_id: user.id
+          user_id: user.id,
+          is_active: true
         }
-      ]);
+      ], {
+        onConflict: 'room_id,user_id'
+      });
 
-    if (error && !error.message.includes('duplicate')) throw error;
+    if (error) throw error;
   }
 
   // Messages
@@ -139,9 +165,34 @@ export class ChatService {
   static async getRoomMembers(roomId: string): Promise<ChatRoomMember[]> {
     const { data, error } = await supabase
       .from('chat_room_members')
-      .select('*')
+      .select(`
+        *,
+        profiles(full_name, avatar_url)
+      `)
       .eq('room_id', roomId)
       .eq('is_active', true);
+
+    if (error) throw error;
+    return data || [];
+  }
+
+  static async getAllPublicRooms(): Promise<ChatRoom[]> {
+    const { data, error } = await supabase
+      .from('chat_rooms')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(50);
+
+    if (error) throw error;
+    return data || [];
+  }
+
+  static async searchRooms(query: string): Promise<ChatRoom[]> {
+    const { data, error } = await supabase
+      .from('chat_rooms')
+      .select('*')
+      .or(`name.ilike.%${query}%,description.ilike.%${query}%`)
+      .order('updated_at', { ascending: false });
 
     if (error) throw error;
     return data || [];
