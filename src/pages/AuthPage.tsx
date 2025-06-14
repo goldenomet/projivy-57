@@ -92,23 +92,32 @@ export default function AuthPage() {
           {/* Centered Content */}
           <div className="flex items-center justify-center w-full h-full p-12">
             <div className="text-center max-w-lg">
+              {/* Illustration Image */}
+              <div className="mb-8">
+                <img 
+                  src="/lovable-uploads/2fdc24f0-651a-49b6-9a2c-0fb781bf042c.png" 
+                  alt="Professional woman working at desk with laptop"
+                  className="w-80 h-auto mx-auto drop-shadow-2xl animate-floating"
+                />
+              </div>
+              
               {/* Logo/Icon */}
-              <div className="mb-12">
-                <div className="w-20 h-20 bg-gradient-to-br from-white via-white to-blue-100 rounded-3xl mx-auto mb-8 flex items-center justify-center shadow-2xl animate-bounce-gentle">
-                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-inner"></div>
+              <div className="mb-8">
+                <div className="w-16 h-16 bg-gradient-to-br from-white via-white to-blue-100 rounded-3xl mx-auto mb-6 flex items-center justify-center shadow-2xl animate-bounce-gentle">
+                  <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-inner"></div>
                 </div>
               </div>
               
               {/* Typography */}
-              <h1 className="text-5xl font-bold text-white mb-6 drop-shadow-lg">
+              <h1 className="text-4xl font-bold text-white mb-4 drop-shadow-lg">
                 Welcome back
               </h1>
-              <p className="text-xl text-white/90 leading-relaxed drop-shadow-md">
+              <p className="text-lg text-white/90 leading-relaxed drop-shadow-md">
                 Sign in to your account to continue your journey with us and unlock all the amazing features.
               </p>
               
               {/* Decorative elements */}
-              <div className="mt-12 flex justify-center space-x-4">
+              <div className="mt-8 flex justify-center space-x-4">
                 <div className="w-3 h-3 bg-white/40 rounded-full animate-bounce-gentle"></div>
                 <div className="w-3 h-3 bg-white/60 rounded-full animate-bounce-gentle" style={{ animationDelay: '0.2s' }}></div>
                 <div className="w-3 h-3 bg-white/40 rounded-full animate-bounce-gentle" style={{ animationDelay: '0.4s' }}></div>
