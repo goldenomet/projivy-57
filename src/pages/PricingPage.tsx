@@ -1,11 +1,28 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, ArrowLeft, Star } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function PricingPage() {
+  const navigate = useNavigate();
+
+  const handlePlanSelection = (planName: string, price: string) => {
+    console.log(`Selected plan: ${planName} - ${price}`);
+    
+    if (planName === "Starter") {
+      // Navigate to auth for free plan
+      navigate("/auth");
+    } else if (planName === "Professional") {
+      // Navigate to auth for trial
+      navigate("/auth");
+    } else if (planName === "Enterprise") {
+      // For enterprise, we could navigate to a contact form or external link
+      window.open("mailto:sales@projivy.com?subject=Enterprise Plan Inquiry", "_blank");
+    }
+  };
+
   const plans = [
     {
       name: "Starter",
@@ -127,6 +144,7 @@ export default function PricingPage() {
                   ))}
                 </ul>
                 <Button 
+                  onClick={() => handlePlanSelection(plan.name, plan.price)}
                   className={`w-full transition-all duration-300 hover:scale-105 ${
                     plan.popular 
                       ? 'bg-gradient-to-r from-primary to-purple-500 hover:from-primary/90 hover:to-purple-500/90 shadow-lg' 
