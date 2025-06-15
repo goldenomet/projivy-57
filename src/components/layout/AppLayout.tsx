@@ -1,4 +1,3 @@
-
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Sidebar } from "./Sidebar";
 import { cn } from "@/lib/utils";
@@ -9,48 +8,47 @@ import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { LogOut, User } from "lucide-react";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
-
 interface AppLayoutProps {
   children: React.ReactNode;
   className?: string;
 }
-
-export function AppLayout({ children, className }: AppLayoutProps) {
+export function AppLayout({
+  children,
+  className
+}: AppLayoutProps) {
   const [currentTime, setCurrentTime] = useState(new Date());
-  const { user, signOut } = useAuth();
-  
+  const {
+    user,
+    signOut
+  } = useAuth();
+
   // Update current time every minute
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTime(new Date());
     }, 60000);
-    
     return () => clearInterval(interval);
   }, []);
-  
   const formatDate = (date: Date) => {
-    const options: Intl.DateTimeFormatOptions = { 
-      weekday: 'long', 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
     };
     return date.toLocaleDateString(undefined, options);
   };
-  
   const showWelcomeMessage = () => {
     const hour = currentTime.getHours();
     let greeting = "Good morning";
-    
     if (hour >= 12 && hour < 18) {
       greeting = "Good afternoon";
     } else if (hour >= 18) {
       greeting = "Good evening";
     }
-    
     toast(`${greeting}! Welcome to Projivy.`, {
       description: `Today is ${formatDate(currentTime)}`,
-      duration: 5000,
+      duration: 5000
     });
   };
 
@@ -64,7 +62,6 @@ export function AppLayout({ children, className }: AppLayoutProps) {
       }, 1000);
     }
   }, []);
-
   const handleSignOut = async () => {
     try {
       await signOut();
@@ -72,13 +69,15 @@ export function AppLayout({ children, className }: AppLayoutProps) {
       console.error("Error signing out:", error);
     }
   };
-
-  return (
-    <ProtectedRoute>
+  return <ProtectedRoute>
       <SidebarProvider>
-        <div className="min-h-screen flex w-full" style={{ backgroundColor: 'hsl(var(--background))' }}>
+        <div className="min-h-screen flex w-full" style={{
+        backgroundColor: 'hsl(var(--background))'
+      }}>
           <Sidebar />
-          <main className="flex-1 overflow-hidden animate-fade-in" style={{ backgroundColor: 'hsl(var(--background))' }}>
+          <main className="flex-1 overflow-hidden animate-fade-in" style={{
+          backgroundColor: 'hsl(var(--background))'
+        }}>
             <div className="h-full flex flex-col">
               {/* Enhanced Navigation Bar */}
               <div className="w-full bg-gradient-to-r from-card via-card/95 to-card backdrop-blur-lg border-b border-border/50 shadow-lg">
@@ -86,16 +85,11 @@ export function AppLayout({ children, className }: AppLayoutProps) {
                   <div className="flex items-center gap-4">
                     <SidebarTrigger className="hover:scale-105 transition-all duration-200 hover:bg-primary/10 hover:text-primary rounded-lg p-2" />
                     <div className="h-6 w-px bg-gradient-to-b from-transparent via-border to-transparent" />
-                    <div className="text-sm font-medium text-muted-foreground">
-                      Welcome back, <span className="text-foreground font-semibold">{user?.email?.split('@')[0] || 'User'}</span>
-                    </div>
+                    
                   </div>
                   
                   <div className="flex items-center gap-3">
-                    <button 
-                      className="text-sm px-4 py-2 rounded-lg bg-gradient-to-r from-muted/50 to-muted transition-all duration-200 hover:from-primary/10 hover:to-primary/5 hover:scale-105 border border-border/50 hover:border-primary/20"
-                      onClick={showWelcomeMessage}
-                    >
+                    <button className="text-sm px-4 py-2 rounded-lg bg-gradient-to-r from-muted/50 to-muted transition-all duration-200 hover:from-primary/10 hover:to-primary/5 hover:scale-105 border border-border/50 hover:border-primary/20" onClick={showWelcomeMessage}>
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
                         {currentTime.toLocaleDateString()}
@@ -105,21 +99,12 @@ export function AppLayout({ children, className }: AppLayoutProps) {
                     <div className="h-6 w-px bg-gradient-to-b from-transparent via-border to-transparent" />
                     
                     <div className="flex items-center gap-2">
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className="text-muted-foreground hover:text-foreground hover:bg-primary/10 transition-all duration-200 flex items-center gap-2 px-3 py-2 rounded-lg"
-                      >
+                      <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground hover:bg-primary/10 transition-all duration-200 flex items-center gap-2 px-3 py-2 rounded-lg">
                         <User className="h-4 w-4" />
                         <span className="hidden sm:inline">{user?.email}</span>
                       </Button>
                       
-                      <Button 
-                        variant="ghost" 
-                        size="icon" 
-                        onClick={handleSignOut}
-                        className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all duration-200 rounded-lg"
-                      >
+                      <Button variant="ghost" size="icon" onClick={handleSignOut} className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all duration-200 rounded-lg">
                         <LogOut className="h-4 w-4" />
                       </Button>
                       
@@ -141,6 +126,5 @@ export function AppLayout({ children, className }: AppLayoutProps) {
           </main>
         </div>
       </SidebarProvider>
-    </ProtectedRoute>
-  );
+    </ProtectedRoute>;
 }
