@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -45,14 +46,16 @@ export default function PricingPage() {
       period: "/month",
       description: "Ideal for growing teams",
       features: [
-        "Up to 25 team members",
+        "Up to 15 team members",
         "Unlimited projects",
-        "Advanced analytics",
-        "Time tracking",
+        "Advanced task management",
+        "Time tracking & reporting",
+        "Team collaboration tools",
+        "Real-time chat",
+        "Calendar integration",
+        "File management (5GB storage)",
         "Priority support",
-        "Custom workflows",
-        "100GB storage",
-        "API access"
+        "Data export capabilities"
       ],
       popular: true,
       cta: "Start Free Trial"
@@ -64,13 +67,15 @@ export default function PricingPage() {
       description: "For large organizations",
       features: [
         "Unlimited team members",
-        "Advanced security",
-        "SSO integration",
-        "Custom integrations",
-        "Dedicated support",
-        "SLA guarantee",
+        "Advanced team metrics",
+        "Custom project templates",
+        "Advanced analytics & insights",
+        "Meeting scheduling",
+        "Productivity tracking",
+        "Admin controls",
         "Unlimited storage",
-        "Advanced reporting",
+        "Custom integrations support",
+        "Dedicated support",
         "White-label options"
       ],
       popular: false,
