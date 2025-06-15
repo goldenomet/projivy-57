@@ -6,6 +6,18 @@ import { CheckCircle, Star, ArrowRight, Play } from "lucide-react";
 export function HeroSection() {
   return (
     <section className="w-full py-20 relative overflow-hidden">
+      {/* Bouncing dots background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-2 h-2 bg-primary/20 rounded-full animate-bounce" style={{ animationDelay: '0s', animationDuration: '3s' }}></div>
+        <div className="absolute top-40 left-32 w-1.5 h-1.5 bg-purple-400/30 rounded-full animate-bounce" style={{ animationDelay: '0.5s', animationDuration: '2.5s' }}></div>
+        <div className="absolute top-60 left-20 w-1 h-1 bg-blue-400/25 rounded-full animate-bounce" style={{ animationDelay: '1s', animationDuration: '2s' }}></div>
+        <div className="absolute top-32 right-20 w-2 h-2 bg-green-400/20 rounded-full animate-bounce" style={{ animationDelay: '1.5s', animationDuration: '3.5s' }}></div>
+        <div className="absolute top-52 right-40 w-1.5 h-1.5 bg-yellow-400/30 rounded-full animate-bounce" style={{ animationDelay: '2s', animationDuration: '2.8s' }}></div>
+        <div className="absolute bottom-40 left-24 w-1.5 h-1.5 bg-pink-400/25 rounded-full animate-bounce" style={{ animationDelay: '0.3s', animationDuration: '3.2s' }}></div>
+        <div className="absolute bottom-60 right-16 w-1 h-1 bg-indigo-400/20 rounded-full animate-bounce" style={{ animationDelay: '1.2s', animationDuration: '2.7s' }}></div>
+        <div className="absolute top-72 left-1/2 w-2 h-2 bg-teal-400/15 rounded-full animate-bounce" style={{ animationDelay: '0.8s', animationDuration: '4s' }}></div>
+      </div>
+
       <div className="w-full max-w-7xl mx-auto px-4 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left side - Text content */}
