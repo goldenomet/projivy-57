@@ -21,17 +21,12 @@ export function LandingFooter() {
           </div>
           <div className="space-y-4">
             <h5 className="font-semibold">Company</h5>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-primary transition-colors">About</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Blog</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Careers</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Contact</a></li>
-            </ul>
+            
           </div>
           <div className="space-y-4">
             <h5 className="font-semibold">Support</h5>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-primary transition-colors">Help Center</a></li>
+              
               <li><a href="#" className="hover:text-primary transition-colors">Documentation</a></li>
               <li><a href="#" className="hover:text-primary transition-colors">Status</a></li>
               <li><a href="#" className="hover:text-primary transition-colors">Privacy</a></li>
