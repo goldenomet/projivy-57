@@ -16,7 +16,7 @@ export function LandingFooter() {
               <li><a href="#" className="hover:text-primary transition-colors">Features</a></li>
               <li><a href="#" className="hover:text-primary transition-colors">Pricing</a></li>
               <li><a href="#" className="hover:text-primary transition-colors">Integrations</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">API</a></li>
+              
             </ul>
           </div>
           <div className="space-y-4">
