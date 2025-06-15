@@ -19,7 +19,10 @@ export function LandingFooter() {
               
             </ul>
           </div>
-          
+          <div className="space-y-4">
+            
+            
+          </div>
           <div className="space-y-4">
             <h5 className="font-semibold">Support</h5>
             <ul className="space-y-2 text-sm text-muted-foreground">
