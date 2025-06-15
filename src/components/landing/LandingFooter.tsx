@@ -20,7 +20,7 @@ export function LandingFooter() {
             </ul>
           </div>
           <div className="space-y-4">
-            <h5 className="font-semibold">Company</h5>
+            
             
           </div>
           <div className="space-y-4">
