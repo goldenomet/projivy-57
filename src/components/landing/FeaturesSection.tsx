@@ -1,5 +1,3 @@
-
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle, Users, Clock, BarChart3 } from "lucide-react";
 export function FeaturesSection() {
@@ -33,7 +31,7 @@ export function FeaturesSection() {
 
         {/* Right side illustration */}
         <div className="absolute right-2 bottom-8 sm:right-4 sm:bottom-12 lg:right-8 lg:bottom-16">
-          <img alt="Team collaboration illustration with people working together on analytics" className="w-32 h-32 sm:w-40 sm:h-40 lg:w-56 lg:h-56 opacity-80 object-cover" src="/lovable-uploads/6a108e84-6201-4318-98bd-8b6dd7131802.png" />
+          <img alt="Team collaboration illustration with people working together on analytics" className="w-48 h-48 sm:w-64 sm:h-64 lg:w-80 lg:h-80 opacity-80 object-cover" src="/lovable-uploads/6a108e84-6201-4318-98bd-8b6dd7131802.png" />
         </div>
 
         <div className="text-center mb-16">
@@ -65,4 +63,3 @@ export function FeaturesSection() {
       </div>
     </section>;
 }
-
