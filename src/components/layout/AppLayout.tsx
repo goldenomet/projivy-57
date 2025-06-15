@@ -1,3 +1,4 @@
+
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Sidebar } from "./Sidebar";
 import { cn } from "@/lib/utils";
@@ -8,10 +9,13 @@ import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { LogOut, User } from "lucide-react";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import { WelcomeQuestionnaire } from "@/components/auth/WelcomeQuestionnaire";
+
 interface AppLayoutProps {
   children: React.ReactNode;
   className?: string;
 }
+
 export function AppLayout({
   children,
   className
@@ -19,7 +23,9 @@ export function AppLayout({
   const [currentTime, setCurrentTime] = useState(new Date());
   const {
     user,
-    signOut
+    signOut,
+    showQuestionnaire,
+    completeQuestionnaire
   } = useAuth();
 
   // Update current time every minute
@@ -29,6 +35,7 @@ export function AppLayout({
     }, 60000);
     return () => clearInterval(interval);
   }, []);
+
   const formatDate = (date: Date) => {
     const options: Intl.DateTimeFormatOptions = {
       weekday: 'long',
@@ -38,6 +45,7 @@ export function AppLayout({
     };
     return date.toLocaleDateString(undefined, options);
   };
+
   const showWelcomeMessage = () => {
     const hour = currentTime.getHours();
     let greeting = "Good morning";
@@ -62,6 +70,7 @@ export function AppLayout({
       }, 1000);
     }
   }, []);
+
   const handleSignOut = async () => {
     try {
       await signOut();
@@ -69,15 +78,17 @@ export function AppLayout({
       console.error("Error signing out:", error);
     }
   };
-  return <ProtectedRoute>
+
+  return (
+    <ProtectedRoute>
       <SidebarProvider>
         <div className="min-h-screen flex w-full" style={{
-        backgroundColor: 'hsl(var(--background))'
-      }}>
-          <Sidebar />
-          <main className="flex-1 overflow-hidden animate-fade-in" style={{
           backgroundColor: 'hsl(var(--background))'
         }}>
+          <Sidebar />
+          <main className="flex-1 overflow-hidden animate-fade-in" style={{
+            backgroundColor: 'hsl(var(--background))'
+          }}>
             <div className="h-full flex flex-col">
               {/* Enhanced Navigation Bar */}
               <div className="w-full bg-gradient-to-r from-card via-card/95 to-card backdrop-blur-lg border-b border-border/50 shadow-lg">
@@ -85,7 +96,6 @@ export function AppLayout({
                   <div className="flex items-center gap-4">
                     <SidebarTrigger className="hover:scale-105 transition-all duration-200 hover:bg-primary/10 hover:text-primary rounded-lg p-2" />
                     <div className="h-6 w-px bg-gradient-to-b from-transparent via-border to-transparent" />
-                    
                   </div>
                   
                   <div className="flex items-center gap-3">
@@ -125,6 +135,12 @@ export function AppLayout({
             </div>
           </main>
         </div>
+        
+        {/* Welcome Questionnaire Overlay */}
+        {showQuestionnaire && (
+          <WelcomeQuestionnaire onComplete={completeQuestionnaire} />
+        )}
       </SidebarProvider>
-    </ProtectedRoute>;
+    </ProtectedRoute>
+  );
 }

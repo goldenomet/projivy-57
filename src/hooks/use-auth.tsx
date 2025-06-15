@@ -9,6 +9,8 @@ interface AuthContextType {
   session: Session | null;
   user: User | null;
   isLoading: boolean;
+  showQuestionnaire: boolean;
+  completeQuestionnaire: () => void;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, fullName: string) => Promise<void>;
   signOut: () => Promise<void>;
@@ -20,6 +22,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [showQuestionnaire, setShowQuestionnaire] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,12 +31,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setSession(session);
       setUser(session?.user ?? null);
 
-      // Use setTimeout to avoid potential recursive rendering
-      if (event === 'SIGNED_IN') {
+      // Check if user just signed up and hasn't completed questionnaire
+      if (event === 'SIGNED_IN' && session?.user) {
+        const hasCompletedQuestionnaire = localStorage.getItem('questionnaire-completed');
+        const isNewUser = !hasCompletedQuestionnaire;
+        
+        if (isNewUser) {
+          setShowQuestionnaire(true);
+        }
+        
         setTimeout(() => {
           toast.success('Signed in successfully');
         }, 0);
       } else if (event === 'SIGNED_OUT') {
+        // Clear questionnaire status on sign out
+        localStorage.removeItem('questionnaire-completed');
+        setShowQuestionnaire(false);
         setTimeout(() => {
           toast.info('Signed out successfully');
         }, 0);
@@ -51,6 +64,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       subscription.unsubscribe();
     };
   }, []);
+
+  const completeQuestionnaire = () => {
+    setShowQuestionnaire(false);
+    navigate('/dashboard');
+  };
 
   const signIn = async (email: string, password: string) => {
     try {
@@ -98,7 +116,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, isLoading, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      session, 
+      isLoading, 
+      showQuestionnaire,
+      completeQuestionnaire,
+      signIn, 
+      signUp, 
+      signOut 
+    }}>
       {children}
     </AuthContext.Provider>
   );
