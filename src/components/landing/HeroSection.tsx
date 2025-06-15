@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { CheckCircle, Star, ArrowRight, Play } from "lucide-react";
@@ -10,9 +9,12 @@ export function HeroSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left side - Text content */}
           <div className="text-center lg:text-left space-y-8 animate-fade-in">
-            <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-4 py-2 text-sm font-medium text-primary">
-              <Star className="h-4 w-4" />
-              Trusted by 10,000+ teams worldwide
+            <div className="flex justify-center lg:justify-start">
+              <img 
+                src="/lovable-uploads/91e719aa-0b75-4c1e-a8de-ce6ccbed860b.png" 
+                alt="Logo" 
+                className="h-16 w-16 object-contain"
+              />
             </div>
             
             <h2 className="text-5xl md:text-7xl font-bold tracking-tight leading-tight">
