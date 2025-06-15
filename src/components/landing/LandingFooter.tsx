@@ -1,4 +1,6 @@
+
 import { Logo } from "../ui/logo";
+import { Link } from "react-router-dom";
 
 export function LandingFooter() {
   return <footer className="w-full border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -13,16 +15,16 @@ export function LandingFooter() {
           <div className="space-y-4">
             <h5 className="font-semibold">Product</h5>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-primary transition-colors">Features</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Pricing</a></li>
+              <li><Link to="/features" className="hover:text-primary transition-colors">Features</Link></li>
+              <li><Link to="/pricing" className="hover:text-primary transition-colors">Pricing</Link></li>
             </ul>
           </div>
           <div className="space-y-4">
             <h5 className="font-semibold">Support</h5>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-primary transition-colors">Documentation</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Status</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Privacy</a></li>
+              <li><Link to="/documentation" className="hover:text-primary transition-colors">Documentation</Link></li>
+              <li><Link to="/status" className="hover:text-primary transition-colors">Status</Link></li>
+              <li><Link to="/privacy" className="hover:text-primary transition-colors">Privacy</Link></li>
             </ul>
           </div>
         </div>

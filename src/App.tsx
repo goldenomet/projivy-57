@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -29,6 +28,11 @@ import AuthPage from "./pages/AuthPage";
 import NotFound from "./pages/NotFound";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import ChatPage from "@/pages/ChatPage";
+import FeaturesPage from "./pages/FeaturesPage";
+import PricingPage from "./pages/PricingPage";
+import DocumentationPage from "./pages/DocumentationPage";
+import StatusPage from "./pages/StatusPage";
+import PrivacyPage from "./pages/PrivacyPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -129,6 +133,11 @@ function App() {
                       </ProtectedRoute>
                     } />
                     <Route path="/chat" element={<ChatPage />} />
+                    <Route path="/features" element={<FeaturesPage />} />
+                    <Route path="/pricing" element={<PricingPage />} />
+                    <Route path="/documentation" element={<DocumentationPage />} />
+                    <Route path="/status" element={<StatusPage />} />
+                    <Route path="/privacy" element={<PrivacyPage />} />
                     <Route path="/404" element={<NotFound />} />
                     <Route path="*" element={<Navigate to="/404" />} />
                   </Routes>
