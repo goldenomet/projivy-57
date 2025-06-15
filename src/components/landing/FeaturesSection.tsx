@@ -27,60 +27,48 @@ export function FeaturesSection() {
 
   return (
     <section className="w-full py-20 animate-slide-in relative overflow-hidden">
-      {/* Animated background pattern */}
-      <div className="absolute inset-0 opacity-30">
-        <div className="absolute top-20 left-10 w-32 h-32 border border-primary/20 rounded-full animate-pulse-soft"></div>
-        <div className="absolute bottom-20 right-10 w-24 h-24 border border-purple-500/20 rounded-full animate-pulse-soft" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute top-1/2 left-1/4 w-16 h-16 border border-pink-500/20 rounded-full animate-pulse-soft" style={{ animationDelay: '2s' }}></div>
-      </div>
+      <div className="w-full max-w-7xl mx-auto px-4">
+        {/* Top left illustration */}
+        <div className="absolute left-2 top-8 sm:left-4 sm:top-12 lg:left-8 lg:top-16">
+          
+        </div>
 
-      <div className="w-full max-w-7xl mx-auto px-4 relative z-10">
-        {/* Right side illustration - repositioned and improved for mobile */}
-        <div className="absolute right-2 top-10 sm:right-4 lg:right-8 lg:top-16 opacity-20 sm:opacity-30 lg:opacity-50 pointer-events-none">
+        {/* Right side illustration - adjusted for mobile */}
+        <div className="absolute right-2 top-1/2 transform -translate-y-1/2 sm:right-4 lg:right-8 lg:bottom-16 lg:top-auto lg:transform-none">
           <img 
             alt="Team collaboration illustration with people working together on analytics" 
-            className="w-24 h-24 sm:w-32 sm:h-32 md:w-48 md:h-48 lg:w-80 lg:h-80 object-cover animate-floating" 
+            className="w-32 h-32 sm:w-48 sm:h-48 md:w-64 md:h-64 lg:w-96 lg:h-96 opacity-30 sm:opacity-50 lg:opacity-80 object-cover" 
             src="/lovable-uploads/6a108e84-6201-4318-98bd-8b6dd7131802.png" 
           />
         </div>
 
-        <div className="text-center mb-16 relative z-20 animate-fade-in">
+        <div className="text-center mb-16 relative z-10">
           <h3 className="text-4xl font-bold mb-4">
             Everything you need to 
-            <span className="text-transparent bg-gradient-to-r from-primary to-purple-600 bg-clip-text hover:from-purple-600 hover:to-primary transition-all duration-500"> succeed</span>
+            <span className="text-transparent bg-gradient-to-r from-primary to-purple-600 bg-clip-text"> succeed</span>
           </h3>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Powerful features designed to streamline your workflow and boost team productivity
           </p>
         </div>
         
-        {/* Features arranged in 2 rows of 2 cards each - with improved animations */}
-        <div className="flex justify-start relative z-30">
+        {/* Features arranged in 2 rows of 2 cards each - with proper z-index */}
+        <div className="flex justify-start relative z-20">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl">
             {features.map((feature, index) => (
-              <Card 
-                key={index} 
-                className="border-border/50 hover:shadow-2xl transition-all duration-700 hover:-translate-y-4 cursor-pointer group overflow-hidden relative bg-card/95 backdrop-blur-sm hover:rotate-1 animate-scale-in"
-                style={{ animationDelay: `${index * 0.2}s` }}
-              >
-                <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-15 transition-all duration-500`}></div>
-                <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                
+              <Card key={index} className="border-border/50 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 cursor-pointer group overflow-hidden relative bg-card/95 backdrop-blur-sm">
+                <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-300`}></div>
                 <CardHeader className="relative">
-                  <div className={`h-16 w-16 rounded-2xl bg-gradient-to-br ${feature.gradient} p-4 mb-4 group-hover:scale-125 group-hover:rotate-12 transition-all duration-500 shadow-lg group-hover:shadow-xl`}>
+                  <div className={`h-16 w-16 rounded-2xl bg-gradient-to-br ${feature.gradient} p-4 mb-4 group-hover:scale-110 transition-transform duration-300`}>
                     <feature.icon className="h-8 w-8 text-white" />
                   </div>
-                  <CardTitle className="text-xl group-hover:text-primary group-hover:scale-105 transition-all duration-300 origin-left">{feature.title}</CardTitle>
+                  <CardTitle className="text-xl group-hover:text-primary transition-colors">{feature.title}</CardTitle>
                 </CardHeader>
                 <CardContent className="relative">
-                  <CardDescription className="text-sm leading-relaxed group-hover:text-foreground transition-colors duration-300">
+                  <CardDescription className="text-sm leading-relaxed">
                     {feature.description}
                   </CardDescription>
                 </CardContent>
-                
-                {/* Floating particles on hover */}
-                <div className="absolute top-4 right-4 w-2 h-2 bg-white/60 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-floating transition-opacity duration-300"></div>
-                <div className="absolute bottom-6 left-6 w-1 h-1 bg-white/40 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-floating transition-opacity duration-300" style={{ animationDelay: '0.5s' }}></div>
               </Card>
             ))}
           </div>
