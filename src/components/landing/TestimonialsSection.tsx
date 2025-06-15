@@ -1,7 +1,5 @@
-
 import { Card, CardContent } from "@/components/ui/card";
 import { Star } from "lucide-react";
-
 export function TestimonialsSection() {
   const testimonials = [{
     name: "Sarah Chen",
@@ -25,48 +23,5 @@ export function TestimonialsSection() {
     rating: 5,
     avatar: "EW"
   }];
-
-  return (
-    <section className="w-full py-20 bg-secondary/20">
-      <div className="w-full max-w-7xl mx-auto px-4">
-        <div className="text-center mb-16">
-          <h3 className="text-4xl font-bold mb-4">
-            What our
-            <span className="text-transparent bg-gradient-to-r from-primary to-purple-600 bg-clip-text"> customers say</span>
-          </h3>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Join thousands of teams who trust Projivy to manage their projects and boost productivity
-          </p>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {testimonials.map((testimonial, index) => (
-            <Card key={index} className="hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
-              <CardContent className="pt-6">
-                <div className="flex items-center mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
-                  ))}
-                </div>
-                <p className="text-muted-foreground mb-6 leading-relaxed">
-                  "{testimonial.content}"
-                </p>
-                <div className="flex items-center gap-3">
-                  <div className="h-12 w-12 rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center text-white font-semibold">
-                    {testimonial.avatar}
-                  </div>
-                  <div>
-                    <div className="font-semibold">{testimonial.name}</div>
-                    <div className="text-sm text-muted-foreground">
-                      {testimonial.role} at {testimonial.company}
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
+  return;
 }
