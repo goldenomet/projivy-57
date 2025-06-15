@@ -79,43 +79,61 @@ export function AppLayout({ children, className }: AppLayoutProps) {
         <div className="min-h-screen flex w-full" style={{ backgroundColor: 'hsl(var(--background))' }}>
           <Sidebar />
           <main className="flex-1 overflow-hidden animate-fade-in" style={{ backgroundColor: 'hsl(var(--background))' }}>
-            <div className="container h-full flex flex-col">
-              <div className="flex items-center justify-between py-4 border-b" style={{ 
-                borderColor: 'hsl(var(--border))', 
-                backgroundColor: 'hsl(var(--card))'
-              }}>
-                <SidebarTrigger className="hover:scale-105 transition-transform" />
-                <div className="ml-auto flex items-center gap-4">
-                  <div className="flex items-center gap-2">
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className="text-muted-foreground hover:text-foreground flex items-center gap-2"
-                    >
-                      <User className="h-4 w-4" />
-                      {user?.email}
-                    </Button>
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
-                      onClick={handleSignOut}
-                      className="text-muted-foreground hover:text-foreground"
-                    >
-                      <LogOut className="h-4 w-4" />
-                    </Button>
+            <div className="h-full flex flex-col">
+              {/* Enhanced Navigation Bar */}
+              <div className="w-full bg-gradient-to-r from-card via-card/95 to-card backdrop-blur-lg border-b border-border/50 shadow-lg">
+                <div className="flex items-center justify-between px-6 py-4">
+                  <div className="flex items-center gap-4">
+                    <SidebarTrigger className="hover:scale-105 transition-all duration-200 hover:bg-primary/10 hover:text-primary rounded-lg p-2" />
+                    <div className="h-6 w-px bg-gradient-to-b from-transparent via-border to-transparent" />
+                    <div className="text-sm font-medium text-muted-foreground">
+                      Welcome back, <span className="text-foreground font-semibold">{user?.email?.split('@')[0] || 'User'}</span>
+                    </div>
                   </div>
-                  <ThemeSwitcher />
-                  <button 
-                    className="text-sm text-muted-foreground px-3 py-1 rounded-md transition-all"
-                    style={{ backgroundColor: 'hsl(var(--muted))' }}
-                    onClick={showWelcomeMessage}
-                  >
-                    Today is {currentTime.toLocaleDateString()}
-                  </button>
+                  
+                  <div className="flex items-center gap-3">
+                    <button 
+                      className="text-sm px-4 py-2 rounded-lg bg-gradient-to-r from-muted/50 to-muted transition-all duration-200 hover:from-primary/10 hover:to-primary/5 hover:scale-105 border border-border/50 hover:border-primary/20"
+                      onClick={showWelcomeMessage}
+                    >
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                        {currentTime.toLocaleDateString()}
+                      </div>
+                    </button>
+                    
+                    <div className="h-6 w-px bg-gradient-to-b from-transparent via-border to-transparent" />
+                    
+                    <div className="flex items-center gap-2">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="text-muted-foreground hover:text-foreground hover:bg-primary/10 transition-all duration-200 flex items-center gap-2 px-3 py-2 rounded-lg"
+                      >
+                        <User className="h-4 w-4" />
+                        <span className="hidden sm:inline">{user?.email}</span>
+                      </Button>
+                      
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        onClick={handleSignOut}
+                        className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all duration-200 rounded-lg"
+                      >
+                        <LogOut className="h-4 w-4" />
+                      </Button>
+                      
+                      <div className="h-6 w-px bg-gradient-to-b from-transparent via-border to-transparent" />
+                      
+                      <ThemeSwitcher />
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className={cn("flex-1 py-6 overflow-auto", className)}>
-                <div className="animate-slide-in">
+              
+              {/* Main Content */}
+              <div className={cn("flex-1 py-6 px-6 overflow-auto", className)}>
+                <div className="animate-slide-in max-w-7xl mx-auto">
                   {children}
                 </div>
               </div>
