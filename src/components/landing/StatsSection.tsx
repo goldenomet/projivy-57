@@ -37,7 +37,7 @@ export function StatsSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left side - Image */}
           <div className="flex justify-center lg:justify-start">
-            <img alt="Productivity and cost-saving illustration with charts, coins, and project management elements" className="w-full max-w-md h-auto" src="/lovable-uploads/8cc9898e-b955-410e-a1d2-822ce8f2886e.png" />
+            <img alt="Productivity and cost-saving illustration with charts, coins, and project management elements" className="w-full max-w-md h-auto" src="/lovable-uploads/cd041f82-636a-46be-aece-a4c4ad2b38bd.png" />
           </div>
           
           {/* Right side - Stats */}
