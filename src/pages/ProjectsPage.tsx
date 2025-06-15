@@ -1,7 +1,6 @@
 
 import { useState, useEffect } from "react";
 import { AppLayout } from "@/components/layout/AppLayout";
-import { mockProjects } from "@/data/mockData";
 import { Project, ProjectStatus } from "@/types/project";
 import { ProjectCard } from "@/components/projects/ProjectCard";
 import { Button } from "@/components/ui/button";
@@ -15,12 +14,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 import { DeleteConfirmDialog } from "@/components/projects/DeleteConfirmDialog";
+import { ProjectService } from "@/services/projectService";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function ProjectsPage() {
+  const { user } = useAuth();
   const [projects, setProjects] = useState<Project[]>([]);
   const [statusFilter, setStatusFilter] = useState<ProjectStatus[]>([
     "active",
-    "on-hold",
+    "on-hold", 
     "completed",
     "cancelled",
   ]);
@@ -28,52 +30,28 @@ export default function ProjectsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  // Add a state to track deleted project IDs
-  const [deletedProjectIds, setDeletedProjectIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
-    // Load projects from localStorage first
-    setIsLoading(true);
-    const storedProjects = localStorage.getItem("projects");
-    let localProjects: Project[] = [];
-    
-    if (storedProjects) {
-      try {
-        const parsedProjects = JSON.parse(storedProjects);
-        localProjects = Array.isArray(parsedProjects) ? parsedProjects.map((project: any) => ({
-          ...project,
-          startDate: new Date(project.startDate),
-          endDate: new Date(project.endDate),
-          tasks: Array.isArray(project.tasks) ? project.tasks.map((task: any) => ({
-            ...task,
-            startDate: task.startDate ? new Date(task.startDate) : new Date(),
-            dueDate: task.dueDate ? new Date(task.dueDate) : new Date(),
-          })) : [],
-        })) : [];
-        
-        console.log("Loaded projects from localStorage:", localProjects);
-      } catch (error) {
-        console.error("Error loading projects from localStorage:", error);
+    const loadProjects = async () => {
+      if (!user) {
+        setIsLoading(false);
+        return;
       }
-    }
 
-    // Load deleted project IDs from localStorage if they exist
-    const storedDeletedIds = localStorage.getItem("deletedProjectIds");
-    if (storedDeletedIds) {
+      setIsLoading(true);
       try {
-        const deletedIdsArray = JSON.parse(storedDeletedIds);
-        if (Array.isArray(deletedIdsArray)) {
-          setDeletedProjectIds(new Set(deletedIdsArray));
-        }
+        const projectsData = await ProjectService.getProjects();
+        setProjects(projectsData);
       } catch (error) {
-        console.error("Error loading deleted project IDs:", error);
+        console.error("Error loading projects:", error);
+        toast.error("Failed to load projects");
+      } finally {
+        setIsLoading(false);
       }
-    }
+    };
 
-    // Set projects - only use localProjects, don't add mock data
-    setProjects(localProjects);
-    setIsLoading(false);
-  }, []);
+    loadProjects();
+  }, [user]);
 
   const filteredProjects = projects.filter(
     (project) =>
@@ -89,37 +67,24 @@ export default function ProjectsPage() {
     );
   };
 
-  // New function to handle project deletion
   const handleDeleteProject = (project: Project, event: React.MouseEvent) => {
-    event.preventDefault(); // Prevent navigating to the project detail page
-    event.stopPropagation(); // Prevent any parent handlers from firing
+    event.preventDefault();
+    event.stopPropagation();
     setProjectToDelete(project);
     setIsDeleteDialogOpen(true);
   };
 
-  // New function to confirm project deletion
-  const confirmDeleteProject = () => {
+  const confirmDeleteProject = async () => {
     if (!projectToDelete) return;
     
     try {
-      // Filter out the project to delete
-      const updatedProjects = projects.filter((p) => p.id !== projectToDelete.id);
-      
-      // Update state
-      setProjects(updatedProjects);
-      
-      // Update localStorage
-      localStorage.setItem("projects", JSON.stringify(updatedProjects));
-      
-      // Add to deleted projects set
-      const newDeletedIds = new Set(deletedProjectIds);
-      newDeletedIds.add(projectToDelete.id);
-      setDeletedProjectIds(newDeletedIds);
-      
-      // Save deleted IDs to localStorage
-      localStorage.setItem("deletedProjectIds", JSON.stringify([...newDeletedIds]));
-      
-      toast.success("Project deleted successfully");
+      const success = await ProjectService.deleteProject(projectToDelete.id);
+      if (success) {
+        setProjects(projects.filter((p) => p.id !== projectToDelete.id));
+        toast.success("Project deleted successfully");
+      } else {
+        toast.error("Failed to delete project");
+      }
       setIsDeleteDialogOpen(false);
       setProjectToDelete(null);
     } catch (error) {
@@ -243,7 +208,6 @@ export default function ProjectsPage() {
           )}
         </div>
 
-        {/* Delete Confirmation Dialog */}
         <DeleteConfirmDialog
           isOpen={isDeleteDialogOpen}
           onClose={() => {

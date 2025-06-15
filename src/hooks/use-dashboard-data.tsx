@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Profile, Project, Task } from "@/types/project";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
+import { ProjectService } from "@/services/projectService";
 import { toast } from "sonner";
 
 export function useDashboardData() {
@@ -26,15 +27,30 @@ export function useDashboardData() {
           .single();
         
         if (error) {
-          throw error;
-        }
-        
-        if (data) {
+          console.log('Profile fetch error:', error);
+          // If profile doesn't exist, create one
+          if (error.code === 'PGRST116') {
+            const { data: newProfile, error: createError } = await supabase
+              .from('profiles')
+              .insert({
+                id: user.id,
+                full_name: user.user_metadata?.full_name || user.email,
+                avatar_url: user.user_metadata?.avatar_url
+              })
+              .select()
+              .single();
+            
+            if (createError) {
+              console.error('Error creating profile:', createError);
+            } else if (newProfile) {
+              setUserProfile(newProfile as Profile);
+            }
+          }
+        } else if (data) {
           setUserProfile(data as Profile);
         }
       } catch (error) {
         console.error('Error fetching profile:', error);
-        toast.error('Failed to load user profile');
       }
     };
     
@@ -42,52 +58,25 @@ export function useDashboardData() {
   }, [user]);
 
   useEffect(() => {
-    const loadProjects = () => {
+    const loadProjectsAndTasks = async () => {
+      if (!user) {
+        setIsLoading(false);
+        return;
+      }
+
       setIsLoading(true);
       setError(null);
       
       try {
-        // Check for deleted project IDs
-        const storedDeletedIds = localStorage.getItem("deletedProjectIds");
-        let deletedProjects: Set<string> = new Set();
-        
-        if (storedDeletedIds) {
-          try {
-            const deletedIdsArray = JSON.parse(storedDeletedIds);
-            if (Array.isArray(deletedIdsArray)) {
-              deletedProjects = new Set(deletedIdsArray);
-            }
-          } catch (error) {
-            console.error("Error loading deleted project IDs:", error);
-          }
-        }
-        
-        // Try to load projects from localStorage
-        const storedProjects = localStorage.getItem("projects");
-        let localProjects: Project[] = [];
-        
-        if (storedProjects) {
-          const parsedProjects = JSON.parse(storedProjects);
-          localProjects = Array.isArray(parsedProjects) ? parsedProjects.map((project: any) => ({
-            ...project,
-            startDate: new Date(project.startDate),
-            endDate: new Date(project.endDate),
-            tasks: Array.isArray(project.tasks) ? project.tasks.map((task: any) => ({
-              ...task,
-              startDate: task.startDate ? new Date(task.startDate) : new Date(),
-              dueDate: task.dueDate ? new Date(task.dueDate) : new Date(),
-            })) : [],
-          })) : [];
-        }
+        const projectsData = await ProjectService.getProjects();
         
         // Get active projects only
-        const activeProjects = localProjects.filter(p => p.status === 'active');
-        
+        const activeProjects = projectsData.filter(p => p.status === 'active');
         setProjects(activeProjects);
         
         // Gather all tasks from all projects
         const allTasks: Task[] = [];
-        localProjects.forEach(project => {
+        projectsData.forEach(project => {
           if (Array.isArray(project.tasks)) {
             allTasks.push(...project.tasks.map(task => ({
               ...task,
@@ -103,18 +92,17 @@ export function useDashboardData() {
           .slice(0, 4);
         
         setRecentTasks(sortedTasks);
-        setIsLoading(false);
       } catch (error) {
-        console.error("Error loading projects:", error);
-        setError("Failed to load projects");
-        toast.error("Failed to load projects");
+        console.error("Error loading projects and tasks:", error);
+        setError("Failed to load projects and tasks");
+        toast.error("Failed to load projects and tasks");
+      } finally {
         setIsLoading(false);
       }
     };
     
-    // Load projects after a brief delay to allow for animations
-    setTimeout(loadProjects, 300);
-  }, []);
+    loadProjectsAndTasks();
+  }, [user]);
 
   return {
     projects,
