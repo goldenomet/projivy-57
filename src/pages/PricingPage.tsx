@@ -30,11 +30,11 @@ export default function PricingPage() {
       period: "",
       description: "Perfect for small teams getting started",
       features: [
-        "Up to 5 team members",
+        "Up to 3 team members",
         "3 projects",
         "Basic task management",
         "Email support",
-        "5GB storage"
+        "100MB storage"
       ],
       popular: false,
       cta: "Get Started"
