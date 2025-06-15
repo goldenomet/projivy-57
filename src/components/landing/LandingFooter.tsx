@@ -1,7 +1,5 @@
-
 export function LandingFooter() {
-  return (
-    <footer className="w-full border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+  return <footer className="w-full border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="w-full max-w-7xl mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           <div className="space-y-4">
@@ -41,9 +39,8 @@ export function LandingFooter() {
           </div>
         </div>
         <div className="border-t pt-8 text-center text-muted-foreground text-sm">
-          <p>&copy; 2024 Projivy. All rights reserved. Made with ❤️ for productive teams.</p>
+          <p>© 2025 Projivy. All rights reserved. Made by Tydomet.Inc</p>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 }
