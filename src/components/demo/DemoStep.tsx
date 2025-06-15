@@ -1,6 +1,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { CheckCircle } from "lucide-react";
 
 interface DemoStepProps {
   step: {
@@ -17,69 +18,66 @@ interface DemoStepProps {
 
 export function DemoStep({ step, stepNumber, totalSteps }: DemoStepProps) {
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col p-4 sm:p-6">
       {/* Header */}
-      <div className="p-6 border-b">
-        <div className="flex items-center gap-3 mb-2">
-          <Badge variant="secondary">
+      <div className="mb-6">
+        <div className="flex items-center gap-3 mb-3">
+          <Badge variant="secondary" className="px-3 py-1">
             Step {stepNumber} of {totalSteps}
           </Badge>
-          <h3 className="text-xl font-semibold">{step.title}</h3>
+          <h3 className="text-xl sm:text-2xl font-bold">{step.title}</h3>
         </div>
-        <p className="text-muted-foreground">{step.subtitle}</p>
+        <p className="text-muted-foreground text-sm sm:text-base">{step.subtitle}</p>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 p-6 space-y-6">
-        {/* Screenshot/Image */}
-        <div className="relative">
-          <img
-            src={step.image}
-            alt={step.title}
-            className="w-full rounded-lg border shadow-lg animate-fade-in"
-          />
-          {/* Overlay highlights */}
-          <div className="absolute inset-0 pointer-events-none">
-            {step.highlights.map((highlight, index) => (
-              <div
-                key={index}
-                className="absolute bg-primary/20 border-2 border-primary rounded-lg animate-pulse"
-                style={{
-                  // These would be positioned based on the feature locations
-                  top: `${20 + index * 15}%`,
-                  left: `${10 + index * 20}%`,
-                  width: "120px",
-                  height: "40px",
-                }}
-              />
-            ))}
+      {/* Content Grid */}
+      <div className="flex-1 grid grid-cols-1 xl:grid-cols-2 gap-6 overflow-auto">
+        {/* Screenshot */}
+        <div className="order-2 xl:order-1">
+          <div className="relative group">
+            <img
+              src={step.image}
+              alt={step.title}
+              className="w-full h-auto rounded-xl border shadow-lg transition-transform duration-300 group-hover:scale-[1.02]"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </div>
         </div>
 
-        {/* Description */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">What you're seeing</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CardDescription className="text-base leading-relaxed mb-4">
-              {step.description}
-            </CardDescription>
-            
-            {/* Key Features */}
-            <div>
-              <h4 className="font-medium mb-3">Key Features:</h4>
-              <ul className="space-y-2">
+        {/* Description and Features */}
+        <div className="order-1 xl:order-2 space-y-4">
+          <Card className="border-0 shadow-none bg-muted/30">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg sm:text-xl">What you're seeing</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <CardDescription className="text-sm sm:text-base leading-relaxed mb-4 text-foreground/80">
+                {step.description}
+              </CardDescription>
+            </CardContent>
+          </Card>
+
+          {/* Key Features */}
+          <Card className="border-0 shadow-none bg-background/50">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <CheckCircle className="h-5 w-5 text-green-500" />
+                Key Features
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <div className="grid gap-3">
                 {step.features.map((feature, index) => (
-                  <li key={index} className="flex items-start gap-2">
+                  <div key={index} className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors">
                     <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
-                    <span className="text-sm">{feature}</span>
-                  </li>
+                    <span className="text-sm leading-relaxed">{feature}</span>
+                  </div>
                 ))}
-              </ul>
-            </div>
-          </CardContent>
-        </Card>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );

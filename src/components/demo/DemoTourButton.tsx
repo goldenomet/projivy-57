@@ -13,18 +13,29 @@ interface DemoTourButtonProps {
 export function DemoTourButton({ variant = "outline", size = "lg", className }: DemoTourButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
 
+  const handleOpenTour = () => {
+    console.log("Opening demo tour");
+    setIsOpen(true);
+  };
+
+  const handleCloseTour = () => {
+    console.log("Closing demo tour");
+    setIsOpen(false);
+  };
+
   return (
     <>
       <Button
         variant={variant}
         size={size}
         className={className}
-        onClick={() => setIsOpen(true)}
+        onClick={handleOpenTour}
+        type="button"
       >
         <Play className="mr-2 h-4 w-4" />
         Watch Demo
       </Button>
-      <DemoTour isOpen={isOpen} onClose={() => setIsOpen(false)} />
+      <DemoTour isOpen={isOpen} onClose={handleCloseTour} />
     </>
   );
 }
