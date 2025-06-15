@@ -1,61 +1,127 @@
+import { useLocation } from "react-router-dom";
+import {
+  LayoutDashboard,
+  FolderOpen,
+  Calendar,
+  Clock,
+  Users,
+  MessageCircle,
+  Video,
+  Settings,
+  User,
+  Database,
+  BookOpen,
+  TrendingUp,
+  FileText,
+  Shield
+} from "lucide-react";
 
-import { useState, useEffect } from "react";
-import { useAuth } from "@/hooks/use-auth";
-import { supabase } from "@/integrations/supabase/client";
-import { Profile } from "@/types/project";
+interface SidebarItem {
+  title: string;
+  icon: React.ComponentType<any>;
+  href: string;
+  isActive: boolean;
+  isPremium?: boolean;
+}
 
-export function useSidebarData() {
-  const { user } = useAuth();
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
-  
-  useEffect(() => {
-    const fetchProfile = async () => {
-      if (!user) return;
-      
-      try {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', user.id)
-          .single();
-        
-        if (error) {
-          console.error('Error fetching profile:', error);
-          return;
-        }
-        
-        if (data) {
-          setProfile(data as Profile);
-          
-          // For demo purposes - check if the email includes "admin"
-          if (user.email?.includes("admin")) {
-            setIsAdmin(true);
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching profile:', error);
-      }
-    };
-    
-    fetchProfile();
-  }, [user]);
+interface SidebarData {
+  menuItems: SidebarItem[];
+  settingsItems: SidebarItem[];
+}
 
-  // Generate initials from full name for avatar fallback
-  const getInitials = (name: string | null) => {
-    if (!name) return "U";
-    return name
-      .split(" ")
-      .map(part => part[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
+export function useSidebarData(): SidebarData {
+  const location = useLocation();
 
-  return {
-    user,
-    profile,
-    isAdmin,
-    getInitials
-  };
+  const menuItems = [
+    {
+      title: "Dashboard",
+      icon: LayoutDashboard,
+      href: "/dashboard",
+      isActive: location.pathname === "/dashboard",
+    },
+    {
+      title: "Projects",
+      icon: FolderOpen,
+      href: "/projects",
+      isActive: location.pathname === "/projects",
+    },
+    {
+      title: "Calendar",
+      icon: Calendar,
+      href: "/calendar",
+      isActive: location.pathname === "/calendar",
+    },
+    {
+      title: "Time Tracking",
+      icon: Clock,
+      href: "/time-tracking",
+      isActive: location.pathname === "/time-tracking",
+    },
+    {
+      title: "Team",
+      icon: Users,
+      href: "/team",
+      isActive: location.pathname === "/team",
+    },
+    {
+      title: "Chat",
+      icon: MessageCircle,
+      href: "/chat",
+      isActive: location.pathname === "/chat",
+    },
+    {
+      title: "Meetings",
+      icon: Video,
+      href: "/meetings",
+      isActive: location.pathname === "/meetings",
+    },
+    {
+      title: "Templates",
+      icon: FileText,
+      href: "/templates",
+      isActive: location.pathname === "/templates",
+    },
+    {
+      title: "Productivity",
+      icon: TrendingUp,
+      href: "/productivity",
+      isActive: location.pathname === "/productivity",
+    },
+  ];
+
+  const settingsItems = [
+    {
+      title: "Settings",
+      icon: Settings,
+      href: "/settings",
+      isActive: location.pathname === "/settings",
+    },
+    {
+      title: "Profile",
+      icon: User,
+      href: "/profile",
+      isActive: location.pathname === "/profile",
+    },
+    {
+      title: "Admin Controls",
+      icon: Shield,
+      href: "/admin",
+      isActive: location.pathname === "/admin",
+      isPremium: true,
+    },
+    {
+      title: "Data Management",
+      icon: Database,
+      href: "/data",
+      isActive: location.pathname === "/data",
+    },
+    {
+      title: "Documentation",
+      icon: BookOpen,
+      href: "/docs",
+      isActive: location.pathname === "/docs",
+    },
+  ];
+
+  return { menuItems, settingsItems };
 }

@@ -106,7 +106,7 @@ export default function PricingPage() {
           </p>
           <div className="mt-6 flex justify-center">
             <Badge className="bg-green-100 text-green-700 px-4 py-2">
-              14-day free trial • No credit card required
+              7-day free trial • No credit card required
             </Badge>
           </div>
         </div>
