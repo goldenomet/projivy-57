@@ -1,3 +1,4 @@
+
 export function LandingFooter() {
   return <footer className="w-full border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="w-full max-w-7xl mx-auto px-4 py-12">
@@ -18,10 +19,6 @@ export function LandingFooter() {
               
               
             </ul>
-          </div>
-          <div className="space-y-4">
-            
-            
           </div>
           <div className="space-y-4">
             <h5 className="font-semibold">Support</h5>
