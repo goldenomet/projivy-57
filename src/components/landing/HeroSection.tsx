@@ -1,117 +1,112 @@
 
-import { Button } from "@/components/ui/button";
-import { ArrowRight, CheckCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";Add commentMore actions
 import { Link } from "react-router-dom";
-import { useScrollAnimation } from "@/hooks/use-scroll-animation";
-import { Logo } from "@/components/ui/logo";
+import { CheckCircle, Star, ArrowRight, Play } from "lucide-react";
 
 export function HeroSection() {
-  const { elementRef, isVisible } = useScrollAnimation();
-
   return (
-    <section 
-      ref={elementRef}
-      className="w-full min-h-screen flex items-center justify-center px-4 pt-16 relative overflow-hidden"
-    >
-      {/* Background decorative elements */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-20 left-10 w-32 h-32 bg-primary/10 rounded-full blur-3xl animate-pulse-soft"></div>
-        <div className="absolute bottom-20 right-10 w-48 h-48 bg-purple-600/10 rounded-full blur-3xl animate-floating"></div>
-        <div className="absolute top-1/2 right-1/4 w-16 h-16 bg-blue-500/20 rounded-full blur-2xl animate-bounce-gentle"></div>
+    <section className="w-full py-20">
+      <div className="w-full max-w-7xl mx-auto px-4">
+    <section className="w-full py-20 relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-primary/30 to-purple-600/30 rounded-full blur-3xl animate-floating"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-purple-600/20 to-pink-600/20 rounded-full blur-3xl animate-floating" style={{ animationDelay: '1s' }}></div>
       </div>
 
-      <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        {/* Left side - Content */}
-        <div className={`space-y-8 transition-all duration-1000 ease-out ${
-          isVisible 
-            ? 'opacity-100 translate-x-0 scale-100' 
-            : 'opacity-0 -translate-x-12 scale-95'
-        }`}>
-          {/* Logo */}
-          <div className={`transition-all duration-1000 delay-100 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}>
-            <Logo size="lg" showText={true} />
-          </div>
+      <div className="w-full max-w-7xl mx-auto px-4 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          {/* Left side - Text content */}
+          <div className="text-center lg:text-left space-y-8 animate-fade-in">
+            <div className="flex justify-center lg:justify-start">
+          <div className="text-center lg:text-left space-y-8">
+            <div className="flex justify-center lg:justify-start animate-fade-in animate-stagger-1">
+              <img 
+                src="/lovable-uploads/91e719aa-0b75-4c1e-a8de-ce6ccbed860b.png" 
+                alt="Logo" 
+                className="h-32 w-32 object-contain"
+                className="h-32 w-32 object-contain hover:scale-110 transition-transform duration-500"
+              />
+            </div>
 
-          <div className="space-y-6">
-            <h1 className={`text-4xl md:text-5xl lg:text-6xl font-bold leading-tight transition-all duration-1000 delay-200 ${
-              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-            }`}>
-              Streamline Your 
-              <span className="text-transparent bg-gradient-to-r from-primary to-purple-600 bg-clip-text"> Project Workflow</span>
-            </h1>
-            
-            <p className={`text-xl text-muted-foreground leading-relaxed max-w-lg transition-all duration-1000 delay-400 ${
-              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-            }`}>
-              Boost productivity and deliver projects on time with our intelligent project management platform designed for modern teams.
+            <h2 className="text-5xl md:text-7xl font-bold tracking-tight leading-tight">
+            <h2 className="text-5xl md:text-7xl font-bold tracking-tight leading-tight animate-slide-in animate-stagger-2">
+              Manage Projects with
+              <span className="text-transparent bg-gradient-to-r from-primary via-purple-600 to-pink-600 bg-clip-text animate-pulse-soft"> Confidence</span>
+              <span className="text-transparent bg-gradient-to-r from-primary via-purple-600 to-pink-600 bg-clip-text animate-shimmer inline-block"> Confidence</span>
+            </h2>
+
+            <p className="text-xl text-muted-foreground leading-relaxed max-w-2xl">
+            <p className="text-xl text-muted-foreground leading-relaxed max-w-2xl animate-fade-in animate-stagger-3">
+              The ultimate project management platform that helps teams collaborate, 
+              track progress, and deliver results efficiently. Transform your workflow today.
             </p>
-          </div>
 
-          {/* Feature highlights */}
-          <div className={`space-y-3 transition-all duration-1000 delay-600 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}>
-            {["Smart task automation", "Team collaboration tools", "Progress tracking"].map((feature, index) => (
-              <div 
-                key={feature} 
-                className={`flex items-center gap-3 transition-all duration-500 ${
-                  isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'
-                }`}
-                style={{ transitionDelay: `${700 + index * 100}ms` }}
-              >
-                <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
-                <span className="text-muted-foreground">{feature}</span>
-              </div>
-            ))}
-          </div>
-
-          {/* CTA Buttons */}
-          <div className={`flex flex-col sm:flex-row gap-4 pt-4 transition-all duration-1000 delay-1000 ${
-            isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-95'
-          }`}>
-            <Link to="/auth">
-              <Button size="lg" className="text-lg px-8 py-4 bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 group">
-                Start Free Trial
-                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-scale-in animate-stagger-4">
+              <Link to="/auth">
+                <Button size="lg" className="text-lg px-8 py-4 bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 group">
+                  Start Free Trial
+                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                <Button size="lg" className="text-lg px-8 py-4 bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:-translate-y-1 group relative overflow-hidden">
+                  <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
+                  <span className="relative z-10">Start Free Trial</span>
+                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform relative z-10" />
+                </Button>
+              </Link>
+              <Button variant="outline" size="lg" className="text-lg px-8 py-4 border-2 hover:bg-primary/5 hover:border-primary/50 transition-all duration-300 group">
+                <Play className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
+              <Button variant="outline" size="lg" className="text-lg px-8 py-4 border-2 hover:bg-primary/5 hover:border-primary/50 transition-all duration-300 hover:scale-105 hover:-translate-y-1 group">
+                <Play className="mr-2 h-5 w-5 group-hover:scale-110 group-hover:rotate-12 transition-transform" />
+                Watch Demo
               </Button>
-            </Link>
-            <Button 
-              variant="outline" 
-              size="lg" 
-              className="text-lg px-8 py-4 border-2 hover:bg-primary/5 hover:border-primary/50 transition-all duration-300"
-            >
-              View Features
-            </Button>
+            </div>
+
+            <div className="flex items-center gap-6 justify-center lg:justify-start text-sm text-muted-foreground">
+              <div className="flex items-center gap-1">
+                <CheckCircle className="h-4 w-4 text-green-500" />
+            <div className="flex items-center gap-6 justify-center lg:justify-start text-sm text-muted-foreground animate-fade-in animate-stagger-5">
+              <div className="flex items-center gap-1 hover:text-green-500 transition-colors duration-300">
+                <CheckCircle className="h-4 w-4 text-green-500 animate-bounce-gentle" />
+                Free 7-day trial
+              </div>
+              <div className="flex items-center gap-1">
+                <CheckCircle className="h-4 w-4 text-green-500" />
+              <div className="flex items-center gap-1 hover:text-green-500 transition-colors duration-300">
+                <CheckCircle className="h-4 w-4 text-green-500 animate-bounce-gentle" style={{ animationDelay: '0.2s' }} />
+                No credit card required
+              </div>
+              <div className="flex items-center gap-1">
+                <CheckCircle className="h-4 w-4 text-green-500" />
+              <div className="flex items-center gap-1 hover:text-green-500 transition-colors duration-300">
+                <CheckCircle className="h-4 w-4 text-green-500 animate-bounce-gentle" style={{ animationDelay: '0.4s' }} />
+                Cancel anytime
+              </div>
+            </div>
           </div>
 
-          <p className={`text-sm text-muted-foreground transition-all duration-1000 delay-1200 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-          }`}>
-            ✨ 14-day free trial • No credit card required
-          </p>
-        </div>
-
-        {/* Right side - Hero image */}
-        <div className={`flex justify-center lg:justify-end transition-all duration-1000 ease-out delay-300 ${
-          isVisible 
-            ? 'opacity-100 translate-x-0 scale-100' 
-            : 'opacity-0 translate-x-12 scale-90'
-        }`}>
-          <div className="relative">
-            <img 
-              src="/lovable-uploads/2fdc24f0-651a-49b6-9a2c-0fb781bf042c.png" 
-              alt="Professional woman working at desk with laptop - project management interface" 
-              className="w-full max-w-2xl h-auto drop-shadow-2xl animate-floating"
-            />
-            {/* Floating elements around the image */}
-            <div className="absolute -top-4 -right-4 w-8 h-8 bg-primary/20 rounded-full animate-bounce-gentle"></div>
-            <div className="absolute -bottom-8 -left-8 w-12 h-12 bg-purple-600/20 rounded-full animate-pulse-soft"></div>
-            <div className="absolute top-1/2 -left-6 w-6 h-6 bg-blue-500/30 rounded-full animate-floating"></div>
+          {/* Right side - Illustration */}
+          <div className="flex justify-center lg:justify-end animate-scale-in">
+            <div className="relative">
+              <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-purple-600/20 rounded-3xl blur-2xl animate-pulse-soft"></div>
+          <div className="flex justify-center lg:justify-end animate-scale-in animate-stagger-6">
+            <div className="relative group">
+              <div className="absolute -inset-8 bg-gradient-to-r from-primary/30 to-purple-600/30 rounded-3xl blur-2xl opacity-50 group-hover:opacity-70 transition-opacity duration-500 animate-pulse-soft"></div>
+              <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-purple-600/20 rounded-3xl blur-xl animate-pulse-soft" style={{ animationDelay: '1s' }}></div>
+              <img 
+                src="/lovable-uploads/2fdc24f0-651a-49b6-9a2c-0fb781bf042c.png" 
+                alt="Professional woman working at desk with laptop" 
+                className="relative w-[500px] h-auto drop-shadow-2xl hover:scale-105 transition-transform duration-500" 
+                className="relative w-[500px] h-auto drop-shadow-2xl hover:scale-105 hover:-translate-y-2 transition-all duration-700 hover:rotate-1 hover:drop-shadow-3xl" 
+              />
+              {/* Floating elements around the image */}
+              <div className="absolute top-10 -left-10 w-4 h-4 bg-primary rounded-full animate-floating opacity-60"></div>
+              <div className="absolute bottom-20 -right-8 w-6 h-6 bg-purple-500 rounded-full animate-floating opacity-60" style={{ animationDelay: '1.5s' }}></div>
+              <div className="absolute top-1/2 -right-12 w-3 h-3 bg-pink-500 rounded-full animate-floating opacity-60" style={{ animationDelay: '0.7s' }}></div>
+            </div>
           </div>
         </div>
-      </div>
+      </div>Add commentMore actions
     </section>
   );
 }
