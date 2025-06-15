@@ -5,7 +5,6 @@ import { Navigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Sparkles } from "lucide-react";
 import { AuthForm } from "@/components/auth/AuthForm";
-import { Logo } from "@/components/ui/logo";
 
 export default function AuthPage() {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -102,9 +101,11 @@ export default function AuthPage() {
                 />
               </div>
               
-              {/* Logo */}
+              {/* Logo/Icon */}
               <div className="mb-8">
-                <Logo size="lg" className="scale-150 mx-auto animate-bounce-gentle" />
+                <div className="w-16 h-16 bg-gradient-to-br from-white via-white to-blue-100 rounded-3xl mx-auto mb-6 flex items-center justify-center shadow-2xl animate-bounce-gentle">
+                  <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-inner"></div>
+                </div>
               </div>
               
               {/* Typography */}
