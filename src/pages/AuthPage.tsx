@@ -1,4 +1,5 @@
 
+
 import { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { Navigate, Link } from "react-router-dom";
@@ -103,7 +104,7 @@ export default function AuthPage() {
               
               {/* Logo */}
               <div className="mb-8">
-                <div className="bg-white rounded-lg p-1 mx-auto mb-6 inline-flex items-center justify-center shadow-2xl animate-bounce-gentle">
+                <div className="bg-white rounded p-0.5 mx-auto mb-6 inline-flex items-center justify-center shadow-2xl animate-bounce-gentle">
                   <img 
                     src="/lovable-uploads/91e719aa-0b75-4c1e-a8de-ce6ccbed860b.png" 
                     alt="Logo" 
