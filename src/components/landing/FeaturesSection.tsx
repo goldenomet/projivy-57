@@ -1,29 +1,30 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle, Users, Clock, BarChart3 } from "lucide-react";
 
 export function FeaturesSection() {
-  const features = [{
-    icon: CheckCircle,
-    title: "Task Management",
-    description: "Organize and track your tasks with powerful project management tools.",
-    gradient: "from-blue-500 to-cyan-500"
-  }, {
-    icon: Users,
-    title: "Team Collaboration",
-    description: "Work together seamlessly with your team members and stakeholders.",
-    gradient: "from-purple-500 to-pink-500"
-  }, {
-    icon: Clock,
-    title: "Time Tracking",
-    description: "Monitor time spent on projects and improve productivity insights.",
-    gradient: "from-green-500 to-emerald-500"
-  }, {
-    icon: BarChart3,
-    title: "Analytics & Reports",
-    description: "Get detailed insights into your project progress and team performance.",
-    gradient: "from-orange-500 to-red-500"
-  }];
+  const features = [
+    {
+      icon: CheckCircle,
+      title: "Task Management",
+      description: "Organize and track your tasks with powerful project management tools.",
+      gradient: "from-blue-500 to-cyan-500"
+    }, {
+      icon: Users,
+      title: "Team Collaboration",
+      description: "Work together seamlessly with your team members and stakeholders.",
+      gradient: "from-purple-500 to-pink-500"
+    }, {
+      icon: Clock,
+      title: "Time Tracking",
+      description: "Monitor time spent on projects and improve productivity insights.",
+      gradient: "from-green-500 to-emerald-500"
+    }, {
+      icon: BarChart3,
+      title: "Analytics & Reports",
+      description: "Get detailed insights into your project progress and team performance.",
+      gradient: "from-orange-500 to-red-500"
+    }
+  ];
 
   return (
     <section className="w-full py-20 animate-slide-in relative">
@@ -48,9 +49,9 @@ export function FeaturesSection() {
           </p>
         </div>
         
-        {/* Features arranged horizontally on the left */}
+        {/* Features arranged in 2 rows of 2 cards each */}
         <div className="flex justify-start">
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 max-w-5xl">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl">
             {features.map((feature, index) => (
               <Card key={index} className="border-border/50 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 cursor-pointer group overflow-hidden relative">
                 <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-300`}></div>
