@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
@@ -19,6 +20,9 @@ export function AuthForm({ isSignUp, setIsSignUp }: AuthFormProps) {
   const [fullName, setFullName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [isSendingReset, setIsSendingReset] = useState(false);
   
   const { signIn, signUp } = useAuth();
 
@@ -36,11 +40,45 @@ export function AuthForm({ isSignUp, setIsSignUp }: AuthFormProps) {
         await signUp(email, password, fullName);
       } else {
         await signIn(email, password);
+        
+        // Handle remember me functionality
+        if (rememberMe) {
+          localStorage.setItem('rememberMe', 'true');
+          localStorage.setItem('userEmail', email);
+        } else {
+          localStorage.removeItem('rememberMe');
+          localStorage.removeItem('userEmail');
+        }
       }
     } catch (error) {
       // Error handling is done in the auth hook
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!email) {
+      toast.error("Please enter your email address first");
+      return;
+    }
+    
+    setIsSendingReset(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth?reset=true`,
+      });
+      
+      if (error) {
+        toast.error(error.message);
+      } else {
+        toast.success("Password reset email sent! Check your inbox.");
+        setShowForgotPassword(false);
+      }
+    } catch (error: any) {
+      toast.error("Failed to send reset email");
+    } finally {
+      setIsSendingReset(false);
     }
   };
 
@@ -62,6 +100,75 @@ export function AuthForm({ isSignUp, setIsSignUp }: AuthFormProps) {
       console.error('Google sign in error:', error);
     }
   };
+
+  // Load remembered email on component mount
+  useState(() => {
+    const remembered = localStorage.getItem('rememberMe');
+    const savedEmail = localStorage.getItem('userEmail');
+    if (remembered === 'true' && savedEmail) {
+      setEmail(savedEmail);
+      setRememberMe(true);
+    }
+  });
+
+  if (showForgotPassword) {
+    return (
+      <div className="w-full max-w-md mx-auto px-2 sm:px-0">
+        <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-6 sm:p-8 lg:p-10 border border-white/20">
+          <div className="text-center mb-6 sm:mb-8">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+              Reset Password
+            </h2>
+            <p className="text-gray-500 text-sm sm:text-base">
+              Enter your email to receive a password reset link
+            </p>
+          </div>
+          
+          <div className="space-y-4">
+            <div className="space-y-1 sm:space-y-2">
+              <Label htmlFor="reset-email" className="text-sm font-medium text-gray-700">
+                Email
+              </Label>
+              <div className="relative">
+                <Input
+                  id="reset-email"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="h-10 sm:h-11 lg:h-12 pl-8 sm:pl-10 border-gray-200 focus:border-blue-500 focus:ring-blue-500 text-sm sm:text-base bg-white"
+                />
+                <Mail className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
+              </div>
+            </div>
+            
+            <Button 
+              onClick={handleForgotPassword}
+              className="w-full h-10 sm:h-11 lg:h-12 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm sm:text-base rounded-lg" 
+              disabled={isSendingReset}
+            >
+              {isSendingReset ? (
+                <div className="flex items-center">
+                  <div className="animate-spin rounded-full h-3 w-3 sm:h-4 sm:w-4 border-2 border-white/30 border-t-white mr-2"></div>
+                  <span className="text-xs sm:text-sm">Sending...</span>
+                </div>
+              ) : (
+                <span className="text-sm sm:text-base">Send Reset Link</span>
+              )}
+            </Button>
+            
+            <button
+              onClick={() => setShowForgotPassword(false)}
+              className="w-full text-sm text-blue-600 hover:text-blue-500 font-medium"
+            >
+              Back to Sign In
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-md mx-auto px-2 sm:px-0">
@@ -168,18 +275,19 @@ export function AuthForm({ isSignUp, setIsSignUp }: AuthFormProps) {
           
           {!isSignUp && (
             <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
+              <div className="flex items-center space-x-2">
+                <Checkbox
                   id="remember"
-                  className="h-3 w-3 sm:h-4 sm:w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  checked={rememberMe}
+                  onCheckedChange={(checked) => setRememberMe(checked as boolean)}
                 />
-                <Label htmlFor="remember" className="ml-1 sm:ml-2 text-xs sm:text-sm text-gray-600">
+                <Label htmlFor="remember" className="text-xs sm:text-sm text-gray-600 cursor-pointer">
                   Remember me
                 </Label>
               </div>
               <button 
                 type="button"
+                onClick={() => setShowForgotPassword(true)}
                 className="text-xs sm:text-sm text-blue-600 hover:text-blue-500 font-medium"
               >
                 Forgot password?
