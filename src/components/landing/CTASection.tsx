@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { DemoTourButton } from "@/components/demo/DemoTourButton";
 
 export function CTASection() {
   const { elementRef, isVisible } = useScrollAnimation();
@@ -43,9 +44,11 @@ export function CTASection() {
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
-              <Button variant="outline" size="lg" className="text-lg px-8 py-4 border-2 hover:bg-primary/5 hover:border-primary/50 transition-all duration-300">
-                Schedule Demo
-              </Button>
+              <DemoTourButton 
+                variant="outline" 
+                size="lg" 
+                className="text-lg px-8 py-4 border-2 hover:bg-primary/5 hover:border-primary/50 transition-all duration-300"
+              />
             </div>
             <p className={`text-sm text-muted-foreground transition-all duration-1000 delay-900 ${
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
