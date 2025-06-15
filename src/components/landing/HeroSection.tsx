@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { CheckCircle, Star, ArrowRight, Play, ChevronDown } from "lucide-react";
@@ -44,7 +43,7 @@ export function HeroSection() {
         <div className="absolute bottom-40 right-48 w-2.5 h-2.5 bg-zinc-500/45 rounded-full animate-bounce" style={{ animationDelay: '1.0s', animationDuration: '2.6s' }}></div>
       </div>
 
-      <div className="w-full max-w-7xl mx-auto px-4 relative z-10 flex-1 flex items-start pt-16">
+      <div className="w-full max-w-7xl mx-auto px-4 relative z-10 flex-1 flex items-start pt-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full">
           {/* Left side - Text content */}
           <div className="text-center lg:text-left space-y-8 animate-fade-in">
