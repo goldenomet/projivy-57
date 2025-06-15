@@ -6,12 +6,6 @@ import { CheckCircle, Star, ArrowRight, Play } from "lucide-react";
 export function HeroSection() {
   return (
     <section className="w-full py-20 relative overflow-hidden">
-      {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-primary/30 to-purple-600/30 rounded-full blur-3xl animate-floating"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-purple-600/20 to-pink-600/20 rounded-full blur-3xl animate-floating" style={{ animationDelay: '1s' }}></div>
-      </div>
-
       <div className="w-full max-w-7xl mx-auto px-4 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left side - Text content */}
@@ -66,17 +60,11 @@ export function HeroSection() {
           {/* Right side - Illustration */}
           <div className="flex justify-center lg:justify-end animate-scale-in animate-stagger-6">
             <div className="relative group">
-              <div className="absolute -inset-8 bg-gradient-to-r from-primary/30 to-purple-600/30 rounded-3xl blur-2xl opacity-50 group-hover:opacity-70 transition-opacity duration-500 animate-pulse-soft"></div>
-              <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-purple-600/20 rounded-3xl blur-xl animate-pulse-soft" style={{ animationDelay: '1s' }}></div>
               <img 
                 src="/lovable-uploads/2fdc24f0-651a-49b6-9a2c-0fb781bf042c.png" 
                 alt="Professional woman working at desk with laptop" 
                 className="relative w-[500px] h-auto drop-shadow-2xl hover:scale-105 hover:-translate-y-2 transition-all duration-700 hover:rotate-1 hover:drop-shadow-3xl" 
               />
-              {/* Floating elements around the image */}
-              <div className="absolute top-10 -left-10 w-4 h-4 bg-primary rounded-full animate-floating opacity-60"></div>
-              <div className="absolute bottom-20 -right-8 w-6 h-6 bg-purple-500 rounded-full animate-floating opacity-60" style={{ animationDelay: '1.5s' }}></div>
-              <div className="absolute top-1/2 -right-12 w-3 h-3 bg-pink-500 rounded-full animate-floating opacity-60" style={{ animationDelay: '0.7s' }}></div>
             </div>
           </div>
         </div>
