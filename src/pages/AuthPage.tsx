@@ -101,11 +101,13 @@ export default function AuthPage() {
                 />
               </div>
               
-              {/* Logo/Icon */}
+              {/* Logo/Icon - Updated to use your logo */}
               <div className="mb-8">
-                <div className="w-16 h-16 bg-gradient-to-br from-white via-white to-blue-100 rounded-3xl mx-auto mb-6 flex items-center justify-center shadow-2xl animate-bounce-gentle">
-                  <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-inner"></div>
-                </div>
+                <img 
+                  src="/lovable-uploads/91e719aa-0b75-4c1e-a8de-ce6ccbed860b.png" 
+                  alt="Projivy Logo" 
+                  className="w-24 h-24 mx-auto mb-6 object-contain drop-shadow-2xl animate-bounce-gentle"
+                />
               </div>
               
               {/* Typography */}
