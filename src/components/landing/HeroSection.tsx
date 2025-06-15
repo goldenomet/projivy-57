@@ -59,13 +59,11 @@ export function HeroSection() {
 
           {/* Right side - Illustration */}
           <div className="flex justify-center lg:justify-end animate-scale-in animate-stagger-6">
-            <div className="relative group">
-              <img 
-                src="/lovable-uploads/2fdc24f0-651a-49b6-9a2c-0fb781bf042c.png" 
-                alt="Professional woman working at desk with laptop" 
-                className="relative w-[500px] h-auto drop-shadow-2xl hover:scale-105 hover:-translate-y-2 transition-all duration-700 hover:rotate-1 hover:drop-shadow-3xl" 
-              />
-            </div>
+            <img 
+              src="/lovable-uploads/2fdc24f0-651a-49b6-9a2c-0fb781bf042c.png" 
+              alt="Professional woman working at desk with laptop" 
+              className="w-[500px] h-auto hover:scale-105 hover:-translate-y-2 transition-all duration-700" 
+            />
           </div>
         </div>
       </div>
