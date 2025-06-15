@@ -1,4 +1,5 @@
 
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle, Users, Clock, BarChart3 } from "lucide-react";
 export function FeaturesSection() {
@@ -30,8 +31,8 @@ export function FeaturesSection() {
           <img alt="Project management workflow illustration with document and task organization" className="w-24 h-24 sm:w-32 sm:h-32 lg:w-40 lg:h-40 object-contain animate-floating opacity-80" src="/lovable-uploads/385559a7-9e1c-4611-ae4d-bcfc73bdb7f3.png" />
         </div>
 
-        {/* Left side illustration */}
-        <div className="absolute left-2 bottom-8 sm:left-4 sm:bottom-12 lg:left-8 lg:bottom-16">
+        {/* Right side illustration */}
+        <div className="absolute right-2 bottom-8 sm:right-4 sm:bottom-12 lg:right-8 lg:bottom-16">
           <img alt="Team collaboration illustration with people working together on analytics" className="w-32 h-32 sm:w-40 sm:h-40 lg:w-56 lg:h-56 opacity-80 object-cover" src="/lovable-uploads/6a108e84-6201-4318-98bd-8b6dd7131802.png" />
         </div>
 
@@ -45,7 +46,7 @@ export function FeaturesSection() {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 justify-start">
           {features.map((feature, index) => <Card key={index} className="border-border/50 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 cursor-pointer group overflow-hidden relative">
               <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-300`}></div>
               <CardHeader className="relative">
@@ -64,3 +65,4 @@ export function FeaturesSection() {
       </div>
     </section>;
 }
+
