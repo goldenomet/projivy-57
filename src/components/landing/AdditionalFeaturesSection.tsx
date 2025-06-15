@@ -1,8 +1,12 @@
 
 import { Card } from "@/components/ui/card";
 import { Shield, Globe, Zap, Award, TrendingUp, Users } from "lucide-react";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 
 export function AdditionalFeaturesSection() {
+  const { ref: leftRef, isInView: leftInView } = useScrollAnimation({ threshold: 0.3 });
+  const { ref: rightRef, isInView: rightInView } = useScrollAnimation({ threshold: 0.2 });
+
   return (
     <section className="w-full py-20 relative overflow-hidden">
       {/* Animated background grid */}
@@ -12,7 +16,14 @@ export function AdditionalFeaturesSection() {
 
       <div className="w-full max-w-7xl mx-auto px-4 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <div className="space-y-6 animate-slide-in">
+          <div 
+            ref={leftRef}
+            className={`space-y-6 transition-all duration-1000 ${
+              leftInView 
+                ? 'opacity-100 translate-x-0' 
+                : 'opacity-0 -translate-x-12'
+            }`}
+          >
             <h3 className="text-3xl font-bold">
               Built for the
               <span className="text-transparent bg-gradient-to-r from-primary to-purple-600 bg-clip-text hover:from-purple-600 hover:to-primary transition-all duration-500 animate-shimmer"> modern workplace</span>
@@ -29,8 +40,15 @@ export function AdditionalFeaturesSection() {
               ].map((item, index) => (
                 <div 
                   key={index} 
-                  className="flex items-start gap-3 group hover:bg-primary/5 p-3 rounded-lg transition-all duration-500 cursor-pointer hover:-translate-y-1 hover:shadow-lg animate-fade-in"
-                  style={{ animationDelay: `${index * 0.2}s` }}
+                  className={`flex items-start gap-3 group hover:bg-primary/5 p-3 rounded-lg transition-all duration-500 cursor-pointer hover:-translate-y-1 hover:shadow-lg ${
+                    leftInView 
+                      ? 'opacity-100 translate-x-0' 
+                      : 'opacity-0 -translate-x-8'
+                  }`}
+                  style={{ 
+                    transitionDelay: leftInView ? `${(index + 2) * 200}ms` : '0ms',
+                    transitionDuration: '700ms'
+                  }}
                 >
                   <div className="bg-gradient-to-br from-primary to-purple-600 p-2 rounded-lg group-hover:scale-110 group-hover:rotate-12 transition-all duration-500">
                     <item.icon className="h-6 w-6 text-white" />
@@ -44,7 +62,7 @@ export function AdditionalFeaturesSection() {
             </div>
           </div>
           
-          <div className="grid grid-cols-2 gap-4 animate-scale-in animate-stagger-1">
+          <div ref={rightRef} className="grid grid-cols-2 gap-4">
             {[
               { icon: TrendingUp, title: "98%", subtitle: "Client Satisfaction", color: "from-green-500 to-emerald-500" },
               { icon: Users, title: "500+", subtitle: "Team Members", color: "from-blue-500 to-cyan-500" },
@@ -53,8 +71,15 @@ export function AdditionalFeaturesSection() {
             ].map((metric, index) => (
               <Card 
                 key={index} 
-                className="text-center p-6 hover:shadow-2xl transition-all duration-700 hover:-translate-y-4 hover:rotate-2 group cursor-pointer relative overflow-hidden animate-scale-in"
-                style={{ animationDelay: `${index * 0.3}s` }}
+                className={`text-center p-6 hover:shadow-2xl transition-all duration-700 hover:-translate-y-4 hover:rotate-2 group cursor-pointer relative overflow-hidden ${
+                  rightInView 
+                    ? 'opacity-100 translate-y-0 scale-100 rotate-0' 
+                    : 'opacity-0 translate-y-8 scale-90 rotate-3'
+                }`}
+                style={{ 
+                  transitionDelay: rightInView ? `${index * 150}ms` : '0ms',
+                  transitionDuration: '800ms'
+                }}
               >
                 <div className={`absolute inset-0 bg-gradient-to-br ${metric.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}></div>
                 <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
