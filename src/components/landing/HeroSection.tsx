@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
-import { DemoTourButton } from "@/components/demo/DemoTourButton";
+import { Logo } from "@/components/ui/logo";
 
 export function HeroSection() {
   const { elementRef, isVisible } = useScrollAnimation();
@@ -27,18 +27,25 @@ export function HeroSection() {
             ? 'opacity-100 translate-x-0 scale-100' 
             : 'opacity-0 -translate-x-12 scale-95'
         }`}>
+          {/* Logo */}
+          <div className={`transition-all duration-1000 delay-100 ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          }`}>
+            <Logo size="lg" showText={true} />
+          </div>
+
           <div className="space-y-6">
             <h1 className={`text-4xl md:text-5xl lg:text-6xl font-bold leading-tight transition-all duration-1000 delay-200 ${
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}>
-              Transform Your 
-              <span className="text-transparent bg-gradient-to-r from-primary to-purple-600 bg-clip-text"> Project Management</span>
+              Streamline Your 
+              <span className="text-transparent bg-gradient-to-r from-primary to-purple-600 bg-clip-text"> Project Workflow</span>
             </h1>
             
             <p className={`text-xl text-muted-foreground leading-relaxed max-w-lg transition-all duration-1000 delay-400 ${
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}>
-              Streamline your workflow, boost team productivity, and deliver projects on time with Projivy's intelligent project management platform.
+              Boost productivity and deliver projects on time with our intelligent project management platform designed for modern teams.
             </p>
           </div>
 
@@ -46,7 +53,7 @@ export function HeroSection() {
           <div className={`space-y-3 transition-all duration-1000 delay-600 ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}>
-            {["Real-time collaboration", "Advanced analytics", "Automated workflows"].map((feature, index) => (
+            {["Smart task automation", "Team collaboration tools", "Progress tracking"].map((feature, index) => (
               <div 
                 key={feature} 
                 className={`flex items-center gap-3 transition-all duration-500 ${
@@ -66,21 +73,23 @@ export function HeroSection() {
           }`}>
             <Link to="/auth">
               <Button size="lg" className="text-lg px-8 py-4 bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 group">
-                Get Started Free
+                Start Free Trial
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-            <DemoTourButton 
+            <Button 
               variant="outline" 
               size="lg" 
               className="text-lg px-8 py-4 border-2 hover:bg-primary/5 hover:border-primary/50 transition-all duration-300"
-            />
+            >
+              View Features
+            </Button>
           </div>
 
           <p className={`text-sm text-muted-foreground transition-all duration-1000 delay-1200 ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}>
-            ✨ Start your 14-day free trial • No credit card required
+            ✨ 14-day free trial • No credit card required
           </p>
         </div>
 
@@ -92,8 +101,8 @@ export function HeroSection() {
         }`}>
           <div className="relative">
             <img 
-              src="/lovable-uploads/8cc9898e-b955-410e-a1d2-822ce8f2886e.png" 
-              alt="Project management dashboard interface showing analytics, tasks, and team collaboration" 
+              src="/lovable-uploads/2fdc24f0-651a-49b6-9a2c-0fb781bf042c.png" 
+              alt="Professional woman working at desk with laptop - project management interface" 
               className="w-full max-w-2xl h-auto drop-shadow-2xl animate-floating"
             />
             {/* Floating elements around the image */}
