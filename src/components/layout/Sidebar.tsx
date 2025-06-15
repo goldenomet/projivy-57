@@ -6,13 +6,25 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar";
 import { Logo } from "@/components/ui/logo";
-import { useSidebarData } from "@/hooks/use-sidebar-data";
+import { useAuth } from "@/hooks/use-auth";
+import { useDashboardData } from "@/hooks/use-dashboard-data";
 import { MainMenuSection } from "./sidebar/MainMenuSection";
 import { SettingsMenuSection } from "./sidebar/SettingsMenuSection";
 import { UserProfileFooter } from "./sidebar/UserProfileFooter";
 
 export function Sidebar() {
-  const { user, profile, getInitials } = useSidebarData();
+  const { user } = useAuth();
+  const { userProfile } = useDashboardData();
+
+  const getInitials = (name: string | null) => {
+    if (!name) return "U";
+    return name
+      .split(" ")
+      .map(part => part[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
 
   return (
     <SidebarContainer>
@@ -30,7 +42,7 @@ export function Sidebar() {
       <SidebarFooter>
         <UserProfileFooter 
           user={user}
-          profile={profile}
+          profile={userProfile}
           getInitials={getInitials}
         />
       </SidebarFooter>
