@@ -12,6 +12,7 @@ export default function DocumentationPage() {
       title: "Getting Started",
       description: "Learn the basics of Projivy and set up your first project.",
       badge: "Essential",
+      status: "Production",
       items: [
         { title: "Quick Start Guide", time: "5 min read" },
         { title: "Creating Your First Project", time: "10 min read" },
@@ -24,6 +25,7 @@ export default function DocumentationPage() {
       title: "Video Tutorials",
       description: "Step-by-step video guides for all features.",
       badge: "Popular",
+      status: "Coming Soon",
       items: [
         { title: "Project Setup Walkthrough", time: "12 min video" },
         { title: "Advanced Task Management", time: "18 min video" },
@@ -36,6 +38,7 @@ export default function DocumentationPage() {
       title: "FAQ",
       description: "Find answers to commonly asked questions.",
       badge: "Updated",
+      status: "Production",
       items: [
         { title: "Account Management", time: "Quick answers" },
         { title: "Billing and Subscriptions", time: "Quick answers" },
@@ -48,6 +51,7 @@ export default function DocumentationPage() {
       title: "API Documentation",
       description: "Integrate Projivy with your existing tools.",
       badge: "Technical",
+      status: "Coming Soon",
       items: [
         { title: "API Reference", time: "Complete guide" },
         { title: "Authentication", time: "Setup guide" },
@@ -65,6 +69,14 @@ export default function DocumentationPage() {
     "Integrations",
     "Security"
   ];
+
+  const getStatusBadgeVariant = (status: string) => {
+    return status === "Production" ? "default" : "secondary";
+  };
+
+  const getStatusBadgeColor = (status: string) => {
+    return status === "Production" ? "bg-green-500 hover:bg-green-600" : "bg-orange-500 hover:bg-orange-600";
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/10">
@@ -132,9 +144,17 @@ export default function DocumentationPage() {
                   <div className="group-hover:scale-110 transition-transform duration-300">
                     {section.icon}
                   </div>
-                  <Badge variant="secondary" className="text-xs">
-                    {section.badge}
-                  </Badge>
+                  <div className="flex gap-2">
+                    <Badge variant="secondary" className="text-xs">
+                      {section.badge}
+                    </Badge>
+                    <Badge 
+                      variant={getStatusBadgeVariant(section.status)}
+                      className={`text-xs text-white ${getStatusBadgeColor(section.status)}`}
+                    >
+                      {section.status}
+                    </Badge>
+                  </div>
                 </div>
                 <CardTitle className="text-lg sm:text-xl group-hover:text-primary transition-colors duration-300">
                   {section.title}
@@ -150,16 +170,23 @@ export default function DocumentationPage() {
                       <Button 
                         variant="ghost" 
                         className="w-full justify-between p-3 h-auto text-left hover:bg-primary/5 transition-all duration-300 group/item"
+                        disabled={section.status === "Coming Soon"}
                       >
                         <div>
-                          <div className="font-medium group-hover/item:text-primary transition-colors">
+                          <div className={`font-medium transition-colors ${
+                            section.status === "Coming Soon" 
+                              ? "text-muted-foreground" 
+                              : "group-hover/item:text-primary"
+                          }`}>
                             {item.title}
                           </div>
                           <div className="text-xs text-muted-foreground mt-1">
                             {item.time}
                           </div>
                         </div>
-                        <ExternalLink className="h-4 w-4 opacity-0 group-hover/item:opacity-100 transition-opacity" />
+                        {section.status === "Production" && (
+                          <ExternalLink className="h-4 w-4 opacity-0 group-hover/item:opacity-100 transition-opacity" />
+                        )}
                       </Button>
                     </li>
                   ))}
