@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { CheckCircle, Star, ArrowRight, Play } from "lucide-react";
@@ -13,7 +14,7 @@ export function HeroSection() {
               <img 
                 src="/lovable-uploads/91e719aa-0b75-4c1e-a8de-ce6ccbed860b.png" 
                 alt="Logo" 
-                className="h-16 w-16 object-contain"
+                className="h-32 w-32 object-contain"
               />
             </div>
             
