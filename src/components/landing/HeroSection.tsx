@@ -1,10 +1,11 @@
+
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { CheckCircle, Star, ArrowRight, Play } from "lucide-react";
+import { CheckCircle, Star, ArrowRight, Play, ChevronDown } from "lucide-react";
 
 export function HeroSection() {
   return (
-    <section className="w-full py-20 relative overflow-hidden">
+    <section className="w-full py-12 relative overflow-hidden min-h-screen flex flex-col">
       {/* Bouncing dots background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
         {/* First row of dots */}
@@ -36,8 +37,8 @@ export function HeroSection() {
         <div className="absolute bottom-40 right-48 w-2.5 h-2.5 bg-zinc-500/45 rounded-full animate-bounce" style={{ animationDelay: '1.0s', animationDuration: '2.6s' }}></div>
       </div>
 
-      <div className="w-full max-w-7xl mx-auto px-4 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div className="w-full max-w-7xl mx-auto px-4 relative z-10 flex-1 flex items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full">
           {/* Left side - Text content */}
           <div className="text-center lg:text-left space-y-8 animate-fade-in">
             <div className="flex justify-center lg:justify-start animate-fade-in animate-stagger-1">
@@ -95,6 +96,14 @@ export function HeroSection() {
               className="w-[500px] h-auto hover:scale-105 hover:-translate-y-2 transition-all duration-700" 
             />
           </div>
+        </div>
+      </div>
+
+      {/* Scroll Down Indicator */}
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 animate-bounce">
+        <div className="flex flex-col items-center space-y-2 text-muted-foreground hover:text-primary transition-colors duration-300 cursor-pointer">
+          <span className="text-sm font-medium">Scroll Down</span>
+          <ChevronDown className="h-6 w-6 animate-bounce" style={{ animationDelay: '0.2s' }} />
         </div>
       </div>
     </section>
