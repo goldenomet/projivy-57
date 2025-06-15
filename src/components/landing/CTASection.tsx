@@ -1,14 +1,12 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { ArrowRight, Sparkles, Star } from "lucide-react";
-import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 
 export function CTASection() {
-  const { ref: ctaRef, isInView: ctaInView } = useScrollAnimation({ threshold: 0.3 });
-
   return (
-    <section className="w-full py-20 text-center relative overflow-hidden">
+    <section className="w-full py-20 text-center animate-fade-in relative overflow-hidden">
       {/* Animated background elements */}
       <div className="absolute inset-0">
         <div className="absolute top-10 left-10 text-primary/20 animate-floating">
@@ -23,15 +21,7 @@ export function CTASection() {
       </div>
 
       <div className="w-full max-w-7xl mx-auto px-4 relative z-10">
-        <Card 
-          ref={ctaRef}
-          className={`max-w-4xl mx-auto border-primary/20 bg-gradient-to-r from-primary/5 via-background to-purple-600/5 relative overflow-hidden group hover:shadow-3xl transition-all duration-700 hover:-translate-y-2 ${
-            ctaInView 
-              ? 'opacity-100 translate-y-0 scale-100' 
-              : 'opacity-0 translate-y-16 scale-95'
-          }`}
-          style={{ transitionDuration: '1000ms' }}
-        >
+        <Card className="max-w-4xl mx-auto border-primary/20 bg-gradient-to-r from-primary/5 via-background to-purple-600/5 relative overflow-hidden group hover:shadow-3xl transition-all duration-700 hover:-translate-y-2">
           <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-purple-600/10 animate-pulse-soft opacity-50 group-hover:opacity-80 transition-opacity duration-500"></div>
           <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/5 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1500"></div>
           
@@ -40,11 +30,7 @@ export function CTASection() {
           <div className="absolute bottom-4 left-4 w-3 h-3 bg-purple-500/60 rounded-full animate-floating opacity-60" style={{ animationDelay: '1s' }}></div>
           <div className="absolute top-1/2 right-1/4 w-1 h-1 bg-pink-500/60 rounded-full animate-floating opacity-60" style={{ animationDelay: '2s' }}></div>
 
-          <CardHeader className={`relative transition-all duration-800 delay-300 ${
-            ctaInView 
-              ? 'opacity-100 translate-y-0' 
-              : 'opacity-0 translate-y-8'
-          }`}>
+          <CardHeader className="relative animate-slide-in">
             <CardTitle className="text-3xl mb-4 group-hover:scale-105 transition-transform duration-300">
               Ready to transform your workflow?
             </CardTitle>
@@ -53,11 +39,7 @@ export function CTASection() {
               Start your free trial today and experience the difference.
             </CardDescription>
           </CardHeader>
-          <CardContent className={`relative space-y-6 transition-all duration-800 delay-500 ${
-            ctaInView 
-              ? 'opacity-100 translate-y-0 scale-100' 
-              : 'opacity-0 translate-y-8 scale-95'
-          }`}>
+          <CardContent className="relative space-y-6 animate-scale-in animate-stagger-1">
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/auth">
                 <Button size="lg" className="text-lg px-8 py-4 bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-110 hover:-translate-y-2 group/btn relative overflow-hidden">
@@ -71,11 +53,7 @@ export function CTASection() {
                 Schedule Demo
               </Button>
             </div>
-            <p className={`text-sm text-muted-foreground hover:text-foreground transition-all duration-800 delay-700 ${
-              ctaInView 
-                ? 'opacity-100 translate-y-0' 
-                : 'opacity-0 translate-y-4'
-            }`}>
+            <p className="text-sm text-muted-foreground animate-fade-in animate-stagger-2 hover:text-foreground transition-colors duration-300">
               No setup fees • Cancel anytime • 24/7 support included
             </p>
           </CardContent>

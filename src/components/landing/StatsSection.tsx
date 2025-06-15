@@ -1,12 +1,8 @@
+
 import { Card, CardContent } from "@/components/ui/card";
 import { Users, CheckCircle, Shield, Clock, TrendingDown, TrendingUp } from "lucide-react";
-import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 
 export function StatsSection() {
-  const { ref: headerRef, isInView: headerInView } = useScrollAnimation({ threshold: 0.3 });
-  const { ref: imageRef, isInView: imageInView } = useScrollAnimation({ threshold: 0.2 });
-  const { ref: statsRef, isInView: statsInView } = useScrollAnimation({ threshold: 0.2 });
-
   const stats = [{
     number: "40%",
     label: "Cost Reduction",
@@ -30,7 +26,7 @@ export function StatsSection() {
   }];
 
   return (
-    <section className="w-full py-20 relative overflow-hidden">
+    <section className="w-full py-20 animate-fade-in relative overflow-hidden">
       {/* Animated grid background */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute inset-0" style={{
@@ -41,14 +37,7 @@ export function StatsSection() {
       </div>
 
       <div className="w-full max-w-7xl mx-auto px-4 relative z-10">
-        <div 
-          ref={headerRef}
-          className={`text-center mb-12 transition-all duration-1000 ${
-            headerInView 
-              ? 'opacity-100 translate-y-0' 
-              : 'opacity-0 translate-y-12'
-          }`}
-        >
+        <div className="text-center mb-12 animate-slide-in">
           <h3 className="text-3xl font-bold mb-4">
             Save costs while
             <span className="text-transparent bg-gradient-to-r from-primary to-purple-600 bg-clip-text animate-shimmer"> boosting productivity</span>
@@ -59,15 +48,8 @@ export function StatsSection() {
         </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Left side - Image */}
-          <div 
-            ref={imageRef}
-            className={`flex justify-center lg:justify-start transition-all duration-1200 ${
-              imageInView 
-                ? 'opacity-100 translate-x-0 scale-100' 
-                : 'opacity-0 -translate-x-12 scale-90'
-            }`}
-          >
+          {/* Left side - Image with enhanced animations */}
+          <div className="flex justify-center lg:justify-start animate-slide-in animate-stagger-1">
             <div className="relative group">
               <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-purple-600/20 rounded-3xl blur-xl opacity-50 group-hover:opacity-80 transition-opacity duration-500 animate-pulse-soft"></div>
               <img 
@@ -85,20 +67,13 @@ export function StatsSection() {
             </div>
           </div>
           
-          {/* Right side - Stats */}
-          <div ref={statsRef} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Right side - Stats with staggered animations */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {stats.map((stat, index) => (
               <Card 
                 key={index} 
-                className={`text-center p-6 hover:shadow-2xl transition-all duration-500 hover:-translate-y-4 group cursor-pointer border-2 hover:border-primary/20 relative overflow-hidden ${
-                  statsInView 
-                    ? 'opacity-100 translate-y-0 scale-100' 
-                    : 'opacity-0 translate-y-12 scale-95'
-                }`}
-                style={{ 
-                  transitionDelay: statsInView ? `${index * 200}ms` : '0ms',
-                  transitionDuration: '800ms'
-                }}
+                className="text-center p-6 hover:shadow-2xl transition-all duration-500 hover:-translate-y-4 group cursor-pointer border-2 hover:border-primary/20 animate-scale-in relative overflow-hidden"
+                style={{ animationDelay: `${(index + 2) * 0.2}s` }}
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-purple-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
