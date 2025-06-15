@@ -9,7 +9,7 @@ import { useDashboardData } from "@/hooks/use-dashboard-data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ChevronLeft, BarChart3, RefreshCw, Calendar } from "lucide-react";
+import { ChevronLeft, BarChart3, RefreshCw, Calendar, Code, AlertTriangle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
@@ -72,6 +72,10 @@ export default function TeamMetricsPage() {
             <div className="flex items-center gap-2">
               <BarChart3 className="h-6 w-6" />
               <h1 className="text-2xl font-bold">Team Performance Metrics</h1>
+              <Badge variant="secondary" className="ml-2 flex items-center gap-1">
+                <Code className="h-3 w-3" />
+                In Development
+              </Badge>
             </div>
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1">
@@ -111,6 +115,21 @@ export default function TeamMetricsPage() {
             </div>
           </div>
         </div>
+
+        {/* Development Notice */}
+        <Card className="border-orange-200 bg-orange-50 dark:bg-orange-950/20 dark:border-orange-800">
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <AlertTriangle className="h-5 w-5 text-orange-600" />
+              <div>
+                <h3 className="font-medium text-orange-800 dark:text-orange-200">Development Feature</h3>
+                <p className="text-sm text-orange-700 dark:text-orange-300">
+                  This team metrics feature is currently under active development. Some data may be simulated or incomplete.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Team Performance Overview */}
         <TeamPerformanceOverview metrics={teamPerformance} />
