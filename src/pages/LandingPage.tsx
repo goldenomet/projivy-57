@@ -5,7 +5,6 @@ import { LandingHeader } from "@/components/landing/LandingHeader";
 import { HeroSection } from "@/components/landing/HeroSection";
 import { StatsSection } from "@/components/landing/StatsSection";
 import { FeaturesSection } from "@/components/landing/FeaturesSection";
-import { TestimonialsSection } from "@/components/landing/TestimonialsSection";
 import { AdditionalFeaturesSection } from "@/components/landing/AdditionalFeaturesSection";
 import { CTASection } from "@/components/landing/CTASection";
 import { LandingFooter } from "@/components/landing/LandingFooter";
@@ -23,7 +22,6 @@ export default function LandingPage() {
     return (
       <div className="flex items-center justify-center min-h-screen w-full">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
     );
   }
 
@@ -33,7 +31,6 @@ export default function LandingPage() {
       <HeroSection />
       <StatsSection />
       <FeaturesSection />
-      <TestimonialsSection />
       <AdditionalFeaturesSection />
       <CTASection />
       <LandingFooter />
