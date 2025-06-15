@@ -103,11 +103,13 @@ export default function AuthPage() {
               
               {/* Logo */}
               <div className="mb-8">
-                <img 
-                  src="/lovable-uploads/91e719aa-0b75-4c1e-a8de-ce6ccbed860b.png" 
-                  alt="Logo" 
-                  className="w-24 h-24 mx-auto object-contain drop-shadow-2xl animate-bounce-gentle"
-                />
+                <div className="bg-white rounded-3xl p-6 mx-auto mb-6 inline-flex items-center justify-center shadow-2xl animate-bounce-gentle">
+                  <img 
+                    src="/lovable-uploads/91e719aa-0b75-4c1e-a8de-ce6ccbed860b.png" 
+                    alt="Logo" 
+                    className="w-24 h-24 object-contain"
+                  />
+                </div>
               </div>
               
               {/* Typography */}
