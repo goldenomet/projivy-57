@@ -1,8 +1,12 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle, Users, Clock, BarChart3 } from "lucide-react";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 
 export function FeaturesSection() {
+  const { elementRef: headerRef, isVisible: headerVisible } = useScrollAnimation();
+  const { elementRef: featuresRef, isVisible: featuresVisible } = useScrollAnimation();
+
   const features = [{
     icon: CheckCircle,
     title: "Task Management",
@@ -26,13 +30,8 @@ export function FeaturesSection() {
   }];
 
   return (
-    <section className="w-full py-20 animate-slide-in relative overflow-hidden">
+    <section className="w-full py-20 relative overflow-hidden">
       <div className="w-full max-w-7xl mx-auto px-4">
-        {/* Top left illustration */}
-        <div className="absolute left-2 top-8 sm:left-4 sm:top-12 lg:left-8 lg:top-16">
-          
-        </div>
-
         {/* Right side illustration - adjusted for mobile */}
         <div className="absolute right-2 top-1/2 transform -translate-y-1/2 sm:right-4 lg:right-8 lg:bottom-16 lg:top-auto lg:transform-none">
           <img 
@@ -42,7 +41,14 @@ export function FeaturesSection() {
           />
         </div>
 
-        <div className="text-center mb-16 relative z-10">
+        <div 
+          ref={headerRef}
+          className={`text-center mb-16 relative z-10 transition-all duration-1000 ease-out ${
+            headerVisible 
+              ? 'opacity-100 translate-y-0' 
+              : 'opacity-0 translate-y-8'
+          }`}
+        >
           <h3 className="text-4xl font-bold mb-4">
             Everything you need to 
             <span className="text-transparent bg-gradient-to-r from-primary to-purple-600 bg-clip-text"> succeed</span>
@@ -53,10 +59,23 @@ export function FeaturesSection() {
         </div>
         
         {/* Features arranged in 2 rows of 2 cards each - with proper z-index */}
-        <div className="flex justify-start relative z-20">
+        <div 
+          ref={featuresRef}
+          className="flex justify-start relative z-20"
+        >
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl">
             {features.map((feature, index) => (
-              <Card key={index} className="border-border/50 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 cursor-pointer group overflow-hidden relative bg-card/95 backdrop-blur-sm">
+              <Card 
+                key={index} 
+                className={`border-border/50 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 cursor-pointer group overflow-hidden relative bg-card/95 backdrop-blur-sm ${
+                  featuresVisible 
+                    ? 'opacity-100 translate-y-0 scale-100' 
+                    : 'opacity-0 translate-y-12 scale-95'
+                }`}
+                style={{
+                  transitionDelay: featuresVisible ? `${index * 150}ms` : '0ms'
+                }}
+              >
                 <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-300`}></div>
                 <CardHeader className="relative">
                   <div className={`h-16 w-16 rounded-2xl bg-gradient-to-br ${feature.gradient} p-4 mb-4 group-hover:scale-110 transition-transform duration-300`}>
