@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -13,15 +12,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Project, ProjectStatus } from "@/types/project";
+import { ProjectTemplate } from "@/types/templates";
 import { toast } from "sonner";
 import { ProjectService } from "@/services/projectService";
 
 interface ProjectFormProps {
   onFormSubmitting?: (isSubmitting: boolean) => void;
   projectToEdit?: Project;
+  selectedTemplate?: ProjectTemplate | null;
 }
 
-export default function ProjectForm({ onFormSubmitting, projectToEdit }: ProjectFormProps) {
+export default function ProjectForm({ onFormSubmitting, projectToEdit, selectedTemplate }: ProjectFormProps) {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   
@@ -42,8 +43,21 @@ export default function ProjectForm({ onFormSubmitting, projectToEdit }: Project
         endDate: projectToEdit.endDate.toISOString().split('T')[0],
         status: projectToEdit.status,
       });
+    } else if (selectedTemplate) {
+      // Pre-fill form with template data
+      const today = new Date();
+      const endDate = new Date(today);
+      endDate.setDate(today.getDate() + selectedTemplate.estimatedDuration);
+      
+      setFormData({
+        name: selectedTemplate.name,
+        description: selectedTemplate.description,
+        startDate: today.toISOString().split('T')[0],
+        endDate: endDate.toISOString().split('T')[0],
+        status: selectedTemplate.defaultStatus,
+      });
     }
-  }, [projectToEdit]);
+  }, [projectToEdit, selectedTemplate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
