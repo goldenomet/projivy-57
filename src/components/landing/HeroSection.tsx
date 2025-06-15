@@ -1,4 +1,5 @@
 
+
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { CheckCircle, Star, ArrowRight, Play } from "lucide-react";
@@ -44,7 +45,7 @@ export function HeroSection() {
             <div className="flex items-center gap-6 justify-center lg:justify-start text-sm text-muted-foreground">
               <div className="flex items-center gap-1">
                 <CheckCircle className="h-4 w-4 text-green-500" />
-                Free 14-day trial
+                Free 7-day trial
               </div>
               <div className="flex items-center gap-1">
                 <CheckCircle className="h-4 w-4 text-green-500" />
@@ -73,3 +74,4 @@ export function HeroSection() {
     </section>
   );
 }
+
