@@ -1,3 +1,4 @@
+
 import { Card, CardContent } from "@/components/ui/card";
 import { Users, CheckCircle, Shield, Clock, TrendingDown, TrendingUp } from "lucide-react";
 export function StatsSection() {
@@ -37,7 +38,7 @@ export function StatsSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left side - Image */}
           <div className="flex justify-center lg:justify-start">
-            <img alt="Productivity and cost-saving illustration with charts, coins, and project management elements" className="w-full max-w-md h-auto" src="/lovable-uploads/cd041f82-636a-46be-aece-a4c4ad2b38bd.png" />
+            <img alt="Productivity and cost-saving illustration with charts, coins, and project management elements" className="w-full max-w-lg h-auto" src="/lovable-uploads/cd041f82-636a-46be-aece-a4c4ad2b38bd.png" />
           </div>
           
           {/* Right side - Stats */}
