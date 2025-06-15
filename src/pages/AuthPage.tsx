@@ -102,7 +102,7 @@ export default function AuthPage() {
               
               {/* Logo */}
               <div className="mb-8">
-                <div className="bg-white rounded-2xl p-3 mx-auto mb-6 inline-flex items-center justify-center shadow-2xl animate-bounce-gentle">
+                <div className="bg-white rounded-xl p-2 mx-auto mb-6 inline-flex items-center justify-center shadow-2xl animate-bounce-gentle">
                   <img 
                     src="/lovable-uploads/91e719aa-0b75-4c1e-a8de-ce6ccbed860b.png" 
                     alt="Logo" 
