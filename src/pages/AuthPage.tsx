@@ -104,7 +104,9 @@ export default function AuthPage() {
               
               {/* Logo */}
               <div className="mb-8">
-                <Logo size="lg" className="scale-150 mx-auto animate-bounce-gentle" />
+                <div className="w-24 h-24 bg-white rounded-3xl mx-auto mb-6 flex items-center justify-center shadow-2xl animate-bounce-gentle p-4">
+                  <Logo size="lg" className="scale-150" />
+                </div>
               </div>
               
               {/* Typography */}
