@@ -26,12 +26,12 @@ export function FeaturesSection() {
       <div className="w-full max-w-7xl mx-auto px-4">
         {/* Top left illustration */}
         <div className="absolute left-2 top-8 sm:left-4 sm:top-12 lg:left-8 lg:top-16">
-          <img src="/lovable-uploads/8d6cef94-6b1a-43d4-80f7-d111e348b010.png" alt="Project management workflow illustration with document and task organization" className="w-24 h-24 sm:w-32 sm:h-32 lg:w-40 lg:h-40 object-contain animate-floating opacity-80" />
+          <img alt="Project management workflow illustration with document and task organization" className="w-24 h-24 sm:w-32 sm:h-32 lg:w-40 lg:h-40 object-contain animate-floating opacity-80" src="/lovable-uploads/385559a7-9e1c-4611-ae4d-bcfc73bdb7f3.png" />
         </div>
 
         {/* Bottom right illustration */}
         <div className="absolute right-2 bottom-8 sm:right-4 sm:bottom-12 lg:right-8 lg:bottom-16">
-          <img src="/lovable-uploads/7964cfa1-76f0-4ff8-a183-73eeeb4ea455.png" alt="Team collaboration illustration with people working together on analytics" className="w-32 h-32 sm:w-40 sm:h-40 lg:w-56 lg:h-56 opacity-80 object-cover" />
+          <img alt="Team collaboration illustration with people working together on analytics" className="w-32 h-32 sm:w-40 sm:h-40 lg:w-56 lg:h-56 opacity-80 object-cover" src="/lovable-uploads/6a108e84-6201-4318-98bd-8b6dd7131802.png" />
         </div>
 
         <div className="text-center mb-16">

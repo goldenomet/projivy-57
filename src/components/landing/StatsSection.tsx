@@ -1,7 +1,5 @@
-
 import { Card, CardContent } from "@/components/ui/card";
 import { Users, CheckCircle, Shield, Clock, TrendingDown, TrendingUp } from "lucide-react";
-
 export function StatsSection() {
   const stats = [{
     number: "40%",
@@ -24,9 +22,7 @@ export function StatsSection() {
     description: "Always here to help",
     icon: Clock
   }];
-
-  return (
-    <section className="w-full py-20 animate-fade-in">
+  return <section className="w-full py-20 animate-fade-in">
       <div className="w-full max-w-7xl mx-auto px-4">
         <div className="text-center mb-12">
           <h3 className="text-3xl font-bold mb-4">
@@ -41,17 +37,12 @@ export function StatsSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left side - Image */}
           <div className="flex justify-center lg:justify-start">
-            <img 
-              src="/lovable-uploads/8fc75ebe-eae4-434b-b93e-45084a359b3f.png" 
-              alt="Productivity and cost-saving illustration with charts, coins, and project management elements"
-              className="w-full max-w-md h-auto"
-            />
+            <img alt="Productivity and cost-saving illustration with charts, coins, and project management elements" className="w-full max-w-md h-auto" src="/lovable-uploads/8cc9898e-b955-410e-a1d2-822ce8f2886e.png" />
           </div>
           
           {/* Right side - Stats */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {stats.map((stat, index) => (
-              <Card key={index} className="text-center p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group">
+            {stats.map((stat, index) => <Card key={index} className="text-center p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group">
                 <CardContent className="pt-6">
                   <div className="h-16 w-16 rounded-full bg-gradient-to-br from-primary to-purple-600 mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
                     <stat.icon className="h-8 w-8 text-white" />
@@ -60,11 +51,9 @@ export function StatsSection() {
                   <div className="text-sm font-medium mb-1">{stat.label}</div>
                   <div className="text-xs text-muted-foreground">{stat.description}</div>
                 </CardContent>
-              </Card>
-            ))}
+              </Card>)}
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 }
