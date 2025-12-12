@@ -9,11 +9,12 @@ import { format } from "date-fns";
 
 interface ProjectFile {
   id: string;
-  file_name: string;
-  file_size: number;
-  file_type: string;
-  storage_path: string;
-  uploaded_by: string | null;
+  name: string;
+  file_size: number | null;
+  file_type: string | null;
+  file_url: string;
+  user_id: string;
+  project_id: string | null;
   created_at: string;
 }
 
@@ -51,23 +52,16 @@ export function FileList({ projectId, refreshTrigger }: FileListProps) {
 
   const downloadFile = async (file: ProjectFile) => {
     try {
-      const { data, error } = await supabase.storage
-        .from('project-files')
-        .download(file.storage_path);
-
-      if (error) throw error;
-
-      // Create download link
-      const url = URL.createObjectURL(data);
+      // Open file URL directly
       const a = document.createElement('a');
-      a.href = url;
-      a.download = file.file_name;
+      a.href = file.file_url;
+      a.download = file.name;
+      a.target = '_blank';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-      URL.revokeObjectURL(url);
 
-      toast.success(`Downloaded ${file.file_name}`);
+      toast.success(`Downloaded ${file.name}`);
     } catch (error) {
       console.error('Download error:', error);
       toast.error('Failed to download file');
@@ -76,12 +70,6 @@ export function FileList({ projectId, refreshTrigger }: FileListProps) {
 
   const deleteFile = async (file: ProjectFile) => {
     try {
-      // Delete from storage
-      const { error: storageError } = await supabase.storage
-        .from('project-files')
-        .remove([file.storage_path]);
-
-      if (storageError) throw storageError;
 
       // Delete from database
       const { error: dbError } = await supabase
@@ -91,7 +79,7 @@ export function FileList({ projectId, refreshTrigger }: FileListProps) {
 
       if (dbError) throw dbError;
 
-      toast.success(`Deleted ${file.file_name}`);
+      toast.success(`Deleted ${file.name}`);
       loadFiles(); // Refresh the list
     } catch (error) {
       console.error('Delete error:', error);
@@ -153,24 +141,18 @@ export function FileList({ projectId, refreshTrigger }: FileListProps) {
         >
           <div className="flex items-center gap-3 flex-1 min-w-0">
             <div className="flex-shrink-0">
-              {getFileIcon(file.file_type)}
+              {getFileIcon(file.file_type || '')}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-medium truncate">{file.file_name}</p>
+              <p className="font-medium truncate">{file.name}</p>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <span>{formatFileSize(file.file_size)}</span>
+                <span>{formatFileSize(file.file_size || 0)}</span>
                 <span>•</span>
                 <span>{format(new Date(file.created_at), "MMM d, yyyy")}</span>
-                {file.uploaded_by && (
-                  <>
-                    <span>•</span>
-                    <span>by {file.uploaded_by}</span>
-                  </>
-                )}
               </div>
             </div>
             <Badge variant="secondary" className="flex-shrink-0">
-              {getFileTypeLabel(file.file_type)}
+              {getFileTypeLabel(file.file_type || '')}
             </Badge>
           </div>
           

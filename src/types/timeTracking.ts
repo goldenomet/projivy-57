@@ -4,13 +4,13 @@ export interface TimeEntry {
   user_id: string;
   project_id: string;
   task_id?: string;
-  description?: string;
+  description?: string | null;
   start_time: string;
-  end_time?: string;
+  end_time?: string | null;
   duration_minutes?: number;
   is_running: boolean;
   created_at: string;
-  updated_at: string;
+  updated_at?: string;
 }
 
 export interface TimeTrackingStats {
