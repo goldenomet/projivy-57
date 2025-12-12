@@ -29,9 +29,9 @@ export class WordExporter {
       }],
     });
 
-    const buffer = await Packer.toBuffer(doc);
+    const buffer = await Packer.toBlob(doc);
     const timestamp = new Date().toISOString().split('T')[0];
-    saveAs(new Blob([buffer]), `${type}-export-${timestamp}.docx`);
+    saveAs(buffer, `${type}-export-${timestamp}.docx`);
   }
 
   private static createProjectsTable(projects: Project[]): Table {
