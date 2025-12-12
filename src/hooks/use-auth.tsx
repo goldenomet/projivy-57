@@ -73,31 +73,49 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const signIn = async (email: string, password: string) => {
     try {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) throw error;
       
-      // Use navigate here instead of in the onAuthStateChange
+      if (error) {
+        if (error.message.includes('Invalid login credentials')) {
+          toast.error('Invalid email or password. Please check your credentials or sign up if you don\'t have an account.');
+        } else {
+          toast.error(error.message);
+        }
+        throw error;
+      }
+      
       navigate('/dashboard');
     } catch (error: any) {
-      toast.error(error.message);
       throw error;
     }
   };
 
   const signUp = async (email: string, password: string, fullName: string) => {
     try {
+      const redirectUrl = `${window.location.origin}/dashboard`;
+      
       const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
+          emailRedirectTo: redirectUrl,
           data: {
             full_name: fullName,
           },
         },
       });
-      if (error) throw error;
-      toast.success('Registration successful! Please check your email for verification.');
+      
+      if (error) {
+        if (error.message.includes('User already registered')) {
+          toast.error('An account with this email already exists. Please sign in instead.');
+        } else {
+          toast.error(error.message);
+        }
+        throw error;
+      }
+      
+      toast.success('Account created successfully! You can now sign in.');
+      navigate('/dashboard');
     } catch (error: any) {
-      toast.error(error.message);
       throw error;
     }
   };
