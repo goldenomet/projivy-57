@@ -26,10 +26,10 @@ export const useNotificationPreferences = () => {
 
     try {
       const { data, error } = await supabase
-        .rpc('get_or_create_notification_preferences', { user_uuid: user.id });
+        .rpc('get_or_create_notification_preferences', { p_user_id: user.id });
 
       if (error) throw error;
-      setPreferences(data);
+      setPreferences(data as unknown as NotificationPreferences);
     } catch (error) {
       console.error('Error fetching notification preferences:', error);
       toast.error('Failed to load notification preferences');

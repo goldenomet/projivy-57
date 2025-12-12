@@ -55,17 +55,25 @@ export function FileUpload({ projectId, onFileUploaded }: FileUploadProps) {
 
       setUploadProgress(50);
 
+      // Get the public URL
+      const { data: urlData } = supabase.storage
+        .from('project-files')
+        .getPublicUrl(filePath);
+
+      // Get current user
+      const { data: { user } } = await supabase.auth.getUser();
+
       // Save file metadata to database
       const { error: dbError } = await supabase
         .from('project_files')
         .insert({
           project_id: projectId,
-          file_name: file.name,
+          name: file.name,
           file_size: file.size,
           file_type: file.type,
-          storage_path: filePath,
-          uploaded_by: 'Current User' // In a real app, this would be the authenticated user
-        });
+          file_url: urlData.publicUrl,
+          user_id: user?.id || ''
+        } as any);
 
       if (dbError) {
         // If database insert fails, clean up the uploaded file

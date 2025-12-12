@@ -236,6 +236,7 @@ export type Database = {
           id: string
           name: string
           priority: string | null
+          progress: number | null
           start_date: string | null
           status: string | null
           updated_at: string
@@ -249,6 +250,7 @@ export type Database = {
           id?: string
           name: string
           priority?: string | null
+          progress?: number | null
           start_date?: string | null
           status?: string | null
           updated_at?: string
@@ -262,6 +264,7 @@ export type Database = {
           id?: string
           name?: string
           priority?: string | null
+          progress?: number | null
           start_date?: string | null
           status?: string | null
           updated_at?: string
@@ -271,36 +274,42 @@ export type Database = {
       }
       tasks: {
         Row: {
+          assignee: string | null
           created_at: string
           description: string | null
           due_date: string | null
           id: string
           priority: string | null
           project_id: string | null
+          start_date: string | null
           status: string | null
           title: string
           updated_at: string
           user_id: string
         }
         Insert: {
+          assignee?: string | null
           created_at?: string
           description?: string | null
           due_date?: string | null
           id?: string
           priority?: string | null
           project_id?: string | null
+          start_date?: string | null
           status?: string | null
           title: string
           updated_at?: string
           user_id: string
         }
         Update: {
+          assignee?: string | null
           created_at?: string
           description?: string | null
           due_date?: string | null
           id?: string
           priority?: string | null
           project_id?: string | null
+          start_date?: string | null
           status?: string | null
           title?: string
           updated_at?: string
@@ -309,6 +318,47 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "tasks_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      time_entries: {
+        Row: {
+          created_at: string
+          description: string | null
+          end_time: string | null
+          id: string
+          is_running: boolean | null
+          project_id: string | null
+          start_time: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          end_time?: string | null
+          id?: string
+          is_running?: boolean | null
+          project_id?: string | null
+          start_time?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          end_time?: string | null
+          id?: string
+          is_running?: boolean | null
+          project_id?: string | null
+          start_time?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "time_entries_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
