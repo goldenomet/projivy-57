@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { Project, Task } from "@/types/project";
 import { toast } from "sonner";
 import { calculateProjectProgress } from "../utils/projectUtils";
+import { ProjectService } from "@/services/projectService";
+import { supabase } from "@/integrations/supabase/client";
 
 export function useProjectData(id: string | undefined) {
   const navigate = useNavigate();
@@ -12,94 +14,56 @@ export function useProjectData(id: string | undefined) {
   const [isLoading, setIsLoading] = useState(true);
   const [deletedTaskIds, setDeletedTaskIds] = useState<Set<string>>(new Set());
 
-  // Load project data from localStorage
+  // Load project data from Supabase
   useEffect(() => {
     if (!id) return;
     
-    setIsLoading(true);
-    
-    // Try to load project from localStorage
-    const storedProjects = localStorage.getItem("projects");
-    if (storedProjects) {
+    const fetchProject = async () => {
+      setIsLoading(true);
+      
       try {
-        const parsedProjects = JSON.parse(storedProjects);
-        const localProject = parsedProjects.find((p: any) => p.id === id);
+        const projects = await ProjectService.getProjects();
+        const foundProject = projects.find(p => p.id === id);
         
-        if (localProject) {
-          // Parse date strings to Date objects
-          const formattedProject = {
-            ...localProject,
-            startDate: new Date(localProject.startDate),
-            endDate: new Date(localProject.endDate),
-            tasks: Array.isArray(localProject.tasks) ? localProject.tasks.map((task: any) => ({
-              ...task,
-              startDate: task.startDate ? new Date(task.startDate) : new Date(),
-              dueDate: task.dueDate ? new Date(task.dueDate) : new Date(),
-            })) : []
-          };
-          
-          setProject(formattedProject);
-          setTasks(formattedProject.tasks || []);
-          setIsLoading(false);
-          return;
-        }
-      } catch (error) {
-        console.error("Error loading project from localStorage:", error);
-        toast.error("Error loading project data");
-      }
-    }
-    
-    // Check if the project ID is in the deleted projects list
-    const storedDeletedIds = localStorage.getItem("deletedProjectIds");
-    if (storedDeletedIds) {
-      try {
-        const deletedIdsArray = JSON.parse(storedDeletedIds);
-        if (Array.isArray(deletedIdsArray) && deletedIdsArray.includes(id)) {
-          toast.error("This project has been deleted");
+        if (foundProject) {
+          setProject(foundProject);
+          setTasks(foundProject.tasks || []);
+        } else {
+          toast.error("Project not found");
           navigate("/projects");
-          return;
         }
       } catch (error) {
-        console.error("Error checking deleted project IDs:", error);
+        console.error("Error loading project:", error);
+        toast.error("Error loading project data");
+        navigate("/projects");
+      } finally {
+        setIsLoading(false);
       }
-    }
+    };
     
-    // If not found in localStorage and not deleted, redirect to projects page
-    toast.error("Project not found");
-    navigate("/projects");
+    fetchProject();
   }, [id, navigate]);
 
-  // Update project tasks in state and localStorage
-  const updateProjectTasks = (projectId: string, updatedTasks: Task[]) => {
+  // Update project tasks in Supabase
+  const updateProjectTasks = async (projectId: string, updatedTasks: Task[]) => {
     if (!project) return;
     
-    // Update localStorage
-    const storedProjects = localStorage.getItem("projects");
-    if (storedProjects) {
-      try {
-        const parsedProjects = JSON.parse(storedProjects);
-        const updatedProjects = parsedProjects.map((p: any) => {
-          if (p.id === projectId) {
-            // Calculate the new progress when updating tasks
-            const newProgress = calculateProjectProgress(updatedTasks);
-            return { 
-              ...p, 
-              tasks: updatedTasks,
-              progress: newProgress
-            };
-          }
-          return p;
-        });
-        localStorage.setItem("projects", JSON.stringify(updatedProjects));
-      } catch (error) {
-        console.error("Error updating project tasks in localStorage:", error);
-        toast.error("Failed to save changes");
-      }
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('No authenticated user');
+
+      // Calculate the new progress
+      const newProgress = calculateProjectProgress(updatedTasks);
+      
+      // Update project progress in Supabase
+      await ProjectService.updateProject(projectId, { progress: newProgress });
+      
+      // Update project state
+      setProject({ ...project, tasks: updatedTasks, progress: newProgress });
+    } catch (error) {
+      console.error("Error updating project tasks:", error);
+      toast.error("Failed to save changes");
     }
-    
-    // Update project state
-    const newProgress = calculateProjectProgress(updatedTasks);
-    setProject({ ...project, tasks: updatedTasks, progress: newProgress });
   };
 
   // Update project progress whenever tasks change
@@ -112,22 +76,8 @@ export function useProjectData(id: string | undefined) {
         const updatedProject = { ...project, progress: updatedProgress };
         setProject(updatedProject);
         
-        // Update in localStorage
-        const storedProjects = localStorage.getItem("projects");
-        if (storedProjects) {
-          try {
-            const parsedProjects = JSON.parse(storedProjects);
-            const updatedProjects = parsedProjects.map((p: any) => {
-              if (p.id === project.id) {
-                return { ...p, progress: updatedProgress };
-              }
-              return p;
-            });
-            localStorage.setItem("projects", JSON.stringify(updatedProjects));
-          } catch (error) {
-            console.error("Error updating project progress in localStorage:", error);
-          }
-        }
+        // Update in Supabase
+        ProjectService.updateProject(project.id, { progress: updatedProgress });
       }
     }
   }, [tasks, project]);
