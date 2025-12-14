@@ -1,9 +1,17 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -15,6 +23,7 @@ import { Project, ProjectStatus } from "@/types/project";
 import { ProjectTemplate } from "@/types/templates";
 import { toast } from "sonner";
 import { ProjectService } from "@/services/projectService";
+import { cn } from "@/lib/utils";
 
 interface ProjectFormProps {
   onFormSubmitting?: (isSubmitting: boolean) => void;
@@ -151,27 +160,58 @@ export default function ProjectForm({ onFormSubmitting, projectToEdit, selectedT
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="startDate">Start Date *</Label>
-          <Input
-            id="startDate"
-            type="date"
-            value={formData.startDate}
-            onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
-            required
-            className="focus:ring-2 focus:ring-primary/50"
-          />
+          <Label>Start Date *</Label>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className={cn(
+                  "w-full justify-start text-left font-normal focus:ring-2 focus:ring-primary/50",
+                  !formData.startDate && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {formData.startDate ? format(new Date(formData.startDate), "PPP") : <span>Pick start date</span>}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                mode="single"
+                selected={formData.startDate ? new Date(formData.startDate) : undefined}
+                onSelect={(date) => setFormData({ ...formData, startDate: date ? date.toISOString().split('T')[0] : "" })}
+                initialFocus
+                className="pointer-events-auto"
+              />
+            </PopoverContent>
+          </Popover>
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="endDate">End Date *</Label>
-          <Input
-            id="endDate"
-            type="date"
-            value={formData.endDate}
-            onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
-            required
-            className="focus:ring-2 focus:ring-primary/50"
-          />
+          <Label>End Date *</Label>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className={cn(
+                  "w-full justify-start text-left font-normal focus:ring-2 focus:ring-primary/50",
+                  !formData.endDate && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {formData.endDate ? format(new Date(formData.endDate), "PPP") : <span>Pick end date</span>}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                mode="single"
+                selected={formData.endDate ? new Date(formData.endDate) : undefined}
+                onSelect={(date) => setFormData({ ...formData, endDate: date ? date.toISOString().split('T')[0] : "" })}
+                disabled={(date) => formData.startDate ? date < new Date(formData.startDate) : false}
+                initialFocus
+                className="pointer-events-auto"
+              />
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
 
