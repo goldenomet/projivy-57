@@ -28,8 +28,8 @@ export default function ProfilePage() {
         const { data, error } = await supabase
           .from('profiles')
           .select('*')
-          .eq('id', user.id)
-          .single();
+          .eq('user_id', user.id)
+          .maybeSingle();
         
         if (error) {
           throw error;
@@ -39,6 +39,10 @@ export default function ProfilePage() {
           setProfile(data as Profile);
           setFullName(data.full_name || "");
           setAvatarUrl(data.avatar_url || "");
+        } else {
+          // Profile doesn't exist yet, initialize with empty values
+          setFullName("");
+          setAvatarUrl("");
         }
       } catch (error) {
         console.error('Error fetching profile:', error);
@@ -57,22 +61,24 @@ export default function ProfilePage() {
     setIsSaving(true);
     try {
       const updates = {
-        id: user.id,
+        user_id: user.id,
         full_name: fullName,
         avatar_url: avatarUrl,
         updated_at: new Date().toISOString(),
       };
       
-      const { error } = await supabase
+      // Use upsert to create profile if it doesn't exist
+      const { data, error } = await supabase
         .from('profiles')
-        .update(updates)
-        .eq('id', user.id);
+        .upsert(updates, { onConflict: 'user_id' })
+        .select()
+        .single();
       
       if (error) {
         throw error;
       }
       
-      setProfile({ ...profile, ...updates } as Profile);
+      setProfile(data as Profile);
       toast.success("Profile updated successfully!");
     } catch (error) {
       console.error('Error updating profile:', error);
