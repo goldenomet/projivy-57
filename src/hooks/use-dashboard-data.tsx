@@ -23,7 +23,7 @@ export function useDashboardData() {
         const { data, error } = await supabase
           .from('profiles')
           .select('*')
-          .eq('id', user.id)
+          .eq('user_id', user.id)
           .single();
         
         if (error) {
@@ -33,7 +33,7 @@ export function useDashboardData() {
             const { data: newProfile, error: createError } = await supabase
               .from('profiles')
               .insert({
-                id: user.id,
+                user_id: user.id,
                 full_name: user.user_metadata?.full_name || user.email,
                 avatar_url: user.user_metadata?.avatar_url
               })
