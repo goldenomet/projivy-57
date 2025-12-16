@@ -24,6 +24,7 @@ import SubscriptionPage from "./pages/SubscriptionPage";
 import AdminPage from "./pages/AdminPage";
 import ProjectDetailPage from "./pages/project-detail/ProjectDetailPage";
 import DataManagementPage from "./pages/DataManagementPage";
+import TaskOverviewPage from "./pages/TaskOverviewPage";
 import AuthPage from "./pages/AuthPage";
 import NotFound from "./pages/NotFound";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
@@ -65,6 +66,11 @@ function App() {
                     <Route path="/projects" element={
                       <ProtectedRoute>
                         <ProjectsPage />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/tasks" element={
+                      <ProtectedRoute>
+                        <TaskOverviewPage />
                       </ProtectedRoute>
                     } />
                     <Route path="/projects/new" element={
