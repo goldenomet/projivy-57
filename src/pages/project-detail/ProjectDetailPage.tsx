@@ -30,11 +30,11 @@ export default function ProjectDetailPage() {
   const { 
     project, 
     tasks, 
-    setTasks, 
-    isLoading, 
-    updateProjectTasks,
-    deletedTaskIds,
-    setDeletedTaskIds
+    isLoading,
+    createTask,
+    updateTask,
+    deleteTask,
+    deleteProject
   } = useProjectData(id);
   
   const [isNewTaskDialogOpen, setIsNewTaskDialogOpen] = useState(false);
@@ -54,42 +54,27 @@ export default function ProjectDetailPage() {
     setIsNewTaskDialogOpen(true);
   };
 
-  const handleTaskSubmit = (taskData: any) => {
+  const handleTaskSubmit = async (taskData: any) => {
     try {
       if (selectedTask) {
         // Update existing task
-        const updatedTasks = tasks.map((task) =>
-          task.id === selectedTask.id
-            ? { ...task, ...taskData }
-            : task
-        );
-        setTasks(updatedTasks);
-        
-        // Update project in state and localStorage
-        if (project) {
-          updateProjectTasks(project.id, updatedTasks);
-          
-          // Show appropriate toast message based on status change
+        const success = await updateTask(selectedTask.id, taskData);
+        if (success) {
           if (taskData.status === 'completed' && selectedTask.status !== 'completed') {
             toast.success(`Task "${taskData.name}" marked as completed!`);
           } else {
             toast.success("Task updated successfully");
           }
+        } else {
+          toast.error("Failed to update task");
         }
       } else {
         // Create new task
-        const newTask: Task = {
-          id: `task${Date.now()}`, // More unique ID
-          projectId: project?.id || "",
-          ...taskData,
-        };
-        const updatedTasks = [...tasks, newTask];
-        setTasks(updatedTasks);
-        
-        // Update project in state and localStorage
-        if (project) {
-          updateProjectTasks(project.id, updatedTasks);
+        const newTask = await createTask(taskData);
+        if (newTask) {
           toast.success("New task created successfully");
+        } else {
+          toast.error("Failed to create task");
         }
       }
       setIsNewTaskDialogOpen(false);
@@ -101,29 +86,22 @@ export default function ProjectDetailPage() {
 
   // Function to handle task deletion
   const handleDeleteTask = (task: Task, event: React.MouseEvent) => {
-    event.stopPropagation(); // Prevent clicking through to the task card
+    event.stopPropagation();
     setTaskToDelete(task);
     setIsDeleteDialogOpen(true);
   };
 
   // Function to confirm task deletion
-  const confirmDeleteTask = () => {
-    if (!taskToDelete || !project) return;
+  const confirmDeleteTask = async () => {
+    if (!taskToDelete) return;
     
     try {
-      const updatedTasks = tasks.filter((t) => t.id !== taskToDelete.id);
-      setTasks(updatedTasks);
-      
-      // Add to deleted tasks set
-      const newDeletedIds = new Set(deletedTaskIds);
-      newDeletedIds.add(taskToDelete.id);
-      setDeletedTaskIds(newDeletedIds);
-      
-      // Update project in state and localStorage
-      updateProjectTasks(project.id, updatedTasks);
-      toast.success("Task deleted successfully");
-      
-      // Close the dialog
+      const success = await deleteTask(taskToDelete.id);
+      if (success) {
+        toast.success("Task deleted successfully");
+      } else {
+        toast.error("Failed to delete task");
+      }
       setIsDeleteDialogOpen(false);
       setTaskToDelete(null);
     } catch (error) {
@@ -138,42 +116,11 @@ export default function ProjectDetailPage() {
   };
 
   // Function to confirm project deletion
-  const confirmDeleteProject = () => {
-    if (!project) return;
-    
+  const confirmDeleteProject = async () => {
     try {
-      // Get existing projects from localStorage
-      const storedProjects = localStorage.getItem("projects");
-      if (storedProjects) {
-        const parsedProjects = JSON.parse(storedProjects);
-        const updatedProjects = parsedProjects.filter((p: any) => p.id !== project.id);
-        
-        // Update localStorage
-        localStorage.setItem("projects", JSON.stringify(updatedProjects));
-        
-        // Add to deleted projects list
-        const storedDeletedIds = localStorage.getItem("deletedProjectIds");
-        let deletedIds: string[] = [];
-        
-        if (storedDeletedIds) {
-          try {
-            deletedIds = JSON.parse(storedDeletedIds);
-          } catch (error) {
-            console.error("Error parsing deleted project IDs:", error);
-          }
-        }
-        
-        if (!deletedIds.includes(project.id)) {
-          deletedIds.push(project.id);
-          localStorage.setItem("deletedProjectIds", JSON.stringify(deletedIds));
-        }
-        
-        // Show success message and navigate back to projects page
-        toast.success("Project deleted successfully");
-        navigate("/projects");
-      } else {
-        // Just navigate away as the project might be from mock data
-        navigate("/projects");
+      const success = await deleteProject();
+      if (!success) {
+        toast.error("Failed to delete project");
       }
     } catch (error) {
       console.error("Error deleting project:", error);
