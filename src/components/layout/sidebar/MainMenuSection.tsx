@@ -1,5 +1,5 @@
 
-import { BarChart3, FolderOpen, Calendar, Users, Clock, Video, TrendingUp, MessageCircle, Code } from "lucide-react";
+import { BarChart3, FolderOpen, Calendar, Users, Clock, Video, TrendingUp, MessageCircle, ListTodo } from "lucide-react";
 import { useLocation, Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
@@ -12,6 +12,12 @@ export function MainMenuSection() {
     href: "/dashboard",
     color: "text-blue-500",
     bgHover: "hover:bg-blue-50 dark:hover:bg-blue-900/20"
+  }, {
+    title: "Task Overview",
+    icon: ListTodo,
+    href: "/tasks",
+    color: "text-amber-500",
+    bgHover: "hover:bg-amber-50 dark:hover:bg-amber-900/20"
   }, {
     title: "Projects",
     icon: FolderOpen,
